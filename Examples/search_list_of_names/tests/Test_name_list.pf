@@ -1,0 +1,80 @@
+
+module Test_name_list_mod
+   use name_list_mod
+   use pfunit_mod
+   
+   implicit none
+   public :: Setup
+   
+@TestCase
+   type, extends(TestCase) :: mySetup
+     
+     integer :: mymin = 30, mymax = 100 , list_length=3
+     character(50) :: myname
+     character(len=20) :: name_to_find
+     character(len=20) , dimension(5):: list_of_names
+     integer :: name_id
+   
+   contains
+      procedure :: setUp     ! overides generic
+      procedure :: tearDown  ! overrides generic
+   end type mySetup
+
+contains
+
+   ! No need to annotate setUp() when _extending_ TestCase
+   subroutine setUp(this)
+      class (mySetup), intent(inout) :: this
+
+      this%name_id = 2
+      this%list_of_names(1) = "Hans"
+      this%list_of_names(2) = "Peter"
+      this%list_of_names(3) = "Klaus"
+
+   end subroutine setUp
+
+   ! No need to annotate tearDown() _extending_ TestCase
+   subroutine tearDown(this)
+      class (mySetup), intent(inout) :: this
+     
+      print * , "Clean up"
+   end subroutine tearDown
+
+
+
+@Test
+   subroutine test_search_list_of_names(this)
+     ! Testing search_list_of_names
+     ! Objective : check if existing name from list is found 
+     class (mySetup), intent(inout) :: this
+     integer :: name_id  
+  
+     
+     this%name_to_find = "Peter"
+     print *, size(this%list_of_names), this%list_length
+     
+     call search_list_of_names(this%name_to_find, name_id, this%list_of_names, SIZE(this%list_of_names))
+     @assertGreaterThan(name_id, 0 , message="name_id and should be equal or greater 0.")
+   end subroutine test_search_list_of_names
+   
+@Test
+    subroutine test_search_list_of_names_fail(this)
+      ! Testing search_list_of_names
+      ! Objective : check if call returns false for empty name 
+      class (mySetup), intent(inout) :: this
+      integer :: name_id  
+       
+      this%name_to_find = "Hui"
+      print *, size(this%list_of_names), this%list_length  
+   
+      call search_list_of_names(this%name_to_find, name_id, this%list_of_names, size(this%list_of_names))
+      @assertLessThan(name_id, 1 , message="name_id  should be equal or less than 0.")
+    end subroutine test_search_list_of_names_fail
+
+
+
+
+end module Test_name_list_mod
+
+
+
