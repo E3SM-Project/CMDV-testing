@@ -1,0 +1,8 @@
+/myTest# Ignore netCDF files.
+*.nc
+
+# Ignore compiled files
+*.o
+
+# Ignore myTest directory
+/Examples/myTest*
