@@ -1,0 +1,19 @@
+FlashTest v1.0 started by /root/tmp.log on Wed Oct  5 16:10:06 2016
+Original command-line: ./flashTest.py -v UnitTest/
+This invocation: 2016-10-05_8
+--------------------------------------------------------------------------------
+WARNING: FLASH source at "/data/flash/" was not updated
+--------------------------------------------------------------------------------
+16:10:06 Parsed "docker/UnitTest"
+16:10:06 Creating directory "/src/flashTest/output/docker/2016-10-05_8/UnitTest"
+         ****** "test.info" ******
+         setupName: unitTest/ACME
+         setupOptions: --help
+         numProcs: 1
+         parfiles: <defaultParfile>
+         *************************
+         ** setup phase **
+16:10:06 /data/flash/setup unitTest/ACME --help
+16:10:06 setup was not successful
+16:10:06 All tests completed.
+16:10:06 FlashTest complete. End of Logfile.

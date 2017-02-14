@@ -1,0 +1,22 @@
+pathToFlash: /data/flash/
+setupper: FlashSetupper
+site: docker
+executer: FlashExecuter
+updateScript: 
+owner: Andi
+pathToSimulations: <pathToFlash>/source/Simulation/SimulationMain
+siteDir: docker
+defaultParfile: <pathToFlash>/object/flash.par
+version: 1.0
+FQHostname: visitor097-197.wl.anl-external.org
+pathToOutdir: /Users/Andi/Development/CMDV/flashTest/output
+pathsAndOpts: [('UnitTest/', {})]
+entryPoint: FlashEntryPoint
+flashSite: <FQHostname>
+useModule: flashModule
+compiler: FlashCompiler
+pathToFlashTest: /Users/Andi/Development/CMDV/flashTest
+infohost: 
+flashTestOpts: {}
+pathToInfo: /Users/Andi/Development/CMDV/flashTest/test.info
+pathToSiteDir: /Users/Andi/Development/CMDV/flashTest/output/docker

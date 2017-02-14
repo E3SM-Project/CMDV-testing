@@ -1,0 +1,6 @@
+docker/UnitTest
+
+setupName: unitTest/Grid/UG
+setupOptions: -1d -auto +noio
+numProcs: 1
+parfiles: <defaultParfile>

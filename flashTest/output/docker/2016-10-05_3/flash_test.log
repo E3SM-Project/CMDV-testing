@@ -1,0 +1,19 @@
+FlashTest v1.0 started by /root/tmp.log on Wed Oct  5 16:03:07 2016
+Original command-line: ./flashTest.py UnitTest/
+This invocation: 2016-10-05_3
+--------------------------------------------------------------------------------
+WARNING: FLASH source at "/data/flash/" was not updated
+--------------------------------------------------------------------------------
+16:03:07 Parsed "docker/UnitTest"
+16:03:07 Creating directory "/src/flashTest/output/docker/2016-10-05_3/UnitTest"
+         ****** "test.info" ******
+         setupName: unitTest/Grid/UG
+         setupOptions: -1d -auto +noio
+         numProcs: 1
+         parfiles: <defaultParfile>
+         *************************
+         ** setup phase **
+16:03:07 /data/flash/setup unitTest/Grid/UG -1d -auto +noio
+16:03:07 setup was not successful
+16:03:07 All tests completed.
+16:03:07 FlashTest complete. End of Logfile.

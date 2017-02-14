@@ -1,0 +1,22 @@
+pathToFlash: /data/flash/
+setupper: FlashSetupper
+site: docker
+executer: FlashExecuter
+updateScript: 
+owner: /root/tmp.log
+pathToSimulations: <pathToFlash>/source/Simulation/SimulationMain
+siteDir: docker
+defaultParfile: <pathToFlash>/object/flash.par
+version: 1.0
+FQHostname: 81a5d0c70de2
+pathToOutdir: /src/flashTest/output
+pathsAndOpts: [('UnitTest', {})]
+entryPoint: FlashEntryPoint
+flashSite: <FQHostname>
+useModule: flashModule
+compiler: FlashCompiler
+pathToFlashTest: /src/flashTest
+infohost: 
+flashTestOpts: {'-v': ''}
+pathToInfo: /src/flashTest/test.info
+pathToSiteDir: /src/flashTest/output/docker

@@ -1,0 +1,11 @@
+[Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "./flashTest.py", line 980, in <module>
+    main()
+  File "./flashTest.py", line 712, in main
+    if testObject.setup() == False:
+  File "/src/flashTest/lib/testObject.py", line 130, in setup
+    return self.setupper.setup()
+  File "/src/flashTest/lib/flashModule.py", line 164, in setup
+    out, err, duration, exitStatus = getProcessResults(script)
+TypeError: 'NoneType' object is not iterable

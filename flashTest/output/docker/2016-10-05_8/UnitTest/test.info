@@ -1,0 +1,6 @@
+docker/UnitTest
+
+setupName: unitTest/ACME
+setupOptions: --help
+numProcs: 1
+parfiles: <defaultParfile>
