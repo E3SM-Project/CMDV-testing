@@ -1,0 +1,17 @@
+# makey
+set verbose
+
+rm -f driver.mod 
+
+ cpp -C -P -traditional -DCAMBOX_ACTIVATE_THIS -DCAMBOX_DEACTIVATE_THIS -DMODAL_AERO -DMODAL_AERO_7MODE -DPCNST=60 -DPCOLS=12 -DPVER=4 -DNBC=1 -DNPOA=1 -DNSOA=1 -DMOSAIC_SPECIES driver.F90 driver.f90 
+
+  pgf90     -c -g  -C -Ktrap=fp  driver.f90
+rm -f main.mod 
+
+ cpp -C -P -traditional -DCAMBOX_ACTIVATE_THIS -DCAMBOX_DEACTIVATE_THIS -DMODAL_AERO -DMODAL_AERO_7MODE -DPCNST=60 -DPCOLS=12 -DPVER=4 -DNBC=1 -DNPOA=1 -DNSOA=1 -DMOSAIC_SPECIES main.F90 main.f90 
+
+  pgf90   -c -g  -C -Ktrap=fp  main.f90
+
+pgf90    -o dd.x -g  -C -Ktrap=fp   shr_kind_mod.o shr_const_mod.o cam_logfile.forbox.o spmd_utils.forbox.o abortutils.forbox.o cam_abortutils.forbox.o ppgrid.forbox.o pmgrid.forbox.o constituents.forbox.o radconstants.forbox.o physconst.forbox.o cam_history.forbox.o units.forbox.o ref_pres.forbox.o phys_control.forbox.o rad_constituents.forbox.o mo_constants.forbox.o chem_mods.forbox.o mo_tracname.forbox.o gffgch.o wv_saturation.o error_function.o  module_data_mosaic_cloud.o   modal_aero_data.o modal_aero_rename.o modal_aero_calcsize.o modal_aero_gasaerexch.o modal_aero_newnuc.o modal_aero_coag.o module_mosaic_support.o infnan.o module_data_mosaic_aero.o module_data_mosaic_kind.o module_data_mosaic_constants.o module_data_mosaic_main.o module_data_mosaic_asect.o module_print_aer.o ASTEM.o module_data_mosaic_gas.o module_mosaic_ext.o module_mosaic_lsode.o mosaic_box.25.o modal_aero_amicphys.o module_mosaic_init.o module_mosaic_cam_init.o modal_aero_wateruptake.o modal_aero_initialize_data.o gaschem_simple.o cloudchem_simple.o  driver.o main.o 
+
+unset verbose

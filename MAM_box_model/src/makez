@@ -1,0 +1,32 @@
+# makez
+set verbose
+
+set cppflags = ` cut -c12- cambox_config.cpp.in `
+echo "cppflags =" $cppflags
+#unset verbose
+#exit
+
+/bin/rm dd.x
+
+/bin/rm modal_aero_amicphys.f90 modal_aero_amicphys.mod modal_aero_amicphys.o 
+
+ cpp $cppflags modal_aero_amicphys.F90 modal_aero_amicphys.f90 
+
+ pgf90     -c -g  -C -Ktrap=fp  modal_aero_amicphys.f90
+
+/bin/rm driver.f90 driver.mod driver.o 
+
+ cpp $cppflags driver.F90 driver.f90 
+
+ pgf90     -c -g  -C -Ktrap=fp  driver.f90
+
+/bin/rm main.f90 main.mod main.o 
+
+ cpp $cppflags main.F90 main.f90 
+
+ pgf90   -c -g  -C -Ktrap=fp  main.f90
+
+# this is for ff11b version
+pgf90	 -o dd.x -g  -C -Ktrap=fp   shr_kind_mod.o shr_const_mod.o cam_logfile.o spmd_utils.o abortutils.o cam_abortutils.o ppgrid.o pmgrid.o constituents.o radconstants.o physconst.o cam_history.o units.o ref_pres.o physics_buffer.o physics_types.o phys_control.o mo_constants.o chem_mods.o mo_tracname.o mo_chem_utls.o gffgch.o wv_saturation.o error_function.o shr_spfn_mod.o infnan.o seasalt_model.o time_manager.o aerodep_flx.o modal_aero_convproc.o modal_aero_deposition.o  modal_aero_data.o rad_constituents.o modal_aero_rename.o modal_aero_calcsize.o modal_aero_gasaerexch.o modal_aero_newnuc.o modal_aero_coag.o modal_aero_amicphys.o modal_aero_wateruptake.o modal_aero_initialize_data.o  gaschem_simple.o cloudchem_simple.o driver.o main.o
+
+unset verbose
