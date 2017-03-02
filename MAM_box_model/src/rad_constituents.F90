@@ -268,7 +268,7 @@ m_loop: do m = 1, ntot_amode
 
 !-------------------------------------------------------------------------------
 !-------------------------------------------------------------------------------
-      subroutine rad_cnst_get_info_v2( itmpa, nmodes )
+      subroutine rad_cnst_get_info_v2( itmpa, nmodes)
 
       integer :: itmpa
       integer, optional :: nmodes
@@ -287,7 +287,7 @@ m_loop: do m = 1, ntot_amode
 
       integer :: itmpa
       integer :: n
-      integer, optional :: nspec
+      integer :: nspec
 
       character(len=120) :: errmsg
 
@@ -298,7 +298,8 @@ m_loop: do m = 1, ntot_amode
 
 ! nspec provided here is used by routines that are never active in the cambox test driver
 !    so this is just needed for compiling and linking
-      if ( present( nspec   ) ) nspec = nspec_amode(n)
+!!      if ( present( nspec   ) ) 
+      nspec = nspec_amode(n)
 
       return
       end subroutine rad_cnst_get_info_v3

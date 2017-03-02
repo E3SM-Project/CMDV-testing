@@ -1,8 +1,9 @@
 #For INTEL Compiler
-FC = ifort
+FC = gfortran
 LDFLAGS = 	
 LDLIBS = 
-FCFLAGS = -g -traceback  -O0 -fpe0 -check  all -check noarg_temp_created -ftrapuv
+FCFLAGS = -g -fno-range-check
+#-traceback  -O0 -fpe0 -check  all -check noarg_temp_created -ftrapuv
 CPP = cpp
 EXE = dd.x
 

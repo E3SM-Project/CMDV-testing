@@ -24,13 +24,13 @@ include ./cambox_config.cpp.in
 	$(CPP) $(CPPFLAGS) $*.F $*.f ;  $(FC) -c $(FCFLAGS) $*.f
 
 .F90.o:
-	$(RM) $*.mod ; $(CPP) $(CPPFLAGS) $*.F90 $*.f90 ;  $(FC) -c $(FCFLAGS) $*.f90
+	$(FC) $(CPPFLAGS) -c $(FCFLAGS) $*.F90
 
 .F90.f90:
-	$(RM) $*.mod ; $(CPP) $(CPPFLAGS) $*.F90 $*.f90
+	$(RM) $*.mod ; $(CPP) $(CPPFLAGS) $*.F90 
 
 .f90.o:
-	$(RM) $*.mod ; $(CPP) $(CPPFLAGS) $*.F90 $*.f90 ;  $(FC) -c $(FCFLAGS) $*.f90
+	$(RM) $*.mod ; $(CPP) $(CPPFLAGS) $*.F90 ;  $(FC) -c $(FCFLAGS) $*.f90
 
 #
 # Object lists...
