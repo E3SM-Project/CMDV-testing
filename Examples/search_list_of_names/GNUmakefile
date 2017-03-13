@@ -19,7 +19,7 @@ ifneq ($(UNAME),Windows)
 	TEST_DIR=$(TOP_DIR)/tests
 else
 	# When using CYGWIN, then relative paths have to be used.
-	PFUNIT := ../../../pfunit
+	PFUNIT := ../../../pFUnit
 	TOP_DIR := $(shell pwd)
 	SRC_DIR=src
 	TEST_DIR=tests
