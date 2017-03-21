@@ -1317,6 +1317,7 @@
       type(physics_buffer_desc),   pointer       :: pbuf(:)     ! physics buffer
 
       real(r8) :: scr(30)
+      integer, parameter :: tempunit=29
 
       lchnk = 1
 
@@ -1461,10 +1462,10 @@ main_time_loop: &
          write(lun,'(a,i7)') 'calcsize tend = 0 for all species'
       end if
 
-      open(29,file="temp")
+      open(tempunit,file="temp0")
 
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') 'cambox_do_run doing calcsize, istep=', istep
       if (itmpb > 0) then
          write(lun,'(a,i7)') 'calcsize tend > 0 for nspecies =', itmpb
@@ -1483,26 +1484,36 @@ main_time_loop: &
          'k, accum num, so4, dgncur_a, same for aitken', trim(tmpch80)
       do k = 1, pver
          if(TESTING==0) then
-            write(29,*)q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
+            write(tempunit,*)q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
                  q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
          else
-            read(29,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
-            if((q(i,k,l_num_a1)==scr(1)).and. &
+            read(tempunit,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
+            if(.not.((q(i,k,l_num_a1)==scr(1)).and. &
                  & (q(i,k,l_so4_a1)==scr(2)).and. &
                  & (dgncur_a(i,k,nacc)==scr(3)).and. &
                  & (q(i,k,l_num_a2)==scr(4)).and. &
                  & (q(i,k,l_so4_a2)==scr(5)).and. &
-                 & (dgncur_a(i,k,nait)==scr(6)))write(*,*)'test fine'
+                 & (dgncur_a(i,k,nait)==scr(6)))) then
+               write(*,*)q(i,k,l_num_a1),scr(1), &
+                  q(i,k,l_so4_a1),scr(2), &
+                  dgncur_a(i,k,nacc),scr(3), &
+                  q(i,k,l_num_a2),scr(4), &
+                  q(i,k,l_so4_a2),scr(5), &
+                  dgncur_a(i,k,nait),scr(6) 
+               call endrun( 'Stop at first' )
+            end if
+
          endif
+!!$      write(lun,'( i4,1p,4(2x,3e12.4))') k, &
+!!$         q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, dgncur_a(i,k,nacc)*1.0e9, &
+!!$         q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, dgncur_a(i,k,nait)*1.0e9
+
       write(lun,'( i4,1p,4(2x,3e12.4))') k, &
-         q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, dgncur_a(i,k,nacc)*1.0e9, &
-         q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, dgncur_a(i,k,nait)*1.0e9
+         q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
+         q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
 
       end do
       end do ! i
-      close(30)
-      call endrun( 'Stop right here' )
-
 !
 ! watruptake
 !
@@ -1588,7 +1599,7 @@ main_time_loop: &
       end if
 
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
       if (itmpb > 0) then
          write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
@@ -1608,6 +1619,29 @@ main_time_loop: &
          trim(tmpch80)
 
       do k = 1, pver
+         if(TESTING==0)then
+            write(tempunit,*)q(i,k,l_num_a1),&
+                 q(i,k,l_so4_a1),qaerwat(i,k,nacc), & 
+                 dgncur_a(i,k,nacc), dgncur_awet(i,k,nacc), &
+                 wetdens(i,k,nacc)
+         else
+            read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
+            if(.not.((q(i,k,l_num_a1)==scr(1)).and.&
+                 (q(i,k,l_so4_a1)==scr(2)).and.&
+                 (qaerwat(i,k,nacc)==scr(3)).and.& 
+                 (dgncur_a(i,k,nacc)==scr(4)).and.&
+                 (dgncur_awet(i,k,nacc)==scr(5)).and. &
+                 (wetdens(i,k,nacc)==scr(6))))then
+               write(*,*)q(i,k,l_num_a1),scr(1),&
+                    q(i,k,l_so4_a1),scr(2),&
+                    qaerwat(i,k,nacc),scr(3),& 
+                    dgncur_a(i,k,nacc),scr(4),&
+                    dgncur_awet(i,k,nacc),scr(5), &
+                    wetdens(i,k,nacc),scr(6)
+               call endrun( 'Stop at second' )
+            end if
+         end if
+         
       write(lun,'( i4,1p,4(2x,3e12.4))') k, &
          q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, qaerwat(i,k,nacc)*tmpb, &
          dgncur_a(i,k,nacc)*1.0e9, dgncur_awet(i,k,nacc)*1.0e9, &
@@ -1625,7 +1659,6 @@ main_time_loop: &
       end do
 
       end do ! i
-
 
 !
 ! switch from q & qqcw to vmr and vmrcw
@@ -1693,7 +1726,7 @@ main_time_loop: &
       h2so4_aft_gaschem(1:ncol,:) = vmr(1:ncol,:,lmz_h2so4g)
 
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') 'cambox_do_run doing gaschem simple, istep=', istep
       if (iwrite3x_units_flagaa >= 10) then
          tmpch80 = '(nmol/mol)'
@@ -1706,8 +1739,19 @@ main_time_loop: &
       write(lun,'( i4,1p,6(2x,2e12.4))') k, &
          vmr_svaa(i,k,lmz_so2g)*1.0e9, vmr(i,k,lmz_so2g)*1.0e9, &
          vmr_svaa(i,k,lmz_h2so4g)*1.0e9, vmr(i,k,lmz_h2so4g)*1.0e9
+      if(TESTING==0)then
+         write(tempunit,*)vmr_svaa(i,k,lmz_so2g), vmr(i,k,lmz_so2g), &
+         vmr_svaa(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g)
+      else
+         read(tempunit,*)scr(1),scr(2),scr(3),scr(4)
+         if(.not.((vmr_svaa(i,k,lmz_so2g)==scr(1)).and.&
+              (vmr(i,k,lmz_so2g)==scr(2)).and.&
+              (vmr_svaa(i,k,lmz_h2so4g)==scr(3)).and.&
+              (vmr(i,k,lmz_h2so4g)==scr(4))))call endrun('stop at third')
+      end if
       end do
       end do ! i
+
 
       call dump4x( 'gasch', ncol, nstep, vmr_svaa, vmrcw_svaa, vmr, vmrcw )
 
@@ -1729,7 +1773,7 @@ main_time_loop: &
          vmr,      vmrcw,    cld_ncol             )
 
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') &
          'cambox_do_run doing cloudchem simple, istep=', istep
 
@@ -1746,6 +1790,24 @@ main_time_loop: &
          vmr_svbb(i,k,lmz_h2so4g)*1.0e9,   vmr(i,k,lmz_h2so4g)*1.0e9, &
          vmrcw_svbb(i,k,lmz_so4_a1)*1.0e9, vmrcw(i,k,lmz_so4_a1)*1.0e9, &
          vmrcw_svbb(i,k,lmz_so4_a2)*1.0e9, vmrcw(i,k,lmz_so4_a2)*1.0e9
+      if(TESTING==0) then 
+         write(tempunit,*)vmr_svbb(i,k,lmz_so2g), vmr(i,k,lmz_so2g), &
+         vmr_svbb(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g), &
+         vmrcw_svbb(i,k,lmz_so4_a1),&
+         vmrcw(i,k,lmz_so4_a1), &
+         vmrcw_svbb(i,k,lmz_so4_a2), vmrcw(i,k,lmz_so4_a2)
+      else
+         read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6),scr(7),scr(8)
+         if(.not.((vmr_svbb(i,k,lmz_so2g)==scr(1)).and.&
+              (vmr(i,k,lmz_so2g)==scr(2)).and.&
+              (vmr_svbb(i,k,lmz_h2so4g)==scr(3)).and.&
+              (vmr(i,k,lmz_h2so4g)==scr(4)).and.&
+              (vmrcw_svbb(i,k,lmz_so4_a1)==scr(5)).and.&
+              (vmrcw(i,k,lmz_so4_a1)==scr(6)).and.&
+              (vmrcw_svbb(i,k,lmz_so4_a2)==scr(7)).and.&
+              (vmrcw(i,k,lmz_so4_a2)==scr(8)))) call endrun("stop at 4a")
+      end if
+
       end do
       if (lmz_nh3g > 0) then
       write(lun,'(2a)') &
@@ -1755,6 +1817,21 @@ main_time_loop: &
          vmr_svbb(i,k,lmz_nh3g)*1.0e9,     vmr(i,k,lmz_nh3g)*1.0e9, &
          vmrcw_svbb(i,k,lmz_nh4_a1)*1.0e9, vmrcw(i,k,lmz_nh4_a1)*1.0e9, &
          vmrcw_svbb(i,k,lmz_nh4_a2)*1.0e9, vmrcw(i,k,lmz_nh4_a2)*1.0e9
+      if(TESTING==0)then
+         write(tempunit,*) &
+         vmr_svbb(i,k,lmz_nh3g),     vmr(i,k,lmz_nh3g), &
+         vmrcw_svbb(i,k,lmz_nh4_a1), vmrcw(i,k,lmz_nh4_a1), &
+         vmrcw_svbb(i,k,lmz_nh4_a2), vmrcw(i,k,lmz_nh4_a2)
+      else
+         read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
+         if(.not.((vmr_svbb(i,k,lmz_nh3g)==scr(1)).and.&
+         (vmr(i,k,lmz_nh3g)==scr(2)).and.&
+         (vmrcw_svbb(i,k,lmz_nh4_a1)==scr(3)).and.& 
+         (vmrcw(i,k,lmz_nh4_a1)==scr(4)).and.&
+         (vmrcw_svbb(i,k,lmz_nh4_a2)==scr(5)).and.& 
+         (vmrcw(i,k,lmz_nh4_a2)==scr(6))))call endrun("stop at 4b")
+
+      end if
       end do
       end if
 
@@ -1827,7 +1904,7 @@ main_time_loop: &
 
       lun = 6
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') 'cambox_do_run doing gasaerexch, istep=', istep
       if (iwrite3x_units_flagaa >= 10) then
          tmpch80 = '  (nmol/mol)'
@@ -1842,8 +1919,23 @@ main_time_loop: &
          vmr_svcc(i,k,lmz_h2so4g)*1.0e9, vmr(i,k,lmz_h2so4g)*1.0e9, &
          vmr_svcc(i,k,lmz_so4_a1)*1.0e9, vmr(i,k,lmz_so4_a1)*1.0e9, &
          vmr_svcc(i,k,lmz_so4_a2)*1.0e9, vmr(i,k,lmz_so4_a2)*1.0e9
+      if(TESTING==0)then
+         write(tempunit,*)&
+              vmr_svcc(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g), &
+              vmr_svcc(i,k,lmz_so4_a1), vmr(i,k,lmz_so4_a1), &
+              vmr_svcc(i,k,lmz_so4_a2), vmr(i,k,lmz_so4_a2)
+      else
+         read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
+         if(.not.((vmr_svcc(i,k,lmz_h2so4g)==scr(1)).and.&
+         (vmr(i,k,lmz_h2so4g)==scr(2)).and.&
+         (vmr_svcc(i,k,lmz_so4_a1)==scr(3)).and.&
+         (vmr(i,k,lmz_so4_a1)==scr(4)).and.&
+         (vmr_svcc(i,k,lmz_so4_a2)==scr(5)).and.&
+         (vmr(i,k,lmz_so4_a2)==scr(6))))call endrun("stop at 5")
+      end if
       end do
       end do ! i
+
 
       i = 1 ; k = pver ; lun = 82
       tmpveca = 0.0_r8
@@ -1892,7 +1984,7 @@ main_time_loop: &
       write(lun,'(/a,i8)') 'cambox_do_run step done, istep=', istep
 
       do i = 1, ncol
-      lun = 29 + i
+      lun = tempunit + i
       write(lun,'(/a,i8)') 'cambox_do_run step done, istep=', istep
 
       do k = 1, pver

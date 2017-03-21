@@ -108,11 +108,6 @@ OBJ9 = \
 	driver.o  \
 	main.o
 
-#-----------
-# pFUnit
-#----------
-SUT: $(OBJ1) $(OBJ2)
-
 #-----------------------------------------------------------------------------
 # WARNING: Don't touch anything below this line unless you exactly know it !!!
 #-----------------------------------------------------------------------------
@@ -146,5 +141,4 @@ clean:
 
 cleanmod:
 	/bin/rm  *.x  *.mod  module*.o  module*.f90  module*.f
-
 
