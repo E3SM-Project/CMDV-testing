@@ -1316,6 +1316,7 @@
       type(physics_ptend)                        :: ptend       ! indivdual parameterization tendencies
       type(physics_buffer_desc),   pointer       :: pbuf(:)     ! physics buffer
 
+      real(r8) :: scr(30)
 
       lchnk = 1
 
@@ -1460,6 +1461,8 @@ main_time_loop: &
          write(lun,'(a,i7)') 'calcsize tend = 0 for all species'
       end if
 
+      open(29,file="temp")
+
       do i = 1, ncol
       lun = 29 + i
       write(lun,'(/a,i8)') 'cambox_do_run doing calcsize, istep=', istep
@@ -1475,15 +1478,30 @@ main_time_loop: &
          tmpch80 = '  (#/mg,  ug/kg,  nm)'
          tmpa = 1.0e9
       end if
+      
       write(lun,'( 2a)') &
          'k, accum num, so4, dgncur_a, same for aitken', trim(tmpch80)
       do k = 1, pver
+         if(TESTING==0) then
+            write(29,*)q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
+                 q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
+         else
+            read(29,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
+            if((q(i,k,l_num_a1)==scr(1)).and. &
+                 & (q(i,k,l_so4_a1)==scr(2)).and. &
+                 & (dgncur_a(i,k,nacc)==scr(3)).and. &
+                 & (q(i,k,l_num_a2)==scr(4)).and. &
+                 & (q(i,k,l_so4_a2)==scr(5)).and. &
+                 & (dgncur_a(i,k,nait)==scr(6)))write(*,*)'test fine'
+         endif
       write(lun,'( i4,1p,4(2x,3e12.4))') k, &
          q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, dgncur_a(i,k,nacc)*1.0e9, &
          q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, dgncur_a(i,k,nait)*1.0e9
+
       end do
       end do ! i
-
+      close(30)
+      call endrun( 'Stop right here' )
 
 !
 ! watruptake

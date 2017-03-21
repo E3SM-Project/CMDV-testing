@@ -52,7 +52,7 @@ mode =    1 = "accum           "
     spec, spectype    6      7="seasalt   "
     spec, massptr     6     15="ncl_a1  "
     spec, massptrcw   6     15="ncl_c1  "
- 
+
 mode =    2 = "aitken          "
     nspec                            3
     mprognum, mdiagnum, mprogsfc     1     0     0
@@ -68,7 +68,7 @@ mode =    2 = "aitken          "
     spec, spectype    3      7="seasalt   "
     spec, massptr     3     20="ncl_a2  "
     spec, massptrcw   3     20="ncl_c2  "
- 
+
 mode =    3 = "coarse          "
     nspec                            3
     mprognum, mdiagnum, mprogsfc     1     0     0
@@ -84,7 +84,7 @@ mode =    3 = "coarse          "
     spec, spectype    3      1="sulfate   "
     spec, massptr     3     24="so4_a3  "
     spec, massptrcw   3     24="so4_c3  "
- 
+
 mode =    4 = "primary_carbon  "
     nspec                            2
     mprognum, mdiagnum, mprogsfc     1     0     0
@@ -97,7 +97,7 @@ mode =    4 = "primary_carbon  "
     spec, spectype    2      6="black-c   "
     spec, massptr     2     27="bc_a4   "
     spec, massptrcw   2     27="bc_c4   "
- 
+
 
 
 *** init_aer_modes mode definitions
@@ -269,7 +269,7 @@ pair  1     mode  2 ---> mode  1
      spec 19=soa_c2           ---> spec 13=soa_c1          
      spec 20=ncl_a2           ---> spec 15=ncl_a1          
      spec 20=ncl_c2           ---> spec 15=ncl_c1          
- 
+
 calcsize addfld - num_a1_sfcsiz1                                                     
 calcsize addfld - num_a1_sfcsiz2                                                     
 calcsize addfld - num_c1_sfcsiz1                                                     
