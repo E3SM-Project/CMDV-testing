@@ -1316,9 +1316,11 @@
       type(physics_ptend)                        :: ptend       ! indivdual parameterization tendencies
       type(physics_buffer_desc),   pointer       :: pbuf(:)     ! physics buffer
 
-      real(r8) :: scr(30)
+      real(r8) :: scr(30),tol
       integer, parameter :: tempunit=29
-
+      logical :: match=.true.
+      
+      tol=1.0e-10
       lchnk = 1
 
       cld_ncol(1:ncol,:) = cld(1:ncol,:)
@@ -1488,12 +1490,14 @@ main_time_loop: &
                  q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
          else
             read(tempunit,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
-            if(.not.((q(i,k,l_num_a1)==scr(1)).and. &
-                 & (q(i,k,l_so4_a1)==scr(2)).and. &
-                 & (dgncur_a(i,k,nacc)==scr(3)).and. &
-                 & (q(i,k,l_num_a2)==scr(4)).and. &
-                 & (q(i,k,l_so4_a2)==scr(5)).and. &
-                 & (dgncur_a(i,k,nait)==scr(6)))) then
+            match=.true.
+            match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
+            match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
+            match = match.and.(abs(dgncur_a(i,k,nacc)-scr(3))<tol)
+            match = match.and.(abs(q(i,k,l_num_a2)-scr(4))<tol)
+            match = match.and.(abs(q(i,k,l_so4_a2)-scr(5))<tol)
+            match = match.and.(abs(dgncur_a(i,k,nait)-scr(6))<tol)
+            if(.not.match) then
                write(*,*)q(i,k,l_num_a1),scr(1), &
                   q(i,k,l_so4_a1),scr(2), &
                   dgncur_a(i,k,nacc),scr(3), &
@@ -1626,12 +1630,14 @@ main_time_loop: &
                  wetdens(i,k,nacc)
          else
             read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
-            if(.not.((q(i,k,l_num_a1)==scr(1)).and.&
-                 (q(i,k,l_so4_a1)==scr(2)).and.&
-                 (qaerwat(i,k,nacc)==scr(3)).and.& 
-                 (dgncur_a(i,k,nacc)==scr(4)).and.&
-                 (dgncur_awet(i,k,nacc)==scr(5)).and. &
-                 (wetdens(i,k,nacc)==scr(6))))then
+            match=.true.
+            match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
+            match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
+            match = match.and.(abs(qaerwat(i,k,nacc)-scr(3))<tol)
+            match = match.and.(abs(dgncur_a(i,k,nacc)-scr(4))<tol)
+            match = match.and.(abs(dgncur_awet(i,k,nacc)-scr(5))<tol)
+            match = match.and.(abs(wetdens(i,k,nacc)-scr(6))<tol)
+            if(.not.match) then
                write(*,*)q(i,k,l_num_a1),scr(1),&
                     q(i,k,l_so4_a1),scr(2),&
                     qaerwat(i,k,nacc),scr(3),& 
@@ -1744,10 +1750,12 @@ main_time_loop: &
          vmr_svaa(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g)
       else
          read(tempunit,*)scr(1),scr(2),scr(3),scr(4)
-         if(.not.((vmr_svaa(i,k,lmz_so2g)==scr(1)).and.&
-              (vmr(i,k,lmz_so2g)==scr(2)).and.&
-              (vmr_svaa(i,k,lmz_h2so4g)==scr(3)).and.&
-              (vmr(i,k,lmz_h2so4g)==scr(4))))call endrun('stop at third')
+            match=.true.
+            match = match.and.(abs(vmr_svaa(i,k,lmz_so2g)-scr(1))<tol)
+            match = match.and.(abs(vmr(i,k,lmz_so2g)-scr(2))<tol)
+            match = match.and.(abs(vmr_svaa(i,k,lmz_h2so4g)-scr(3))<tol)
+            match = match.and.(abs(vmr(i,k,lmz_h2so4g)-scr(4))<tol)
+            if(.not.match) call endrun('stop at third')
       end if
       end do
       end do ! i
@@ -1798,41 +1806,46 @@ main_time_loop: &
          vmrcw_svbb(i,k,lmz_so4_a2), vmrcw(i,k,lmz_so4_a2)
       else
          read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6),scr(7),scr(8)
-         if(.not.((vmr_svbb(i,k,lmz_so2g)==scr(1)).and.&
-              (vmr(i,k,lmz_so2g)==scr(2)).and.&
-              (vmr_svbb(i,k,lmz_h2so4g)==scr(3)).and.&
-              (vmr(i,k,lmz_h2so4g)==scr(4)).and.&
-              (vmrcw_svbb(i,k,lmz_so4_a1)==scr(5)).and.&
-              (vmrcw(i,k,lmz_so4_a1)==scr(6)).and.&
-              (vmrcw_svbb(i,k,lmz_so4_a2)==scr(7)).and.&
-              (vmrcw(i,k,lmz_so4_a2)==scr(8)))) call endrun("stop at 4a")
-      end if
+            match=.true.
+            match = match.and.(abs(vmr_svbb(i,k,lmz_so2g)-scr(1))<tol)
+            match = match.and.(abs(vmr(i,k,lmz_so2g)-scr(2))<tol)
+            match = match.and.(abs(vmr_svbb(i,k,lmz_h2so4g)-scr(3))<tol)
+            match = match.and.(abs(vmr(i,k,lmz_h2so4g)-scr(4))<tol)
+            match = match.and.(abs(vmrcw_svbb(i,k,lmz_so4_a1)-scr(5))<tol)
+            match = match.and.(abs(vmrcw(i,k,lmz_so4_a1)-scr(6))<tol)
+            match = match.and.(abs(vmrcw_svbb(i,k,lmz_so4_a2)-scr(7))<tol)
+            match = match.and.(abs(vmrcw(i,k,lmz_so4_a2)-scr(8))<tol)
+
+            if(.not.match)call endrun("stop at 4a")
+         end if
 
       end do
       if (lmz_nh3g > 0) then
-      write(lun,'(2a)') &
-         'k, old & new nh3, ... nh4_c1, ... nh4_c2  ', trim(tmpch80)
-      do k = 1, pver
-      write(lun,'( i4,1p,6(2x,2e12.4))') k, &
-         vmr_svbb(i,k,lmz_nh3g)*1.0e9,     vmr(i,k,lmz_nh3g)*1.0e9, &
-         vmrcw_svbb(i,k,lmz_nh4_a1)*1.0e9, vmrcw(i,k,lmz_nh4_a1)*1.0e9, &
-         vmrcw_svbb(i,k,lmz_nh4_a2)*1.0e9, vmrcw(i,k,lmz_nh4_a2)*1.0e9
-      if(TESTING==0)then
-         write(tempunit,*) &
-         vmr_svbb(i,k,lmz_nh3g),     vmr(i,k,lmz_nh3g), &
-         vmrcw_svbb(i,k,lmz_nh4_a1), vmrcw(i,k,lmz_nh4_a1), &
-         vmrcw_svbb(i,k,lmz_nh4_a2), vmrcw(i,k,lmz_nh4_a2)
-      else
-         read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
-         if(.not.((vmr_svbb(i,k,lmz_nh3g)==scr(1)).and.&
-         (vmr(i,k,lmz_nh3g)==scr(2)).and.&
-         (vmrcw_svbb(i,k,lmz_nh4_a1)==scr(3)).and.& 
-         (vmrcw(i,k,lmz_nh4_a1)==scr(4)).and.&
-         (vmrcw_svbb(i,k,lmz_nh4_a2)==scr(5)).and.& 
-         (vmrcw(i,k,lmz_nh4_a2)==scr(6))))call endrun("stop at 4b")
-
-      end if
-      end do
+         write(lun,'(2a)') &
+              'k, old & new nh3, ... nh4_c1, ... nh4_c2  ', trim(tmpch80)
+         do k = 1, pver
+            write(lun,'( i4,1p,6(2x,2e12.4))') k, &
+                 vmr_svbb(i,k,lmz_nh3g)*1.0e9,     vmr(i,k,lmz_nh3g)*1.0e9, &
+                 vmrcw_svbb(i,k,lmz_nh4_a1)*1.0e9, vmrcw(i,k,lmz_nh4_a1)*1.0e9, &
+                 vmrcw_svbb(i,k,lmz_nh4_a2)*1.0e9, vmrcw(i,k,lmz_nh4_a2)*1.0e9
+            if(TESTING==0)then
+               write(tempunit,*) &
+                    vmr_svbb(i,k,lmz_nh3g),     vmr(i,k,lmz_nh3g), &
+                    vmrcw_svbb(i,k,lmz_nh4_a1), vmrcw(i,k,lmz_nh4_a1), &
+                    vmrcw_svbb(i,k,lmz_nh4_a2), vmrcw(i,k,lmz_nh4_a2)
+            else
+               read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
+               match=.true.
+               match = match.and.(abs(vmr_svbb(i,k,lmz_nh3g)-scr(1))<tol)
+               match = match.and.(abs(vmr(i,k,lmz_nh3g)-scr(2))<tol)
+               match = match.and.(abs(vmrcw_svbb(i,k,lmz_nh4_a1)-scr(3))<tol)
+               match = match.and.(abs(vmrcw(i,k,lmz_nh4_a1)-scr(4))<tol)
+               match = match.and.(abs(vmrcw_svbb(i,k,lmz_nh4_a2)-scr(5))<tol)
+               match = match.and.(abs(vmrcw(i,k,lmz_nh4_a2)-scr(6))<tol)
+               
+               if(.not.match)call endrun("stop at 4b")
+            end if
+         end do
       end if
 
       end do ! i
