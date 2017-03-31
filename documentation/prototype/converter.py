@@ -22,6 +22,7 @@ def print_notebook(nb):
     numcells = len(nb.cells)
     for c in range(numcells):
         output = "%d: %s" % (c, str(nb.cells[c]))
+        output = output.encode('ascii', 'ignore')
         if len(output) > 160:
             output = output[:157] + "..."
         print(output)
@@ -39,7 +40,7 @@ class AddCitationsPreprocessor(Preprocessor):
         bibliography - The name of the BibTeX bibliography file (default
                        "ref.bib")
         csl          - The name of the Citation Style Language file (default
-                       "MWR.csl")
+                       "AJCC.csl")
         header       - The name of the bibliography section appended to the end
                        of the notebook (default "References")
 
@@ -53,7 +54,7 @@ class AddCitationsPreprocessor(Preprocessor):
     bibliography = Unicode(u'ref.bib',
                            help='Name of the BibTeX bibliography file',
                            config=True)
-    csl          = Unicode(u'MWR.csl',
+    csl          = Unicode(u'AJCC.csl',
                            help='Name of the Citation Style Language file',
                            config=True)
     header       = Unicode(u'References',
@@ -114,14 +115,13 @@ class AddCitationsPreprocessor(Preprocessor):
         # Run the markdown text through pandoc with the pandoc-citeproc filter
         filters = ['pandoc-citeproc']
         extra_args = ['--bibliography="%s"' % self.bibliography,
-                      '--reference-links',
                       '--csl="%s"' % self.csl]
         body = pypandoc.convert_text(body,
                                      'html',
                                      'md',
                                      filters=filters,
                                      extra_args=extra_args)
-        body = body.encode('ascii', 'ignore').split('\n')
+        body = body.split('\n')
 
         # Extract the citation substitutions and the references section from the
         # resulting HTML text
@@ -130,7 +130,7 @@ class AddCitationsPreprocessor(Preprocessor):
         if num_citations > 0:
             for i in range(num_citations):
                 substitutions[citations[i]] = body[i][26:-11]
-            references = "\n".join(body[num_citations:])
+            references = "\n<p></p>\n".join(body[num_citations:])
         else:
             references = ""
         return (substitutions, references)
