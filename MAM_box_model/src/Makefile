@@ -101,6 +101,7 @@ OBJ5 = \
 	modal_aero_amicphys.o \
 	modal_aero_wateruptake.o \
 	modal_aero_initialize_data.o \
+	driver_utilities.o \
 
 OBJ9 = \
 	gaschem_simple.o  \
