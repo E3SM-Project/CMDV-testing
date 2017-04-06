@@ -121,7 +121,6 @@ class AddCitationsPreprocessor(Preprocessor):
                 else:
                     end = start + 1
                 start = source.find('@',end)
-        print "citations =", citations
         return list(citations)
 
     """
