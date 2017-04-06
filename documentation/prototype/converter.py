@@ -80,20 +80,55 @@ class AddCitationsPreprocessor(Preprocessor):
                 new_list.append(cell)
         nb.cells = new_list
 
+    def _is_index_in_ranges(self, index, ranges):
+        """
+        Return True if the given index in with any of the given ranges
+        """
+        for range in ranges:
+            if index >= range[0] and index < range[1]:
+                return True
+        return False
+
     def _extract_citations(self, nb):
         """
         Return a list of all the citations in the given notebook, in the order
         in which they first appear. Each citation will appear only once
         """
-        citations = set()
+        citations = []
         for cell in nb.cells:
+            ranges = []
             source = cell.source
-            start = source.find('[@',0)
+            start = source.find('@',0)
+            end = 0
             while start >= 0:
-                end = source.find(']',start) + 1
-                citations.add(source[start:end])
-                start = source.find('[@',end)
+                if start == 0 or source[start-1] in ['[',' ','-']:
+                    index = source.rfind('[',end,start)
+                    if not (index == -1 or self._is_index_in_ranges(index, ranges)):
+                        start = index
+                        end = source.find(']',start) + 1
+                    else:
+                        end1 = source.find(' ', start)
+                        end2 = source.find(',', start)
+                        end3 = source.find('.', start)
+                        if end1 == -1: end1 = len(source)
+                        if end2 == -1: end2 = len(source)
+                        if end3 == -1: end3 = len(source)
+                        end = min(end1, end2, end3)
+                    citation = source[start:end]
+                    if citation not in citations:
+                        citations.append(citation)
+                    ranges.append((start,end))
+                else:
+                    end = start + 1
+                start = source.find('@',end)
+        print "citations =", citations
         return list(citations)
+
+    """
+    I am supposed to support citations [see @Haidvogel1997, pp. 509--511] with
+    both a prefix and suffix. And finally, a double citation with prefixes and
+    suffixes [see @Boer, p. 12,780; also @Washington1986, ch. 2].
+    """
 
     def _process_citations(self, nb):
         """
@@ -141,9 +176,14 @@ class AddCitationsPreprocessor(Preprocessor):
         _process_citations() method, substitute the formatted citation text for
         every instance of a citation key found in the notebook.
         """
+        keys = substitutions.keys()
+        # As we loop over the substitution keys, we want to process [@key]
+        # before @key, which sorting and reversing will ensure
+        keys.sort()
+        keys.reverse()
         for cell in nb.cells:
             source = cell.source
-            for old in substitutions.keys():
+            for old in keys:
                 new = substitutions[old]
                 source = source.replace(old, new)
             cell.source = source
