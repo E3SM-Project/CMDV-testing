@@ -77,7 +77,10 @@ contains
     call cambox_do_run( &
          ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
          q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens, success        )
-    if(success)print*,'the test passed'
+    if(TESTING==1) then
+       if(success)print*,'the test passed'
+    end if
+
   end subroutine cambox_main
   
   !-------------------------------------------------------------------------------
@@ -334,7 +337,7 @@ contains
        write(lun,'(a,i7)') 'calcsize tend = 0 for all species'
     end if
     
-    open(tempunit,file="test5")
+    open(tempunit,file="test5Res")
     
     do i = 1, ncol
        lun = tempunit + i

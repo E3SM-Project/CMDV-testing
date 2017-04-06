@@ -7,7 +7,7 @@
 include ./cambox_config.make.in
 include ./cambox_config.cpp.in
 
-
+all: test1 test2 test3 test4 test5 
 
 #
 # Suffix rules...
@@ -102,12 +102,38 @@ OBJ5 = \
 	modal_aero_wateruptake.o \
 	modal_aero_initialize_data.o \
 	driver_utilities.o \
+	driver_init.o 
 
 OBJ9 = \
 	gaschem_simple.o  \
 	cloudchem_simple.o  \
-	driver.o  \
+	driverT1.o  \
 	main.o
+
+OBJ10 = \
+	gaschem_simple.o  \
+	cloudchem_simple.o  \
+	driverT2.o  \
+	main.o
+
+OBJ11 = \
+	gaschem_simple.o  \
+	cloudchem_simple.o  \
+	driverT3.o  \
+	main.o
+
+OBJ12 = \
+	gaschem_simple.o  \
+	cloudchem_simple.o  \
+	driverT4.o  \
+	main.o
+
+OBJ13 = \
+	gaschem_simple.o  \
+	cloudchem_simple.o  \
+	driverT5.o  \
+	main.o
+
 
 #-----------------------------------------------------------------------------
 # WARNING: Don't touch anything below this line unless you exactly know it !!!
@@ -117,8 +143,20 @@ OBJ9 = \
 #
 # Dependancies...
 #
-$(EXE): $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ9) $(CONFIGINFO)
+test1 : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ9) $(CONFIGINFO)
 	$(FC) -o $@ $(FCFLAGS) $(LDFLAGS) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ9) $(LDLIBS)
+
+test2 : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ10) $(CONFIGINFO)
+	$(FC) -o $@ $(FCFLAGS) $(LDFLAGS) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ10) $(LDLIBS)
+
+test3 : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ11) $(CONFIGINFO)
+	$(FC) -o $@ $(FCFLAGS) $(LDFLAGS) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ11) $(LDLIBS)
+
+test4 : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ12) $(CONFIGINFO)
+	$(FC) -o $@ $(FCFLAGS) $(LDFLAGS) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ12) $(LDLIBS)
+
+test5 : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ13) $(CONFIGINFO)
+	$(FC) -o $@ $(FCFLAGS) $(LDFLAGS) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ13) $(LDLIBS)
 
 
 $(OBJ1):  $(CONFIGINFO)
@@ -133,11 +171,19 @@ $(OBJ5):  $(OBJ4)
 
 $(OBJ9):  $(OBJ5)
 
+$(OBJ10):  $(OBJ5)
+
+$(OBJ11):  $(OBJ5)
+
+$(OBJ12):  $(OBJ5)
+
+$(OBJ13):  $(OBJ5)
+
 
 rad_constituents.o: modal_aero_data.o
 
 clean:
-	/bin/rm  *.x  *.o  *.f  *.f90  *.mod
+	/bin/rm  test1 test2 test3 test4 test5  *.o  *.f  *.f90  *.mod
 
 
 cleanmod:

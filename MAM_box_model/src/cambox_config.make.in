@@ -5,7 +5,7 @@ LDLIBS =
 FCFLAGS = -g -fno-range-check
 #-traceback  -O0 -fpe0 -check  all -check noarg_temp_created -ftrapuv
 CPP = cpp
-EXE = dd.x
+#EXE = test1 test2 test3 test4 test5 
 
 #For PGI Compiler
 #FC = pgf90	

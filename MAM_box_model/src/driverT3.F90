@@ -10,6 +10,7 @@ module driver
   
   integer, parameter :: lun_outfld = 90
   
+  
   ! in the multiple nbc/npoa code, the following are in modal_aero_data
   integer :: lptr_bca_a_amode(ntot_amode) = -999888777 
   integer :: lptr_poma_a_amode(ntot_amode) = -999888777 
@@ -110,7 +111,6 @@ contains
          mopt_h2so4_uptake,i_cldy_sameas_clear,&
          iwrite3x_species_flagaa, iwrite3x_units_flagaa, &
          iwrite4x_heading_flagbb,xopt_cloudf
-
     !     implicit none
     
     integer,  intent(in   ) :: ncol
@@ -337,7 +337,7 @@ contains
        write(lun,'(a,i7)') 'calcsize tend = 0 for all species'
     end if
     
-    open(tempunit,file="test1Res")
+    open(tempunit,file="test3Res")
     
     do i = 1, ncol
        lun = tempunit + i
@@ -357,279 +357,222 @@ contains
        
        write(lun,'( 2a)') &
             'k, accum num, so4, dgncur_a, same for aitken', trim(tmpch80)
+    end do ! i
+    !
+! watruptake
+!
+    lun = 6
+    write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
+    loffset = 0
+    iwaterup_flag = 1
+    aero_mmr_flag = .true.
+    h2o_mmr_flag = .true.
+    
+    dotend = .false.
+    dqdt = 0.0_r8
+    
+    ! *** old wateruptake interface ***
+    
+    !!ubroutine modal_aero_wateruptake_dr(          &
+    !!     lchnk, ncol,                             &
+    !!     h2ommr, t, pmid, cldn, raer,             &
+    !!     dgnum_a, dgnumwet, qaerwater, wetdensity )
+    !
+    !      call modal_aero_wateruptake_dr(          &
+    !      i_cldy_sameas_clear,                     &
+    !      lchnk, ncol,                             &
+    !      qv,     t, pmid, cld,  q,                &
+    !      dgncur_a, dgncur_awet, qaerwat, wetdens  )
+    
+    ! *** new wateruptake interface ***
+    
+    ! load state
+    state%lchnk = lchnk
+    state%ncol = ncol
+    state%t = t
+    state%pmid = pmid
+    state%pdel = pdel
+    state%q = q
+    ! load ptend
+    ptend%lq = dotend
+    ptend%q = dqdt
+    ! load pbuf
+    call load_pbuf( &
+         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
+         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
+    
+    ! call wateruptake
+    call modal_aero_wateruptake_dr( state, pbuf )
+    
+    ! unload ptend
+    dotend = ptend%lq
+    dqdt = ptend%q
+    ! unload pbuf
+    call unload_pbuf( &
+         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
+         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
+    
+    ! following line involving dotend and dqdt are no longer needed !
+    lun = 6
+    itmpb = 0
+    do l = 1, pcnst
+       itmpa = 0
+       if ( .not. dotend(l) ) cycle
        do k = 1, pver
-          if(TESTING==0) then
-             write(tempunit,*)q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
-                  q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
-          else
-             read(tempunit,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
-             match=.true.
-             match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
-             match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
-             match = match.and.(abs(dgncur_a(i,k,nacc)-scr(3))<tol)
-             match = match.and.(abs(q(i,k,l_num_a2)-scr(4))<tol)
-             match = match.and.(abs(q(i,k,l_so4_a2)-scr(5))<tol)
-             match = match.and.(abs(dgncur_a(i,k,nait)-scr(6))<tol)
-             if(.not.match) then
-                write(*,*)q(i,k,l_num_a1),scr(1), &
-                     q(i,k,l_so4_a1),scr(2), &
-                     dgncur_a(i,k,nacc),scr(3), &
-                     q(i,k,l_num_a2),scr(4), &
-                     q(i,k,l_so4_a2),scr(5), &
-                     dgncur_a(i,k,nait),scr(6) 
-                success=.false.
+          do i = 1, ncol
+             if (abs(dqdt(i,k,l)) > 1.0e-30_r8) then
+                !              write(lun,'(2a,2i4,1p,2e10.2)') &
+                !                 'watruptk tend > 0   ', cnst_name(l), i, k, &
+                !                 q(i,k,l), dqdt(i,k,l)*deltat
+                itmpa = itmpa + 1
              end if
-             
-          endif
-          
+             q(i,k,l) = q(i,k,l) + dqdt(i,k,l)*deltat
+             q(i,k,l) = max( q(i,k,l), 0.0_r8 )
+          end do
+       end do
+       if (itmpa > 0) then
+          write(lun,'(2a,i7)') &
+               'watruptk tend > 0   ', cnst_name(l), itmpa
+          itmpb = itmpb + 1
+       end if
+    end do
+    if (itmpb > 0) then
+       write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
+    else
+       write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
+    end if
+    
+    do i = 1, ncol
+       lun = tempunit + i
+       write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
+       if (itmpb > 0) then
+          write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
+       else
+          write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
+       end if
+       if (iwrite3x_units_flagaa >= 10) then
+          tmpch80 = '  (#/mg,  nmol/mol,  nm,  g/cm3)'
+          tmpa = 1.0e9*mwdry/adv_mass(lmz_so4_a1)
+          tmpb = 1.0e9*mwdry/18.0
+       else
+          tmpch80 = '  (#/mg,  ug/kg,  nm)'
+          tmpa = 1.0e9 ; tmpb = 1.0e9
+       end if
+       write(lun,'( 2a)') &
+            'k, accum num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
+            trim(tmpch80)
+       
+       
+       write(lun,'( 2a)') &
+            'k, aitken num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
+            trim(tmpch80)
+       do k = 1, pver
+          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
+               q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, qaerwat(i,k,nait)*tmpb, &
+               dgncur_a(i,k,nait)*1.0e9, dgncur_awet(i,k,nait)*1.0e9, &
+               wetdens(i,k,nait)*1.0e-3
+       end do
+       
+    end do ! i
+    
+    !
+    ! switch from q & qqcw to vmr and vmrcw
+    !
+    loffset = imozart - 1
+    mmr = 0.0_r8
+    mmrcw = 0.0_r8
+    vmr = 0.0_r8
+    vmrcw = 0.0_r8
+    do l = imozart, pcnst
+       l2 = l - loffset
+       mmr(  1:ncol,1:pver,l2) = q(  1:ncol,1:pver,l)
+       mmrcw(1:ncol,1:pver,l2) = qqcw(1:ncol,1:pver,l)
+       vmr(  1:ncol,1:pver,l2) = mmr(  1:ncol,1:pver,l2)*mwdry/adv_mass(l2)
+       vmrcw(1:ncol,1:pver,l2) = mmrcw(1:ncol,1:pver,l2)*mwdry/adv_mass(l2)
+    end do
+    
+    !
+    ! output
+    !
+    do lun = 40, 40+ncol-1
+       write(lun,'(a,6i5)') &
+            'mdo_gasch, cldch, gaex, rename, newnuc, coag', &
+            mdo_gaschem, mdo_cloudchem, &
+            mdo_gasaerexch, mdo_rename, mdo_newnuc, mdo_coag
+       if (iwrite4x_heading_flagbb > 0) then
+          write(lun,'(2a,3i5,l5)') &
+               'mopt_h2so4_uptake, gaexch_h2so4_uptake_flagaa, ', &
+               'newnuc_h2so4_conc_flagaa, mosaic', &
+               mopt_h2so4_uptake, gaexch_h2so4_uptake_optaa, &
+               newnuc_h2so4_conc_optaa, mosaic
+       else
+          if (mopt_h2so4_uptake /= 1) write(lun,'(a,6i5)') &
+               'mopt_h2so4_uptake', mopt_h2so4_uptake
+       end if
+       write(lun,'(a,6i5)') &
+            'mopt_aero_comp, aero_load, ait_size', &
+            mopt_aero_comp, mopt_aero_load, mopt_ait_size
+       write(lun,'(a,2f14.6)') &
+            'deltat, xopt_cloudf', &
+            deltat, xopt_cloudf
+    end do
+    
+    !     call dump4x( 'start', ncol, nstep, vmr, vmrcw, vmr, vmrcw )
+    
+    !
+    ! gaschem_simple
+    !
+    lun = 6
+    write(lun,'(/a,i8)') 'cambox_do_run doing gaschem simple, istep=', istep
+    vmr_svaa = vmr
+    vmrcw_svaa = vmrcw
+    h2so4_pre_gaschem(1:ncol,:) = vmr(1:ncol,:,lmz_h2so4g)
+    
+    ! global avg ~= 13 d = 1.12e6 s, daytime avg ~= 5.6e5, noontime peak ~= 3.7e5
+    tau_gaschem_simple = 3.0e5  ! so2 gas-rxn timescale (s)
+    
+    if (mdo_gaschem > 0) then
+       call gaschem_simple_sub(                       &
+            lchnk,    ncol,     nstep,               &
+            loffset,  deltat,                        &
+            vmr,                tau_gaschem_simple      )
+    end if
+    
+    h2so4_aft_gaschem(1:ncol,:) = vmr(1:ncol,:,lmz_h2so4g)
+    
+    do i = 1, ncol
+       lun = tempunit + i
+       write(lun,'(/a,i8)') 'cambox_do_run doing gaschem simple, istep=', istep
+       if (iwrite3x_units_flagaa >= 10) then
+          tmpch80 = '(nmol/mol)'
+       else
+          tmpch80 = '(ppbv)'
+       end if
+       write(lun,'(2a)') &
+            'k, old & new so2, old & new h2so4  ', trim(tmpch80)
+       do k = 1, pver
+          write(lun,'( i4,1p,6(2x,2e12.4))') k, &
+               vmr_svaa(i,k,lmz_so2g)*1.0e9, vmr(i,k,lmz_so2g)*1.0e9, &
+               vmr_svaa(i,k,lmz_h2so4g)*1.0e9, vmr(i,k,lmz_h2so4g)*1.0e9
+          if(TESTING==0)then
+             write(tempunit,*)vmr_svaa(i,k,lmz_so2g), vmr(i,k,lmz_so2g), &
+                  vmr_svaa(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g)
+          else
+             read(tempunit,*)scr(1),scr(2),scr(3),scr(4)
+             match=.true.
+             match = match.and.(abs(vmr_svaa(i,k,lmz_so2g)-scr(1))<tol)
+             match = match.and.(abs(vmr(i,k,lmz_so2g)-scr(2))<tol)
+             match = match.and.(abs(vmr_svaa(i,k,lmz_h2so4g)-scr(3))<tol)
+             match = match.and.(abs(vmr(i,k,lmz_h2so4g)-scr(4))<tol)
+             if(.not.match) success=.false.
+          end if
        end do
     end do ! i
-!!$    !
-!!$! watruptake
-!!$!
-!!$    lun = 6
-!!$    write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
-!!$    loffset = 0
-!!$    iwaterup_flag = 1
-!!$    aero_mmr_flag = .true.
-!!$    h2o_mmr_flag = .true.
-!!$    
-!!$    dotend = .false.
-!!$    dqdt = 0.0_r8
-!!$    
-!!$    ! *** old wateruptake interface ***
-!!$    
-!!$    !!ubroutine modal_aero_wateruptake_dr(          &
-!!$    !!     lchnk, ncol,                             &
-!!$    !!     h2ommr, t, pmid, cldn, raer,             &
-!!$    !!     dgnum_a, dgnumwet, qaerwater, wetdensity )
-!!$    !
-!!$    !      call modal_aero_wateruptake_dr(          &
-!!$    !      i_cldy_sameas_clear,                     &
-!!$    !      lchnk, ncol,                             &
-!!$    !      qv,     t, pmid, cld,  q,                &
-!!$    !      dgncur_a, dgncur_awet, qaerwat, wetdens  )
-!!$    
-!!$    ! *** new wateruptake interface ***
-!!$    
-!!$    ! load state
-!!$    state%lchnk = lchnk
-!!$    state%ncol = ncol
-!!$    state%t = t
-!!$    state%pmid = pmid
-!!$    state%pdel = pdel
-!!$    state%q = q
-!!$    ! load ptend
-!!$    ptend%lq = dotend
-!!$    ptend%q = dqdt
-!!$    ! load pbuf
-!!$    call load_pbuf( &
-!!$         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
-!!$         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
-!!$    
-!!$    ! call wateruptake
-!!$    call modal_aero_wateruptake_dr( state, pbuf )
-!!$    
-!!$    ! unload ptend
-!!$    dotend = ptend%lq
-!!$    dqdt = ptend%q
-!!$    ! unload pbuf
-!!$    call unload_pbuf( &
-!!$         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
-!!$         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
-!!$    
-!!$    ! following line involving dotend and dqdt are no longer needed !
-!!$    lun = 6
-!!$    itmpb = 0
-!!$    do l = 1, pcnst
-!!$       itmpa = 0
-!!$       if ( .not. dotend(l) ) cycle
-!!$       do k = 1, pver
-!!$          do i = 1, ncol
-!!$             if (abs(dqdt(i,k,l)) > 1.0e-30_r8) then
-!!$                !              write(lun,'(2a,2i4,1p,2e10.2)') &
-!!$                !                 'watruptk tend > 0   ', cnst_name(l), i, k, &
-!!$                !                 q(i,k,l), dqdt(i,k,l)*deltat
-!!$                itmpa = itmpa + 1
-!!$             end if
-!!$             q(i,k,l) = q(i,k,l) + dqdt(i,k,l)*deltat
-!!$             q(i,k,l) = max( q(i,k,l), 0.0_r8 )
-!!$          end do
-!!$       end do
-!!$       if (itmpa > 0) then
-!!$          write(lun,'(2a,i7)') &
-!!$               'watruptk tend > 0   ', cnst_name(l), itmpa
-!!$          itmpb = itmpb + 1
-!!$       end if
-!!$    end do
-!!$    if (itmpb > 0) then
-!!$       write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
-!!$    else
-!!$       write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
-!!$    end if
-!!$    
-!!$    do i = 1, ncol
-!!$       lun = tempunit + i
-!!$       write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
-!!$       if (itmpb > 0) then
-!!$          write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
-!!$       else
-!!$          write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
-!!$       end if
-!!$       if (iwrite3x_units_flagaa >= 10) then
-!!$          tmpch80 = '  (#/mg,  nmol/mol,  nm,  g/cm3)'
-!!$          tmpa = 1.0e9*mwdry/adv_mass(lmz_so4_a1)
-!!$          tmpb = 1.0e9*mwdry/18.0
-!!$       else
-!!$          tmpch80 = '  (#/mg,  ug/kg,  nm)'
-!!$          tmpa = 1.0e9 ; tmpb = 1.0e9
-!!$       end if
-!!$       write(lun,'( 2a)') &
-!!$            'k, accum num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
-!!$            trim(tmpch80)
-!!$       
-!!$       do k = 1, pver
-!!$          if(TESTING==0)then
-!!$             write(tempunit,*)q(i,k,l_num_a1),&
-!!$                  q(i,k,l_so4_a1),qaerwat(i,k,nacc), & 
-!!$                  dgncur_a(i,k,nacc), dgncur_awet(i,k,nacc), &
-!!$                  wetdens(i,k,nacc)
-!!$          else
-!!$             read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
-!!$             match=.true.
-!!$             match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
-!!$             match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
-!!$             match = match.and.(abs(qaerwat(i,k,nacc)-scr(3))<tol)
-!!$             match = match.and.(abs(dgncur_a(i,k,nacc)-scr(4))<tol)
-!!$             match = match.and.(abs(dgncur_awet(i,k,nacc)-scr(5))<tol)
-!!$             match = match.and.(abs(wetdens(i,k,nacc)-scr(6))<tol)
-!!$             if(.not.match) then
-!!$                write(*,*)q(i,k,l_num_a1),scr(1),&
-!!$                     q(i,k,l_so4_a1),scr(2),&
-!!$                     qaerwat(i,k,nacc),scr(3),& 
-!!$                     dgncur_a(i,k,nacc),scr(4),&
-!!$                     dgncur_awet(i,k,nacc),scr(5), &
-!!$                     wetdens(i,k,nacc),scr(6)
-!!$                call endrun( 'Stop at second' )
-!!$             end if
-!!$          end if
-!!$          
-!!$          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
-!!$               q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, qaerwat(i,k,nacc)*tmpb, &
-!!$               dgncur_a(i,k,nacc)*1.0e9, dgncur_awet(i,k,nacc)*1.0e9, &
-!!$               wetdens(i,k,nacc)*1.0e-3
-!!$       end do
-!!$       
-!!$       write(lun,'( 2a)') &
-!!$            'k, aitken num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
-!!$            trim(tmpch80)
-!!$       do k = 1, pver
-!!$          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
-!!$               q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, qaerwat(i,k,nait)*tmpb, &
-!!$               dgncur_a(i,k,nait)*1.0e9, dgncur_awet(i,k,nait)*1.0e9, &
-!!$               wetdens(i,k,nait)*1.0e-3
-!!$       end do
-!!$       
-!!$    end do ! i
-!!$    
-!!$    !
-!!$    ! switch from q & qqcw to vmr and vmrcw
-!!$    !
-!!$    loffset = imozart - 1
-!!$    mmr = 0.0_r8
-!!$    mmrcw = 0.0_r8
-!!$    vmr = 0.0_r8
-!!$    vmrcw = 0.0_r8
-!!$    do l = imozart, pcnst
-!!$       l2 = l - loffset
-!!$       mmr(  1:ncol,1:pver,l2) = q(  1:ncol,1:pver,l)
-!!$       mmrcw(1:ncol,1:pver,l2) = qqcw(1:ncol,1:pver,l)
-!!$       vmr(  1:ncol,1:pver,l2) = mmr(  1:ncol,1:pver,l2)*mwdry/adv_mass(l2)
-!!$       vmrcw(1:ncol,1:pver,l2) = mmrcw(1:ncol,1:pver,l2)*mwdry/adv_mass(l2)
-!!$    end do
-!!$    
-!!$    !
-!!$    ! output
-!!$    !
-!!$    do lun = 40, 40+ncol-1
-!!$       write(lun,'(a,6i5)') &
-!!$            'mdo_gasch, cldch, gaex, rename, newnuc, coag', &
-!!$            mdo_gaschem, mdo_cloudchem, &
-!!$            mdo_gasaerexch, mdo_rename, mdo_newnuc, mdo_coag
-!!$       if (iwrite4x_heading_flagbb > 0) then
-!!$          write(lun,'(2a,3i5,l5)') &
-!!$               'mopt_h2so4_uptake, gaexch_h2so4_uptake_flagaa, ', &
-!!$               'newnuc_h2so4_conc_flagaa, mosaic', &
-!!$               mopt_h2so4_uptake, gaexch_h2so4_uptake_optaa, &
-!!$               newnuc_h2so4_conc_optaa, mosaic
-!!$       else
-!!$          if (mopt_h2so4_uptake /= 1) write(lun,'(a,6i5)') &
-!!$               'mopt_h2so4_uptake', mopt_h2so4_uptake
-!!$       end if
-!!$       write(lun,'(a,6i5)') &
-!!$            'mopt_aero_comp, aero_load, ait_size', &
-!!$            mopt_aero_comp, mopt_aero_load, mopt_ait_size
-!!$       write(lun,'(a,2f14.6)') &
-!!$            'deltat, xopt_cloudf', &
-!!$            deltat, xopt_cloudf
-!!$    end do
-!!$    
-!!$    !     call dump4x( 'start', ncol, nstep, vmr, vmrcw, vmr, vmrcw )
-!!$    
-!!$    !
-!!$    ! gaschem_simple
-!!$    !
-!!$    lun = 6
-!!$    write(lun,'(/a,i8)') 'cambox_do_run doing gaschem simple, istep=', istep
-!!$    vmr_svaa = vmr
-!!$    vmrcw_svaa = vmrcw
-!!$    h2so4_pre_gaschem(1:ncol,:) = vmr(1:ncol,:,lmz_h2so4g)
-!!$    
-!!$    ! global avg ~= 13 d = 1.12e6 s, daytime avg ~= 5.6e5, noontime peak ~= 3.7e5
-!!$    tau_gaschem_simple = 3.0e5  ! so2 gas-rxn timescale (s)
-!!$    
-!!$    if (mdo_gaschem > 0) then
-!!$       call gaschem_simple_sub(                       &
-!!$            lchnk,    ncol,     nstep,               &
-!!$            loffset,  deltat,                        &
-!!$            vmr,                tau_gaschem_simple      )
-!!$    end if
-!!$    
-!!$    h2so4_aft_gaschem(1:ncol,:) = vmr(1:ncol,:,lmz_h2so4g)
-!!$    
-!!$    do i = 1, ncol
-!!$       lun = tempunit + i
-!!$       write(lun,'(/a,i8)') 'cambox_do_run doing gaschem simple, istep=', istep
-!!$       if (iwrite3x_units_flagaa >= 10) then
-!!$          tmpch80 = '(nmol/mol)'
-!!$       else
-!!$          tmpch80 = '(ppbv)'
-!!$       end if
-!!$       write(lun,'(2a)') &
-!!$            'k, old & new so2, old & new h2so4  ', trim(tmpch80)
-!!$       do k = 1, pver
-!!$          write(lun,'( i4,1p,6(2x,2e12.4))') k, &
-!!$               vmr_svaa(i,k,lmz_so2g)*1.0e9, vmr(i,k,lmz_so2g)*1.0e9, &
-!!$               vmr_svaa(i,k,lmz_h2so4g)*1.0e9, vmr(i,k,lmz_h2so4g)*1.0e9
-!!$          if(TESTING==0)then
-!!$             write(tempunit,*)vmr_svaa(i,k,lmz_so2g), vmr(i,k,lmz_so2g), &
-!!$                  vmr_svaa(i,k,lmz_h2so4g), vmr(i,k,lmz_h2so4g)
-!!$          else
-!!$             read(tempunit,*)scr(1),scr(2),scr(3),scr(4)
-!!$             match=.true.
-!!$             match = match.and.(abs(vmr_svaa(i,k,lmz_so2g)-scr(1))<tol)
-!!$             match = match.and.(abs(vmr(i,k,lmz_so2g)-scr(2))<tol)
-!!$             match = match.and.(abs(vmr_svaa(i,k,lmz_h2so4g)-scr(3))<tol)
-!!$             match = match.and.(abs(vmr(i,k,lmz_h2so4g)-scr(4))<tol)
-!!$             if(.not.match) call endrun('stop at third')
-!!$          end if
-!!$       end do
-!!$    end do ! i
-!!$    
-!!$    
-!!$    call dump4x( 'gasch', ncol, nstep, vmr_svaa, vmrcw_svaa, vmr, vmrcw )
-!!$    
-!!$    
+    
+    
+    call dump4x( 'gasch', ncol, nstep, vmr_svaa, vmrcw_svaa, vmr, vmrcw )
+    
+    
 !!$    !
 !!$    ! cloudchem_simple
 !!$    !

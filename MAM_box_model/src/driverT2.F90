@@ -10,6 +10,7 @@ module driver
   
   integer, parameter :: lun_outfld = 90
   
+  
   ! in the multiple nbc/npoa code, the following are in modal_aero_data
   integer :: lptr_bca_a_amode(ntot_amode) = -999888777 
   integer :: lptr_poma_a_amode(ntot_amode) = -999888777 
@@ -337,7 +338,7 @@ contains
        write(lun,'(a,i7)') 'calcsize tend = 0 for all species'
     end if
     
-    open(tempunit,file="test1Res")
+    open(tempunit,file="test2Res")
     
     do i = 1, ncol
        lun = tempunit + i
@@ -357,181 +358,155 @@ contains
        
        write(lun,'( 2a)') &
             'k, accum num, so4, dgncur_a, same for aitken', trim(tmpch80)
+    end do ! i
+    !
+! watruptake
+!
+    lun = 6
+    write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
+    loffset = 0
+    iwaterup_flag = 1
+    aero_mmr_flag = .true.
+    h2o_mmr_flag = .true.
+    
+    dotend = .false.
+    dqdt = 0.0_r8
+    
+    ! *** old wateruptake interface ***
+    
+    !!ubroutine modal_aero_wateruptake_dr(          &
+    !!     lchnk, ncol,                             &
+    !!     h2ommr, t, pmid, cldn, raer,             &
+    !!     dgnum_a, dgnumwet, qaerwater, wetdensity )
+    !
+    !      call modal_aero_wateruptake_dr(          &
+    !      i_cldy_sameas_clear,                     &
+    !      lchnk, ncol,                             &
+    !      qv,     t, pmid, cld,  q,                &
+    !      dgncur_a, dgncur_awet, qaerwat, wetdens  )
+    
+    ! *** new wateruptake interface ***
+    
+    ! load state
+    state%lchnk = lchnk
+    state%ncol = ncol
+    state%t = t
+    state%pmid = pmid
+    state%pdel = pdel
+    state%q = q
+    ! load ptend
+    ptend%lq = dotend
+    ptend%q = dqdt
+    ! load pbuf
+    call load_pbuf( &
+         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
+         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
+    
+    ! call wateruptake
+    call modal_aero_wateruptake_dr( state, pbuf )
+    
+    ! unload ptend
+    dotend = ptend%lq
+    dqdt = ptend%q
+    ! unload pbuf
+    call unload_pbuf( &
+         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
+         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
+    
+    ! following line involving dotend and dqdt are no longer needed !
+    lun = 6
+    itmpb = 0
+    do l = 1, pcnst
+       itmpa = 0
+       if ( .not. dotend(l) ) cycle
        do k = 1, pver
-          if(TESTING==0) then
-             write(tempunit,*)q(i,k,l_num_a1), q(i,k,l_so4_a1), dgncur_a(i,k,nacc), &
-                  q(i,k,l_num_a2), q(i,k,l_so4_a2), dgncur_a(i,k,nait)
+          do i = 1, ncol
+             if (abs(dqdt(i,k,l)) > 1.0e-30_r8) then
+                !              write(lun,'(2a,2i4,1p,2e10.2)') &
+                !                 'watruptk tend > 0   ', cnst_name(l), i, k, &
+                !                 q(i,k,l), dqdt(i,k,l)*deltat
+                itmpa = itmpa + 1
+             end if
+             q(i,k,l) = q(i,k,l) + dqdt(i,k,l)*deltat
+             q(i,k,l) = max( q(i,k,l), 0.0_r8 )
+          end do
+       end do
+       if (itmpa > 0) then
+          write(lun,'(2a,i7)') &
+               'watruptk tend > 0   ', cnst_name(l), itmpa
+          itmpb = itmpb + 1
+       end if
+    end do
+    if (itmpb > 0) then
+       write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
+    else
+       write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
+    end if
+    
+    do i = 1, ncol
+       lun = tempunit + i
+       write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
+       if (itmpb > 0) then
+          write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
+       else
+          write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
+       end if
+       if (iwrite3x_units_flagaa >= 10) then
+          tmpch80 = '  (#/mg,  nmol/mol,  nm,  g/cm3)'
+          tmpa = 1.0e9*mwdry/adv_mass(lmz_so4_a1)
+          tmpb = 1.0e9*mwdry/18.0
+       else
+          tmpch80 = '  (#/mg,  ug/kg,  nm)'
+          tmpa = 1.0e9 ; tmpb = 1.0e9
+       end if
+       write(lun,'( 2a)') &
+            'k, accum num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
+            trim(tmpch80)
+       
+       do k = 1, pver
+          if(TESTING==0)then
+             write(tempunit,*)q(i,k,l_num_a1),&
+                  q(i,k,l_so4_a1),qaerwat(i,k,nacc), & 
+                  dgncur_a(i,k,nacc), dgncur_awet(i,k,nacc), &
+                  wetdens(i,k,nacc)
           else
-             read(tempunit,*)scr(1),scr(2),scr(3),scr(4), scr(5),scr(6)
+             read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
              match=.true.
              match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
              match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
-             match = match.and.(abs(dgncur_a(i,k,nacc)-scr(3))<tol)
-             match = match.and.(abs(q(i,k,l_num_a2)-scr(4))<tol)
-             match = match.and.(abs(q(i,k,l_so4_a2)-scr(5))<tol)
-             match = match.and.(abs(dgncur_a(i,k,nait)-scr(6))<tol)
+             match = match.and.(abs(qaerwat(i,k,nacc)-scr(3))<tol)
+             match = match.and.(abs(dgncur_a(i,k,nacc)-scr(4))<tol)
+             match = match.and.(abs(dgncur_awet(i,k,nacc)-scr(5))<tol)
+             match = match.and.(abs(wetdens(i,k,nacc)-scr(6))<tol)
              if(.not.match) then
-                write(*,*)q(i,k,l_num_a1),scr(1), &
-                     q(i,k,l_so4_a1),scr(2), &
-                     dgncur_a(i,k,nacc),scr(3), &
-                     q(i,k,l_num_a2),scr(4), &
-                     q(i,k,l_so4_a2),scr(5), &
-                     dgncur_a(i,k,nait),scr(6) 
+                write(*,*)q(i,k,l_num_a1),scr(1),&
+                     q(i,k,l_so4_a1),scr(2),&
+                     qaerwat(i,k,nacc),scr(3),& 
+                     dgncur_a(i,k,nacc),scr(4),&
+                     dgncur_awet(i,k,nacc),scr(5), &
+                     wetdens(i,k,nacc),scr(6)
                 success=.false.
              end if
-             
-          endif
+          end if
           
+          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
+               q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, qaerwat(i,k,nacc)*tmpb, &
+               dgncur_a(i,k,nacc)*1.0e9, dgncur_awet(i,k,nacc)*1.0e9, &
+               wetdens(i,k,nacc)*1.0e-3
        end do
+       
+       write(lun,'( 2a)') &
+            'k, aitken num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
+            trim(tmpch80)
+       do k = 1, pver
+          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
+               q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, qaerwat(i,k,nait)*tmpb, &
+               dgncur_a(i,k,nait)*1.0e9, dgncur_awet(i,k,nait)*1.0e9, &
+               wetdens(i,k,nait)*1.0e-3
+       end do
+       
     end do ! i
-!!$    !
-!!$! watruptake
-!!$!
-!!$    lun = 6
-!!$    write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
-!!$    loffset = 0
-!!$    iwaterup_flag = 1
-!!$    aero_mmr_flag = .true.
-!!$    h2o_mmr_flag = .true.
-!!$    
-!!$    dotend = .false.
-!!$    dqdt = 0.0_r8
-!!$    
-!!$    ! *** old wateruptake interface ***
-!!$    
-!!$    !!ubroutine modal_aero_wateruptake_dr(          &
-!!$    !!     lchnk, ncol,                             &
-!!$    !!     h2ommr, t, pmid, cldn, raer,             &
-!!$    !!     dgnum_a, dgnumwet, qaerwater, wetdensity )
-!!$    !
-!!$    !      call modal_aero_wateruptake_dr(          &
-!!$    !      i_cldy_sameas_clear,                     &
-!!$    !      lchnk, ncol,                             &
-!!$    !      qv,     t, pmid, cld,  q,                &
-!!$    !      dgncur_a, dgncur_awet, qaerwat, wetdens  )
-!!$    
-!!$    ! *** new wateruptake interface ***
-!!$    
-!!$    ! load state
-!!$    state%lchnk = lchnk
-!!$    state%ncol = ncol
-!!$    state%t = t
-!!$    state%pmid = pmid
-!!$    state%pdel = pdel
-!!$    state%q = q
-!!$    ! load ptend
-!!$    ptend%lq = dotend
-!!$    ptend%q = dqdt
-!!$    ! load pbuf
-!!$    call load_pbuf( &
-!!$         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
-!!$         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
-!!$    
-!!$    ! call wateruptake
-!!$    call modal_aero_wateruptake_dr( state, pbuf )
-!!$    
-!!$    ! unload ptend
-!!$    dotend = ptend%lq
-!!$    dqdt = ptend%q
-!!$    ! unload pbuf
-!!$    call unload_pbuf( &
-!!$         ncol, nstop, deltat, t, pmid, pdel, zm, pblh, cld, relhum, qv, &
-!!$         q, qqcw, dgncur_a, dgncur_awet, qaerwat, wetdens        )
-!!$    
-!!$    ! following line involving dotend and dqdt are no longer needed !
-!!$    lun = 6
-!!$    itmpb = 0
-!!$    do l = 1, pcnst
-!!$       itmpa = 0
-!!$       if ( .not. dotend(l) ) cycle
-!!$       do k = 1, pver
-!!$          do i = 1, ncol
-!!$             if (abs(dqdt(i,k,l)) > 1.0e-30_r8) then
-!!$                !              write(lun,'(2a,2i4,1p,2e10.2)') &
-!!$                !                 'watruptk tend > 0   ', cnst_name(l), i, k, &
-!!$                !                 q(i,k,l), dqdt(i,k,l)*deltat
-!!$                itmpa = itmpa + 1
-!!$             end if
-!!$             q(i,k,l) = q(i,k,l) + dqdt(i,k,l)*deltat
-!!$             q(i,k,l) = max( q(i,k,l), 0.0_r8 )
-!!$          end do
-!!$       end do
-!!$       if (itmpa > 0) then
-!!$          write(lun,'(2a,i7)') &
-!!$               'watruptk tend > 0   ', cnst_name(l), itmpa
-!!$          itmpb = itmpb + 1
-!!$       end if
-!!$    end do
-!!$    if (itmpb > 0) then
-!!$       write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
-!!$    else
-!!$       write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
-!!$    end if
-!!$    
-!!$    do i = 1, ncol
-!!$       lun = tempunit + i
-!!$       write(lun,'(/a,i8)') 'cambox_do_run doing wateruptake, istep=', istep
-!!$       if (itmpb > 0) then
-!!$          write(lun,'(a,i7)') 'watruptk tend > 0 for nspecies =', itmpb
-!!$       else
-!!$          write(lun,'(a,i7)') 'watruptk tend = 0 for all species'
-!!$       end if
-!!$       if (iwrite3x_units_flagaa >= 10) then
-!!$          tmpch80 = '  (#/mg,  nmol/mol,  nm,  g/cm3)'
-!!$          tmpa = 1.0e9*mwdry/adv_mass(lmz_so4_a1)
-!!$          tmpb = 1.0e9*mwdry/18.0
-!!$       else
-!!$          tmpch80 = '  (#/mg,  ug/kg,  nm)'
-!!$          tmpa = 1.0e9 ; tmpb = 1.0e9
-!!$       end if
-!!$       write(lun,'( 2a)') &
-!!$            'k, accum num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
-!!$            trim(tmpch80)
-!!$       
-!!$       do k = 1, pver
-!!$          if(TESTING==0)then
-!!$             write(tempunit,*)q(i,k,l_num_a1),&
-!!$                  q(i,k,l_so4_a1),qaerwat(i,k,nacc), & 
-!!$                  dgncur_a(i,k,nacc), dgncur_awet(i,k,nacc), &
-!!$                  wetdens(i,k,nacc)
-!!$          else
-!!$             read(tempunit,*)scr(1),scr(2),scr(3),scr(4),scr(5),scr(6)
-!!$             match=.true.
-!!$             match = match.and.(abs(q(i,k,l_num_a1)-scr(1))<tol)
-!!$             match = match.and.(abs(q(i,k,l_so4_a1)-scr(2))<tol)
-!!$             match = match.and.(abs(qaerwat(i,k,nacc)-scr(3))<tol)
-!!$             match = match.and.(abs(dgncur_a(i,k,nacc)-scr(4))<tol)
-!!$             match = match.and.(abs(dgncur_awet(i,k,nacc)-scr(5))<tol)
-!!$             match = match.and.(abs(wetdens(i,k,nacc)-scr(6))<tol)
-!!$             if(.not.match) then
-!!$                write(*,*)q(i,k,l_num_a1),scr(1),&
-!!$                     q(i,k,l_so4_a1),scr(2),&
-!!$                     qaerwat(i,k,nacc),scr(3),& 
-!!$                     dgncur_a(i,k,nacc),scr(4),&
-!!$                     dgncur_awet(i,k,nacc),scr(5), &
-!!$                     wetdens(i,k,nacc),scr(6)
-!!$                call endrun( 'Stop at second' )
-!!$             end if
-!!$          end if
-!!$          
-!!$          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
-!!$               q(i,k,l_num_a1)*1.0e-6, q(i,k,l_so4_a1)*tmpa, qaerwat(i,k,nacc)*tmpb, &
-!!$               dgncur_a(i,k,nacc)*1.0e9, dgncur_awet(i,k,nacc)*1.0e9, &
-!!$               wetdens(i,k,nacc)*1.0e-3
-!!$       end do
-!!$       
-!!$       write(lun,'( 2a)') &
-!!$            'k, aitken num, so4, watr, dgncur_a, dgncur_awet, wetdens', &
-!!$            trim(tmpch80)
-!!$       do k = 1, pver
-!!$          write(lun,'( i4,1p,4(2x,3e12.4))') k, &
-!!$               q(i,k,l_num_a2)*1.0e-6, q(i,k,l_so4_a2)*tmpa, qaerwat(i,k,nait)*tmpb, &
-!!$               dgncur_a(i,k,nait)*1.0e9, dgncur_awet(i,k,nait)*1.0e9, &
-!!$               wetdens(i,k,nait)*1.0e-3
-!!$       end do
-!!$       
-!!$    end do ! i
-!!$    
+    
 !!$    !
 !!$    ! switch from q & qqcw to vmr and vmrcw
 !!$    !
