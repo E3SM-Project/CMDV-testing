@@ -1,11 +1,17 @@
 #! /usr/bin/env python
 
+"""
+Convert a Jupyter notebook to HTML, including the processing of citations
+"""
+
+import argparse
 import nbconvert
 import nbformat
 import os
 import pypandoc
 import sys
 
+from traitlets import Bool
 from traitlets import Unicode
 from traitlets.config import Config
 from urllib import urlopen
@@ -37,6 +43,8 @@ class AddCitationsPreprocessor(Preprocessor):
     bibliographic entry in a .bib file. This class has the following
     configurable attributes:
 
+        verbose      - Boolean that determines whether output to stdout is
+                       turned on (default False) 
         bibliography - The name of the BibTeX bibliography file (default
                        "ref.bib")
         csl          - The name of the Citation Style Language file (default
@@ -51,6 +59,9 @@ class AddCitationsPreprocessor(Preprocessor):
     notebook.
     """
 
+    verbose      = Bool(   False,
+                           help='Determines whether to provide output to stdout',
+                           config=True)
     bibliography = Unicode(u'ref.bib',
                            help='Name of the BibTeX bibliography file',
                            config=True)
@@ -121,13 +132,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 else:
                     end = start + 1
                 start = source.find('@',end)
-        return list(citations)
-
-    """
-    I am supposed to support citations [see @Haidvogel1997, pp. 509--511] with
-    both a prefix and suffix. And finally, a double citation with prefixes and
-    suffixes [see @Boer, p. 12,780; also @Washington1986, ch. 2].
-    """
+        return citations
 
     def _process_citations(self, nb):
         """
@@ -147,6 +152,9 @@ class AddCitationsPreprocessor(Preprocessor):
             body += citation + "\n\n"
 
         # Run the markdown text through pandoc with the pandoc-citeproc filter
+        if self.verbose:
+            print('    Citation Style Language = "%s"' % self.csl         )
+            print('    BibTeX reference file   = "%s"' % self.bibliography)
         filters = ['pandoc-citeproc']
         extra_args = ['--bibliography="%s"' % self.bibliography,
                       '--csl="%s"' % self.csl]
@@ -217,42 +225,86 @@ class AddCitationsPreprocessor(Preprocessor):
         (subs, refs) = self._process_citations(nb)
         self._substitute_citations(nb, subs)
         self._add_references(nb, refs)
-        #print
-        #print "Preprocessed Notebook"
-        #print_notebook(nb)
         return (nb, resources)
 
 ########################################################################
 
-def convert(filename):
-    # Open the Jupyter notebook and print it
+def convert(filename, options):
+    # Open the Jupyter notebook
     (basename, ext) = os.path.splitext(filename)
     response = urlopen(filename).read().decode()
-    print "Reading", filename
+    if options.verbose:
+        print "Reading", filename
     notebook = nbformat.reads(response, as_version=4)
-    #print "Original Notebook"
-    #print_notebook(notebook)
 
     # Configure the HTMLExporter to use the preprocessors
     c = Config()
+    c.AddCitationsPreprocessor.enabled = True
+    c.AddCitationsPreprocessor.verbose = options.verbose
+    c.AddCitationsPreprocessor.csl     = options.csl
+    c.AddCitationsPreprocessor.bib     = options.bib
+    c.AddCitationsPreprocessor.header  = options.header
     c.HTMLExporter.preprocessors = [#ExecutePreprocessor(),
-                                    AddCitationsPreprocessor()]
+                                    AddCitationsPreprocessor(config=c)]
 
     # Convert the notebook to HTML
     html_exporter = HTMLExporter(config=c)
-    print "Converting", filename
+    if options.verbose:
+        print "Converting %s to HTML" % filename
     (body, resources) = html_exporter.from_notebook_node(notebook)
 
     # Output
     writer = FilesWriter()
-    print "Writing %s.html" % basename
+    if options.verbose:
+        print "Writing %s.html" % basename
     writer.write(body, resources, notebook_name=basename)
 
 ########################################################################
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print "usage: converter.py FILE"
-        sys.exit(-1)
-    filename = sys.argv[1]
-    convert(filename)
+
+    # Set up the command-line argument processor
+    defaultPreprocessor = AddCitationsPreprocessor()
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('files',
+                        metavar='FILE',
+                        type=str,
+                        nargs='+',
+                        help='Jupyter notebook filename to be processed')
+    parser.add_argument('-v',
+                        '--verbose',
+                        dest='verbose',
+                        action='store_true',
+                        default=False,
+                        help='provide verbose output')
+    parser.add_argument('-q',
+                        '--quiet',
+                        dest='verbose',
+                        action='store_false',
+                        default=False,
+                        help='set verbose to False')
+    parser.add_argument('--csl',
+                        dest='csl',
+                        type=str,
+                        default=defaultPreprocessor.csl,
+                        help='specify the Citation Style Language file')
+    parser.add_argument('--bib',
+                        dest='bib',
+                        type=str,
+                        default=defaultPreprocessor.bibliography,
+                        help='specify the BibTeX bibliography database')
+    parser.add_argument('--header',
+                        dest='header',
+                        type=str,
+                        default=defaultPreprocessor.header,
+                        help='provide the title of the bibliography section')
+
+    # Parse the command-line arguments
+    options = parser.parse_args()
+
+    # Process the files
+    for filename in options.files:
+        convert(filename, options)
+        if options.verbose and filename != options.files[-1]:
+            print("")
