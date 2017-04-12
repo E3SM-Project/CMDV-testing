@@ -239,11 +239,11 @@ def convert(filename, options):
 
     # Configure the HTMLExporter to use the preprocessors
     c = Config()
-    c.AddCitationsPreprocessor.enabled = True
-    c.AddCitationsPreprocessor.verbose = options.verbose
-    c.AddCitationsPreprocessor.csl     = options.csl
-    c.AddCitationsPreprocessor.bib     = options.bib
-    c.AddCitationsPreprocessor.header  = options.header
+    c.AddCitationsPreprocessor.enabled      = True
+    c.AddCitationsPreprocessor.verbose      = options.verbose
+    c.AddCitationsPreprocessor.csl          = options.csl
+    c.AddCitationsPreprocessor.bibliography = options.bib
+    c.AddCitationsPreprocessor.header       = options.header
     c.HTMLExporter.preprocessors = [#ExecutePreprocessor(),
                                     AddCitationsPreprocessor(config=c)]
 
