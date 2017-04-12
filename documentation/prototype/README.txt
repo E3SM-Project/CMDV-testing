@@ -24,7 +24,30 @@ while converting all citations to an appropriate in-line citation
 of the HTML page. The intent is that this HTML file would be the
 outward-looking HTML file for documenting the verification test.
 
-Currently, references are placed in the file ref.bib and are formatted
+By default, references are placed in the file ref.bib and are formatted
 according to AJCC.csl, the Citation Style Language file for the
 American Journal of Climate Change. Both of these filenames are
-supposed to be configurable, but this has not been tested yet.
+configurable, as is the title of the references section:
+
+    $ ./converter.py --help
+    usage: converter.py [-h] [-v] [-q] [--csl CSL] [--bib BIB] [--header HEADER]
+                        FILE [FILE ...]
+
+    Convert a Jupyter notebook to HTML, including the processing of citations
+
+    positional arguments:
+      FILE             Jupyter notebook filename to be processed
+
+    optional arguments:
+      -h, --help       show this help message and exit
+      -v, --verbose    provide verbose output (default: False)
+      -q, --quiet      set verbose to False (default: False)
+      --csl CSL        specify the Citation Style Language file (default:
+                       AJCC.csl)
+      --bib BIB        specify the BibTeX bibliography database (default: ref.bib)
+      --header HEADER  provide the title of the bibliography section (default:
+                       References)
+
+If you want to search for a new Citation Style Language file, start at
+http://citationstyles.org/styles/, which points to many resources,
+including the Zotero Style Repository at http://zotero.org/styles.
