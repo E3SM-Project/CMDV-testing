@@ -234,7 +234,7 @@ def convert(filename, options):
     (basename, ext) = os.path.splitext(filename)
     response = urlopen(filename).read().decode()
     if options.verbose:
-        print "Reading", filename
+        print('Reading "%s"' % filename)
     notebook = nbformat.reads(response, as_version=4)
 
     # Configure the HTMLExporter to use the preprocessors
@@ -250,13 +250,13 @@ def convert(filename, options):
     # Convert the notebook to HTML
     html_exporter = HTMLExporter(config=c)
     if options.verbose:
-        print "Converting %s to HTML" % filename
+        print('Converting "%s" to HTML' % filename)
     (body, resources) = html_exporter.from_notebook_node(notebook)
 
     # Output
     writer = FilesWriter()
     if options.verbose:
-        print "Writing %s.html" % basename
+        print('Writing "%s.html"' % basename)
     writer.write(body, resources, notebook_name=basename)
 
 ########################################################################
@@ -304,7 +304,10 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     # Process the files
+    sep = '----------------'
+    if options.verbose:
+        print(sep)
     for filename in options.files:
         convert(filename, options)
-        if options.verbose and filename != options.files[-1]:
-            print("")
+        if options.verbose:
+            print(sep)
