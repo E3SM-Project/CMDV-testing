@@ -1,8 +1,7 @@
 Prerequisites
 -------------
   * Jupyter
-  * LaTeX
-  * Pandoc   http://pandoc.org/installing.html
+  * Pandoc   (http://pandoc.org/installing.html)
   * Pandoc-citeproc
 
 Using Citations in a Jupyter Notebook
