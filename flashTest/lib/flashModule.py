@@ -274,8 +274,9 @@ class FlashExecuter(ExecuterTemplate):
              if len(line.strip()) > 0 and not line.strip().startswith("#")]
     script = "\n".join(lines)
     self.masterDict["script"] = script
+    print("Debug " + script)
     script = self.masterDict["script"]  # do it this way so that any angle-bracket variables
-                                        # in "exeScript" will be filled in by self.masterDict
+    print("Debug (dict): " + script)                                    # in "exeScript" will be filled in by self.masterDict
     # determine 'pathToRunSummary'
     pathToRunSummary = os.path.join(pathToRunDir, "run_summary")
 
@@ -292,7 +293,10 @@ class FlashExecuter(ExecuterTemplate):
     log.stp(script)
 
     # get stdout/stderr and duration of execution and write to file
+    print("Debug execution call: " + script)
+    print("Debug execution call: " + os.getcwd())
     out, err, duration, exitStatus = getProcessResults(script, timeout)
+    print("Debug (done execution): " + err + " " + str(exitStatus) )
 
     open(os.path.join(pathToRunDir, "flash_output"),"a").write(out)
     if len(err) > 0:
@@ -320,7 +324,7 @@ class FlashExecuter(ExecuterTemplate):
       log.stp("Process exit-status reports execution successful")
       runSucceeded = True
     else:
-      log.stp("Process exit-status reports execution failed")
+      log.stp("Process exit-status reports execution failed" , exitStatus)
       runSucceeded = False
 
     # cd back to flashTest
@@ -712,21 +716,25 @@ class UnitTester(TesterTemplate):
   determines success or failure based on the presence or absence therein of
   the aforementioned success string.
   """
+  
   def test(self):
     log          = self.masterDict["log"]           # guaranteed to exist by flashTest.py
     pathToFlash  = self.masterDict["pathToFlash"]   # guaranteed to exist by flashTest.py
     pathToRunDir = self.masterDict["pathToRunDir"]  # guaranteed to exist by flashTest.py
     outfile      = self.masterDict["outfile"]       # guaranteed to exist by flashTest.py
 
+    print("Debug (testing)")
+
     UGPat = re.compile("^unitTest_\d+$")
 
     files = os.listdir(pathToRunDir)
+    log.stp("Searching in " + pathToRunDir + " for test results")
     files = [f for f in files if UGPat.search(f)]  # only want files
                                                    # matching 'UGPat'
 
     if len(files) > 0:
       success = True
-      successStr = "all results conformed with expected values."
+      successStr = "all results conformed with expected values"
       # put in alphabetical order
       files.sort()
       for f in files:
