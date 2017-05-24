@@ -785,8 +785,10 @@ def main():
         # define the name of the directory that will hold all results from this run
         firstDot = parfile.find(".")
         if firstDot > 0:
-          runDir = parfile[:firstDot]  # truncate any dot and following chars
-                                       # (essentially to truncate the '.par')
+          runDir = parfile[:firstDot]  # truncate any dot and following chars  # (essentially to truncate the '.par')
+        else:                              
+          runDir = parfile  
+                                       
         pathToRunDir = os.path.join(pathToBuildDir, runDir)
 
         if os.path.isdir(pathToRunDir):
@@ -827,13 +829,14 @@ def main():
         testObject.entryPoint3()
 
         for keyword in ["executer", "tester"]:
+          print("Debug (stage): " + keyword )
           testObject.installComponent(keyword)
 
         # run the executable
         if testObject.execute() == False:
           __incErrors(2)
           continue
-
+        print("Debug (done execute)" )  
         ############
         ##  TEST  ##
         ############
