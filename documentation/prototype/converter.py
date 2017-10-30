@@ -35,6 +35,17 @@ def print_notebook(nb):
 
 ########################################################################
 
+class AddCitationsExporter(HTMLExporter):
+    @property
+    def default_config(self):
+        c = Config({
+            'AddCitationsPreprocessor': {'enabled':True}
+            })
+        c.merge(super(HTMLExporter,self).default_config)
+        return c
+
+########################################################################
+
 class AddCitationsPreprocessor(Preprocessor):
     """
     An nbconvert.preprocessors.Preprocessor class that adds citations to a
@@ -93,7 +104,7 @@ class AddCitationsPreprocessor(Preprocessor):
 
     def _is_index_in_ranges(self, index, ranges):
         """
-        Return True if the given index in with any of the given ranges
+        Return True if the given index is within any of the given ranges
         """
         for range in ranges:
             if index >= range[0] and index < range[1]:
@@ -198,7 +209,7 @@ class AddCitationsPreprocessor(Preprocessor):
     def _add_references(self, nb, references):
         """
         Add a references header cell and a references text cell to the end of
-        the notebook. If references in the empty string, do nothing. If a
+        the notebook. If references is the empty string, do nothing. If a
         references section already exists in the notebook, overwrite the
         existing references text cell.
         """
