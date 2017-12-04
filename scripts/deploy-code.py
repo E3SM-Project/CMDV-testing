@@ -90,6 +90,25 @@ def build(config):
 
 def run(self):
   """docstring for fname"""
+  
+  command = config['execution']['run'] 
+  path    = "./Build/"
+  if config['build']['relative_path_to_run_command'] :
+    path = path + config['build']['relative_path_to_run_command']
+  
+  current_dir = os.getcwd()
+  os.chdir(path)
+  
+  logger.info("Executing:\t" + command)
+  process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
+  output , errs = process.communicate()
+  if output :
+    logger.info("Output:" + output.decode())
+  if errs :
+    logger.error( output.decode() )
+    logger.error( errs.decode() )
+  pass
+  
   pass  
 
 def compare(self):
@@ -144,8 +163,10 @@ def main(config=None):
     deploy(branch=args.branch , repo=args.clone , base_dir=current_dir)
   if (step == 'all' or step == 'build') :
     build(config)   
-  else:
-      logger.error('Missing or invalid step:' + step)
+  if (step == 'all' or step == 'run') :
+      run(config)   
+
+      
 
 
   os.chdir(current_dir)    

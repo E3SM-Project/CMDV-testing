@@ -20,6 +20,10 @@
     "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
     "options" : "" 
   } ,
-  "execution" : {},
+  "execution" : {
+    "run" : "bash ./coag.csh",
+    "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
+    "options" : "" 
+  },
   "post_processing" : [{}]
 }
