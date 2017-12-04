@@ -86,7 +86,10 @@ def build(config):
   if errs :
     logger.error( output.decode() )
     logger.error( errs.decode() )
-  pass    
+
+  # Go back to top level dir
+  os.chdir(current_dir)
+  
 
 def run(self):
   """docstring for fname"""
