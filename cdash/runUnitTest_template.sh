@@ -40,7 +40,8 @@ echo
 echo "**********************************************"
 echo "Deploy"
 echo
-ls tmp 
+ls tmp
+date 
 # We want to wait for the last job to have been submitted to be complete
 # Note that this assumes that only one job is submitted per case.submit;
 # any more would require us to loop and wait for each of them
@@ -48,4 +49,18 @@ echo
 echo "**********************************************"
 echo "Build"
 echo
+
+echo
+echo "**********************************************"
+echo "Test"
+echo
+
+# # echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
+# echo
+# echo
+# echo "**********************************************"
+# echo "Deploy"
+# echo
+# ls tmp
+
 
