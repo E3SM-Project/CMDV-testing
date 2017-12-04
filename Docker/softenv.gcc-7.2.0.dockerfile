@@ -4,16 +4,13 @@ LABEL maintainer "Andreas Wilke <wilke@mcs.anl.gov> ;\
 
 RUN yum -y update && yum -y upgrade &&  yum -y install \
   bzip2 \
-  bzip2-devel \
   cmake \
   csh \
   development \
   dpkg-devel \
-  expat-devel \
   file \
   gcc \
   gcc-c++ \
-  gdbm-devel \
   git \
   groupinstall \
   kernel-devel \
@@ -27,9 +24,6 @@ RUN yum -y update && yum -y upgrade &&  yum -y install \
   m4 \
   make \
   mpfr-devel.x86 \
-  openssl-devel \
-  readline-devel \
-  sqlite-devel \
 	tcl \
   tcl-devel \
 	tk \
@@ -40,22 +34,22 @@ RUN yum -y update && yum -y upgrade &&  yum -y install \
   zlib-devel \
   && rm -rf /var/lib/apt/lists/* \
   && yum clean all
-   
+  
 	
 
 # Build and download directory, clean up
 WORKDIR /Downloads
 
-# Build GCC 5.3
+# Build GCC 7.2
 # get from:
-# wget http://mirrors.concertpass.com/gcc/releases/gcc-5.3.0/gcc-5.3.0.tar.gz
-# wget http://mirrors-usa.go-parts.com/gcc/releases/gcc-5.3.0/gcc-5.3.0.tar.gz
-RUN wget http://mirrors.concertpass.com/gcc/releases/gcc-5.3.0/gcc-5.3.0.tar.gz && \
-  tar -xf gcc-5.3.0.tar.gz && \
+# wget http://mirrors.concertpass.com/gcc/releases/gcc-7.2.0/gcc-7.2.0.tar.gz
+# wget http://mirrors-usa.go-parts.com/gcc/releases/gcc-7.2.0/gcc-7.2.0.tar.gz
+RUN wget http://mirrors.concertpass.com/gcc/releases/gcc-7.2.0/gcc-7.2.0.tar.gz && \
+  tar -xf gcc-7.2.0.tar.gz && \
   mkdir -p /gcc && \
   mkdir tmp && \
   cd tmp && \
-  /Downloads/gcc-5.3.0/configure \
+  /Downloads/gcc-7.2.0/configure \
   --prefix /gcc \
   --enable-languages=c,c++,fortran \
   --disable-multilib && \
@@ -236,77 +230,77 @@ RUN wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz && \
 #     python get-pip.py && \
 #     rm get-pip.py && \
 #     pip install numpy && \
-# #     pip install netCDF4 && \
-#
-#
+#     pip install netCDF4 && \
+
+
 # RUN yum install -y openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel
-
-ENV PATH /usr/local/bin:$PATH
-ENV LANG C.UTF-8
-
-
-  # Python 3.6.3:
-RUN   wget http://python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz  \
-  && tar -xf Python-3.6.3.tar.xz   \
-  && cd Python-3.6.3  \
-  && ./configure  --prefix=/usr/local \
-                  --enable-optimizations \
-                  --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"  \
-  && make -j "$(nproc)" \
-  && make altinstall \
-  && ldconfig \
-  && yum clean -y all \
-    \
-    && find /usr/local -depth \
-      \( \
-        \( -type d -a \( -name test -o -name tests \) \) \
-        -o \
-        \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-      \) -exec rm -rf '{}' +
-          # && rm -rf /usr/src/python
-
-# make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
-  && ln -s idle3.6 idle \
-  && ln -s pydoc3.6 pydoc \
-  && ln -s python3.6 python \
-  && ln -s python3.6m-config python-config
-
-  # && cd /usr/bin \
-  # && mv pydoc pydoc2.7 \
-  # && rm python \
-  # && ln -s /usr/local/bin/python python \
-  # && ln -s /usr/local/bin/pydoc pydoc
-
-
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 9.0.1
-
-RUN set -ex; \
-  \
-  wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' ; \
-  \
-  python get-pip.py \
-    --disable-pip-version-check \
-    --no-cache-dir \
-    "pip==$PYTHON_PIP_VERSION" \
-  ; \
-  ln -s /usr/local/bin/pip3.6 /usr/local/bin/pip ; \
-  pip --version; \
-  \
-  find /usr/local -depth \
-    \( \
-      \( -type d -a \( -name test -o -name tests \) \) \
-      -o \
-      \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-    \) -exec rm -rf '{}' +; \
-  rm -f get-pip.py
-
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
-    python2 get-pip.py && \
-    rm get-pip.py && \
-    pip install numpy && \
-    pip install netCDF4
+#
+# ENV PATH /usr/local/bin:$PATH
+# ENV LANG C.UTF-8
+#
+#
+#   # Python 3.6.3:
+# RUN   wget http://python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz  \
+#   && tar -xf Python-3.6.3.tar.xz   \
+#   && cd Python-3.6.3  \
+#   && ./configure  --prefix=/usr/local \
+#                   --enable-optimizations \
+#                   --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"  \
+#   && make -j "$(nproc)" \
+#   && make altinstall \
+#   && ldconfig \
+#   && yum clean -y all \
+#     \
+#     && find /usr/local -depth \
+#       \( \
+#         \( -type d -a \( -name test -o -name tests \) \) \
+#         -o \
+#         \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+#       \) -exec rm -rf '{}' +
+#           # && rm -rf /usr/src/python
+#
+# # make some useful symlinks that are expected to exist
+# RUN cd /usr/local/bin \
+#   && ln -s idle3.6 idle \
+#   && ln -s pydoc3.6 pydoc \
+#   && ln -s python3.6 python \
+#   && ln -s python3.6m-config python-config
+#
+#   # && cd /usr/bin \
+#   # && mv pydoc pydoc2.7 \
+#   # && rm python \
+#   # && ln -s /usr/local/bin/python python \
+#   # && ln -s /usr/local/bin/pydoc pydoc
+#
+#
+# # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+# ENV PYTHON_PIP_VERSION 9.0.1
+#
+# RUN set -ex; \
+#   \
+#   wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' ; \
+#   \
+#   python get-pip.py \
+#     --disable-pip-version-check \
+#     --no-cache-dir \
+#     "pip==$PYTHON_PIP_VERSION" \
+#   ; \
+#   ln -s /usr/local/bin/pip3.6 /usr/local/bin/pip ; \
+#   pip --version; \
+#   \
+#   find /usr/local -depth \
+#     \( \
+#       \( -type d -a \( -name test -o -name tests \) \) \
+#       -o \
+#       \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+#     \) -exec rm -rf '{}' +; \
+#   rm -f get-pip.py
+#
+# RUN wget https://bootstrap.pypa.io/get-pip.py && \
+#     python2 get-pip.py && \
+#     rm get-pip.py && \
+#     pip install numpy && \
+#     pip install netCDF4
 
 
 # ACME
