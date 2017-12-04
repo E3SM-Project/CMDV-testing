@@ -77,8 +77,7 @@ def build(config):
   
   current_dir = os.getcwd()
   os.chdir(path)
-  logger.debug("current path " + current_dir)
-  logger.debug("changing to " + path )
+
   logger.info("Executing:\t" + command)
   process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
   output , errs = process.communicate()
@@ -98,7 +97,13 @@ def run(self):
     path = path + config['build']['relative_path_to_run_command']
   
   current_dir = os.getcwd()
+  
+  logger.debug("current path " + current_dir)
+  logger.debug("changing to " + path )
+  
   os.chdir(path)
+  
+  
   
   logger.info("Executing:\t" + command)
   process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
