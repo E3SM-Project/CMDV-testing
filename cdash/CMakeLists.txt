@@ -12,6 +12,7 @@
 #
 cmake_minimum_required(VERSION 2.8)
 set(BUILDNAME "run_unit_verification_test" CACHE STRING "*Build Name* string on CDash")
+set(CTEST_SITE "Docker")
 
 # This script requires no language support, syntax has changed in CMake
 if(${CMAKE_VERSION} VERSION_GREATER 3.3.0)
