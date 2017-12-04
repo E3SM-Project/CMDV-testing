@@ -77,7 +77,8 @@ def build(config):
   
   current_dir = os.getcwd()
   os.chdir(path)
-  
+  logger.debug("current path " + current_dir)
+  logger.debug("changing to " + path )
   logger.info("Executing:\t" + command)
   process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
   output , errs = process.communicate()
