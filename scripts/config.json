@@ -1,0 +1,25 @@
+{
+  "git" : {
+    "clone" : "clone path" ,
+    "branch" : "branch name"
+  },
+  "machine_config" : {
+    "name" : "name_of_config" ,
+    "path" : "path to config file" ,
+    "machine" : "machine name" 
+  },
+  "deployment" : {
+    "run" : "",
+    "path" : "" ,
+    "in" : {} ,
+    "out" :{} ,
+    "options" : ""
+  },
+  "build" : {
+    "run" : "make",
+    "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
+    "options" : "" 
+  } ,
+  "execution" : {},
+  "post_processing" : [{}]
+}
