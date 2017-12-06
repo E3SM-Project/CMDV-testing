@@ -306,7 +306,8 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
     rm get-pip.py && \
     pip install numpy && \
-    pip install netCDF4
+    pip install netCDF4 && \
+    pip install GitPython
 
 
 # ACME
