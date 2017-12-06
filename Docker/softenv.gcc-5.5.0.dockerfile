@@ -334,11 +334,12 @@ RUN wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz && \
 #     \) -exec rm -rf '{}' +; \
 #   rm -f get-pip.py
 #
-# RUN wget https://bootstrap.pypa.io/get-pip.py && \
-#     python2 get-pip.py && \
-#     rm get-pip.py && \
-#     pip install numpy && \
-#     pip install netCDF4
+RUN wget https://bootstrap.pypa.io/get-pip.py && \
+    python2 get-pip.py && \
+    rm get-pip.py && \
+    pip install numpy && \
+    pip install netCDF4 && \
+    pip install GitPython
 
 
 # ACME

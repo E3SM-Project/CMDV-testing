@@ -304,9 +304,12 @@ RUN set -ex; \
 
 RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
-    rm get-pip.py && \
-    pip install numpy && \
-    pip install netCDF4
+    rm get-pip.py 
+    
+RUN pip install numpy && \
+    pip install netCDF4 && \
+    pip install GitPython  
+    
 
 
 # ACME
@@ -315,5 +318,6 @@ RUN mkdir scratch && \
   mkdir -p cime/utils/git && \
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh && \
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
-
+  
+ 
 WORKDIR /Develop
