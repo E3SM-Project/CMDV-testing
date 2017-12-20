@@ -1,2 +1,6 @@
 *.html
+*.pdf
 .ipynb_checkpoints
+__pycache__
+addcite
+jupyter_nbconvert_config.py
