@@ -65,6 +65,9 @@ RUN wget http://mirrors.concertpass.com/gcc/releases/gcc-4.4.7/gcc-4.4.7.tar.gz 
   rm -rf *
 ENV PATH /gcc:/gcc/bin:$PATH
 
+# gcc
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/gcc/lib64/
+
 # CMAKE 3.7.1
 WORKDIR /
 RUN wget https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz && \
@@ -77,8 +80,7 @@ RUN wget https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz && \
  rm cmake-3.7.1.tar.gz
 ENV PATH /cmake-3.7.1.bin:$PATH
 
-# gcc
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/gcc/lib64/
+
 
 # MPICH 3.1.4
 WORKDIR /Downloads
