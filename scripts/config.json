@@ -1,15 +1,31 @@
 {
+  "hints" : {
+    "directories" : {
+      "deploy" : "/tmp/" ,
+      "build"  : "/tmp/" ,
+      "run"    : "" ,
+      "postproc" : ""  ,
+      "data"   : "" ,
+    "archive_test_results" : {
+      "execute" : "boolean" ,
+      "destination" : "url"
+    }  
+    }
+  },
   "git" : {
-    "clone" : "clone path" ,
+    "clone" : null  ,
     "branch" : "branch name"
   },
+  
   "machine_config" : {
     "name" : "name_of_config" ,
     "path" : "path to config file" ,
     "machine" : "machine name" 
   },
+  
+
   "deployment" : {
-    "run" : "",
+    "run" : "cp -R /Users/Andi/Development/CMDV/CMDV-Verification /Users/Andi/Development/CMDV/tmp/",
     "path" : "" ,
     "in" : {} ,
     "out" :{} ,
@@ -20,10 +36,11 @@
     "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
     "options" : "" 
   } ,
-  "execution" : {
+  "run" : {
     "run" : "bash ./coag.csh",
     "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
     "options" : "" 
   },
-  "post_processing" : [{}]
+
+  "postproc" : [{}]
 }
