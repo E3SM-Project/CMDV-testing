@@ -15,22 +15,33 @@ import xml.etree.ElementTree as xmlet
 
 
 
-def deploy(repo , branch=None , base_dir=None , command="git clone" ):
+def deploy(config , repo=None , branch=None , base_dir=None , command="git clone" ):
   """docstring for fname"""
+  
+  
   logger.info("Deploying source code from: " + repo )
   
   # repository = git.Repo(path=repo)
   # repository = repository.clone(path=repo)
-
-  
+  if config and config.git :
+    if not repo and config.git.clone :
+      repo = config.git.clone
+    if not branch and config.git.branch :
+      branch = config.git.branch
     
   if repo.find('https') > -1 :
     logger.info("Cloning from URL: " + repo )
-    pass
-  elif repo.find('git@') > -1 :  
-    logger.info("Cloning using ssh: " + repo )
     process = subprocess.Popen(["git", "clone" , repo], stdout=subprocess.PIPE)
     output = process.communicate()[0]
+  elif repo.find('git@') > -1 :  
+    logger.info("Cloning using ssh: " + repo )
+    
+    # Check if ssh config in path?
+    
+    process = subprocess.Popen(["git", "clone" , repo], stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+  elif config.deployment.run is not None :  
+    logger.info("Executing deployment config")
   else:
     
     path = None
@@ -169,11 +180,13 @@ def main(config=None):
   logger.debug('Executing step:\t' + step) 
   
   if (step == 'all' or step == 'deploy') :
-    deploy(branch=args.branch , repo=args.clone , base_dir=current_dir)
+    deploy(config , branch=args.branch , repo=args.clone , base_dir=current_dir)
   if (step == 'all' or step == 'build') :
     build(config)   
   if (step == 'all' or step == 'run') :
-      run(config)   
+    run(config) 
+  if (step == 'all' or step == 'postproc') :
+    postproc(config)    
 
       
 
