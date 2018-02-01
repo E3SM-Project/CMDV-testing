@@ -32,10 +32,10 @@ class Shock(Archive):
     
     
   
-  def push(self, directory = '' , report=None) :
+  def push(self, directory = '', report=None) :
     
     # Read dir
-    pprint(self.__dict__)
+    
     
     directory = directory if directory else self.source
     
@@ -49,7 +49,7 @@ class Shock(Archive):
         logger.info("Pushing " + self.logfile)
         
     if report :
-      pprint(report)
+      pass
     else:
       logger.debug("No Report provided")  
     
