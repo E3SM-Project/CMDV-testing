@@ -86,7 +86,7 @@ class TestConfig(object):
   def load(self, config_file) :
 
     config = None
-    pprint(config_file)
+    # load config file
     if (config_file and os.path.exists(config_file)):
       with open(config_file, 'r') as f:
            config = json.load(f)
