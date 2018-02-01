@@ -1,5 +1,8 @@
 import time 
 import json
+import copy
+import sys
+import os
 from pprint import pprint
 from Report.LocalLogging import getLogger
 
@@ -31,6 +34,17 @@ class Report():
     self.tests.append(testRun)  
       
   
+  def write(self, directory , name = 'test-session.log'):
+  
+    if not directory:
+      directory = "./"  
+    fname = directory + name  
+    f = open( fname , "w")
+    f.write(self.toJSON())
+    f.close()
+    
+    return os.path.abspath(fname)
+     
   
   def toJSON(self) :
     return json.dumps(self.toDict())
@@ -39,13 +53,16 @@ class Report():
     
     logger.debug("Dumping Report " + self.name if self.name else "unknown" )
     # Create dict , remember calls are by reference
-    d = self.__dict__
+    c = copy.deepcopy(self)
+    d = c.__dict__
+    
+    
     
     # Array for new dicts
     tests_runs = []
    
       
-    for test in self.tests :
+    for test in c.tests :
       logger.debug("Dumping test " + test.name)
       t = test.__dict__
       # Array for new step dicts
@@ -144,6 +161,7 @@ class TestStep():
             "failed" : None ,
           }
       self.message = None
+      self.error   = None
       self.location = { 'URI' : None }    
       self.reports = [] 
       self.dir = None
