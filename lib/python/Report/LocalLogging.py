@@ -38,8 +38,6 @@ class LocalLogging():
   def __init__(self, logger_name = __name__ ):
     # super(TestConfig, self).__init__()
 
-    pprint("INIT")
-
     logger = None
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
