@@ -33,7 +33,7 @@ echo "**********************************************"
 echo "Running UnitTest/Verification suite :"
 echo
 
-
+echo `python ./cmdv-test-runner.py --config /CMDV/CMDV-testing/Config/test_config.json --archive True`
 
 # cat CaseStatus so it is seen on CDash
 echo
