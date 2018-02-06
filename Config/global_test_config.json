@@ -1,0 +1,42 @@
+{  
+  "hints" : {  
+    "cime": {
+      "machine_config" : {
+        "name" : "name_of_config" ,
+        "path" : "path to config file" ,
+        "machine" : "machine name" 
+      }
+    },
+    "directories" : {
+      "deploy" : "" ,
+      "build"  : "" ,
+      "run"    : "" ,
+      "postproc" : ""  ,
+      "data"   : "" 
+    },
+    "archive_test_results" : {
+      "execute" : "1" ,
+      "destination" : "url"
+    },
+    "git" : {
+      "clone" : null  ,
+      "branch" : "branch name"
+      }
+    },
+
+  
+  "steps" : {
+    "deploy" : {
+      "run" : "cp -R /Users/Andi/Development/CMDV/CMDV-Verification /Users/Andi/Development/CMDV/tmp/",
+      "path" : "" ,
+      "in" : {} ,
+      "out" :{} ,
+      "options" : ""
+    },
+    "build" : {
+      "run" : "make",
+      "relative_path_to_run_command" : "tests/mam/mam_box_coag/src",
+      "options" : "" 
+    }    
+  }
+}

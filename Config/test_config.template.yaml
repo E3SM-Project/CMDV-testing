@@ -1,0 +1,89 @@
+
+hints : 
+  # cime specifix options - not implemented   
+  cime :
+    machine_config : 
+      # name ?
+      name : null 
+      path : null
+      # to be executed on specified machines only
+      machine : null
+  # directories for steps and data    
+  directories : 
+    deploy : null 
+    build  : null
+    run    : null
+    postproc : null  
+    data   : null 
+  archive :
+    # execute test archiving and reporting 
+    execute : false 
+    # URI for test reporting
+    destination : null
+  # Git options - used for deployment and to find project boundaries   
+  git : 
+    clone : null  
+    branch : null
+
+# list of steps to be executed - every step is optional but execution order is deploy, build, run, postproc
+steps : 
+  # deploy step
+  deploy : 
+    # relative path to run command withiin project/repo dir
+    path : null 
+    # name of deploy command
+    baseCommand : null
+    # List of constant command line arguments , either as strings or CommandLineBinding types 
+    arguments: 
+      - null
+      - null 
+    inputs : null 
+    outputs : 
+      OUTPUT_NAME :
+        type: File
+        outputBinding:
+          glob: FILE_NAME 
+  build :
+    run : null
+    # relative path to run command withiin project/repo dir
+    path: null
+    inputs" : null 
+    outputs : null 
+  run : 
+    baseCommand : [ string ]
+    # relative path to run command withiin project/repo dir
+    path: null
+    inputs : null 
+    outputs : null
+  postproc : [ steps | cwl-tool | cwl-workflow ]
+
+
+
+# Common step elements:
+#   # relative path to run command withiin project/repo dir if not in $PATH
+#   path : null
+#   # command line tool
+#   baseCommand : [ string ]
+#   # mapping of command line options
+#   arguments:
+#   inputs :
+#     INPUT_NAME_ID :
+#       type: File | Directory | string | int
+#       inputBinding:
+#         # sorting position for command line input option
+#         position: int
+#         # prefix for value command line input option
+#         prefix: string
+#         # value for INPT_NAME_ID
+#         valueFrom: string
+#   # mapping of outputs
+#   outputs :
+#     OUTPUT_NAME :
+#       # type of output - usually File or Directory
+#       type: File | Directory | string | int
+#       # search pattern for output list - array will be assigned to OUTPUT_NAME
+#       outputBinding:
+#         glob: FILE_NAME
+#
+    
+# CommandLineBinding : http://www.commonwl.org/v1.0/CommandLineTool.html#CommandLineBinding    
