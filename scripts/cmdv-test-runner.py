@@ -15,8 +15,8 @@ from pprint import pprint
 import Archive
 import Report
 from Config import TestConfig as Config
-from Report.LocalLogging import LocalLogging as ll 
-from Report.LocalLogging import getLogger
+from Report.TestRunnerLogging import TestRunnerLogging as ll 
+from Report.TestRunnerLogging import getLogger
 from Report import Tests
 # from Report import LocalLogging as ll
 
@@ -109,10 +109,17 @@ def execute_step(step , environment=None) :
   if 'arguments' in step and isinstance(step['arguments'] , list ):
     for part in step['arguments'] :
       cmd.append(part)
-          
+  
+  logger.debug("Executing: " + " ".join(cmd) )     
+  pprint( subprocess.call( cmd , stdin=None, stdout=None, stderr=None, shell=True) )   
+
+  process = subprocess.Popen(['echo ERROR' ], stdout=subprocess.PIPE , shell=True)
+  out, err = process.communicate()
+  print(out)
   process = subprocess.Popen( cmd ,  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
   output , errs = process.communicate()
   
+  pprint(output)
   if output :
     logger.info("Output:" + output.decode())
     receipt['stdout'] = output.decode()
@@ -140,9 +147,10 @@ def execute_step(step , environment=None) :
             pass
         else:
           logger.debug("Unknown type " + k['type'] + " - not implemented")  
+  pprint(receipt)        
   return receipt       
       
-def create_test_summary(receipt) :
+def create_test_step_summary(receipt , step_name) :
   
   # call test_checker module here
   # for now go through output and count "ERROR" strings
@@ -151,29 +159,96 @@ def create_test_summary(receipt) :
   # "stdout" : None ,
   # "exit_status" : None ,
   
-  for k in receipt :
+  if not step_name :
+    step_name = 'unkown'
+    logger.error('No step name provided - setting to "unknown"')
+  
+  summary = Tests.Step(step_name)
+  summary.tests['total']  = 1 # assume at least one test
+  summary.tests['failed'] = 0
+  
+  # setting default to success - change if errors
+  if receipt['exit_status'] :
+    summary.status = 'failed' 
+    summary.error  =  True
+    summary.message = 'Script execution failed'
+  else:
+    summary.status = 'success' 
+    summary.error  =  False
+    summary.message = None
     
+#   summary.name = name
+#   summary.status = None
+#   summary.tests = {
+#         "total" : None ,
+#         "success" : None ,
+#         "failed" : None ,
+#       }
+#   summary.message = None
+#   summary.error   = None
+#   summary.location = { 'URI' : None }
+#   summary.reports = []
+#   summary.dir = None
+  
+  # Count errors in stdout, stderr and test output files
+  errors_in_reports = 0
+  
+  for k in receipt :
+    results = None
+    logger.debug('Checking ' + k)   
     if receipt[k] :
+      logger.debug('Value for ' + k)   
       if isinstance(receipt[k] , list) :
         for entry in receipt[k] :
           # test if file and grep errors in file
-          pass
+          if os.path.isfile(entry) :
+            results = parse_test_result_file(entry)
+          else:
+            results = parse_test_result_text(entry)  
       else:
         if os.path.isfile(receipt[k]) :
           # test if file and grep errors in file
-          pass
+          logger.debug('Checking file from ' + k) 
+          results = parse_test_result_file(file_name)
         else:
           # grep errors in text
-          results = re.findall(receipt[k], "ERROR")  
-          if results and len(results) :
-            logger.debug("Found " + len(results) + " errors.")
-          else:
-            logger.debug("Found no errors.")
-            pass
+          logger.debug('Checking text from ' + k)   
+          results = parse_test_result_text(receipt[k])
+          
+            
+      if results and len(results) :
+        logger.debug("Found " + str(len(results)) + " errors.")
+        summary.tests['failed'] = summary.tests['failed'] + len(results)
+        summary.status = 'failed'
+        summary.error = True 
+        summary.message = 'Found errors in report' 
+      else:
+        logger.debug("Found no errors.")
+        pass
+        
     else:
       logger.debug('No value for ' + k)   
   sys.exit(1)
-  pass       
+  
+  return summary
+  
+def parse_test_result_text(text) :    
+  """find error string in text """
+  logger.debug('Checking text for  ERROR ') 
+  if not text:
+    logger.error("No text provided")
+    sys.exit(1)
+  results = re.findall("ERROR" , str(text) )
+  pprint(results)
+  return results 
+  
+def parse_test_result_file(file_name) :
+  """find error string in file"""
+  textfile = open(file_name, 'r')
+  filetext = textfile.read()
+  textfile.close()
+  matches = parse_test_result_text(filetext) 
+  return matches        
       
 def deploy(current_config , repo=None , branch=None , base_dir=None , command="git clone" ):
   """docstring for fname"""
@@ -380,10 +455,12 @@ def run(config , step_report=None):
     bin_path = build_dir + run['relative_path_to_run_command']
   
   if 'baseCommand' in run :    
+    logger.debug("Found baseCommand in run - executing step")
     receipt = execute_step(run , environment={ "PATH" : [bin_path] }) 
-    summary = create_test_summary(receipt)
+    summary = create_test_step_summary(receipt , "run" )
   else:
     # support for older style - deprecated 
+    logger.debug("No baseCommand in run - executing run command")
     command = bin_path + "/" + run['run']
 
     execute_command([command] , config=config , step_report=step_report)
