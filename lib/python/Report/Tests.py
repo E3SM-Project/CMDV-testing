@@ -4,7 +4,7 @@ import copy
 import sys
 import os
 from pprint import pprint
-from Report.LocalLogging import getLogger
+from Report.TestRunnerLogging import getLogger
 
 logger = None
 logger = getLogger(__name__)
@@ -166,5 +166,21 @@ class TestStep():
       self.reports = [] 
       self.dir = None
                      
-       
+class Step(): 
+  
+   def __init__(self , name ):
+     
+      self.name = name
+      self.status = None
+      self.tests = {
+            "total" : None ,
+            "success" : None ,
+            "failed" : None ,
+          }
+      self.message = None
+      self.error   = None
+      self.location = { 'URI' : None }    
+      self.reports = [] 
+      self.dir = None
+                            
           
