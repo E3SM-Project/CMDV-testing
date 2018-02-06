@@ -3,7 +3,7 @@ import sys
 import logging
 import json
 from pprint import pprint
-from Report.LocalLogging import getLogger
+from Report.TestRunnerLogging import getLogger
 
 logger = None
 logger = getLogger(__name__)
@@ -36,7 +36,7 @@ class TestConfig(object):
         },
       "archive" : {
         "module" : "Archive" ,
-        "archive_test_results" : True ,
+        "archive_test_results" : False ,
         "destination" : None
       },  
     }
@@ -78,7 +78,9 @@ class TestConfig(object):
  
      if not os.path.exists(self.defaults['directories'][d]):
        os.makedirs(self.defaults['directories'][d])
+       
 
+       
     
       
  
@@ -158,6 +160,7 @@ class TestConfig(object):
     if not config_file :
       logger.debug("No global config file found")
     else:
+      logger.debug("Loading global config file " + config_file)
       self.tests.append(self.load( config_file )) 
       if not self.global_config:
         self.global_config = self.load(config_file)
