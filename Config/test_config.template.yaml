@@ -29,7 +29,7 @@ hints :
 steps : 
   # deploy step
   deploy : 
-    # relative path to run command withiin project/repo dir
+    # relative path to base command within project/repo dir
     path : null 
     # name of deploy command
     baseCommand : null
