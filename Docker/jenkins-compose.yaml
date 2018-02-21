@@ -10,6 +10,7 @@ services:
      - /Users/Andi/Development/CMDV/CMDV-testing/Examples/flashTestExample:/application
   mydockerslave:
      image: "cmdv/jenkinsslave:latest"
+     privileged: true
      ports: 
      - "22:22" 
 volumes:
