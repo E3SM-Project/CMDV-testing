@@ -567,7 +567,9 @@ def main(config=None):
 
   
   
-  if (args.archive or  ( "archive" in global_config and global_config['archive']['execute'])) :
+  if (args.archive or  ( "archive" in global_config and \
+                         "execute" in global_config['archive'] and \
+                         global_config['archive']['execute'])) :
     logger.info("Archiving session")
     
     module_name="Archive." + global_config['archive']['module']
