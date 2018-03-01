@@ -11,7 +11,7 @@ logger.setLevel(logging.DEBUG)
 class Archive :
   """docstring for ClassName"""
   
-  def __init__(self, logger_name=None):
+  def __init__(self, logger_name=None , report=None):
     
     if logger_name :
       logger = logging.getLogger(logger_name)

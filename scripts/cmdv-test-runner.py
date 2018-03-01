@@ -177,18 +177,18 @@ def create_test_step_summary(receipt , step_name) :
     summary.error  =  False
     summary.message = None
     
-#   summary.name = name
-#   summary.status = None
-#   summary.tests = {
-#         "total" : None ,
-#         "success" : None ,
-#         "failed" : None ,
-#       }
-#   summary.message = None
-#   summary.error   = None
-#   summary.location = { 'URI' : None }
-#   summary.reports = []
-#   summary.dir = None
+    # summary.name = name
+    # summary.status = None
+    # summary.tests = {
+    #       "total" : None ,
+    #       "success" : None ,
+    #       "failed" : None ,
+    #     }
+    # summary.message = None
+    # summary.error   = None
+    # summary.location = { 'URI' : None }
+    # summary.reports = []
+    # summary.dir = None
   
   # Count errors in stdout, stderr and test output files
   errors_in_reports = 0
@@ -224,11 +224,10 @@ def create_test_step_summary(receipt , step_name) :
         summary.message = 'Found errors in report' 
       else:
         logger.debug("Found no errors.")
-        pass
         
     else:
       logger.debug('No value for ' + k)   
-  sys.exit(1)
+
   
   return summary
   
@@ -253,6 +252,8 @@ def parse_test_result_file(file_name) :
 def deploy(current_config , repo=None , branch=None , base_dir=None , command="git clone" ):
   """docstring for fname"""
   
+  error = 0
+  error_message = ''
   
   logger.info("Deploying source code from: " +  ( repo if repo else "unknown" ) )
   
@@ -293,10 +294,11 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
 
       logger.info("Executing deployment config")
       deploy = current_config["steps"] ["deploy"]
-      
+      logger.debug( os.getcwd() )
       if  "run" in deploy and deploy["run"] is not None :
         # Build command
         command = deploy["run"]
+        logger.debug(os.getcwd())
         logger.info("Running " + deploy["run"] )
         process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
         output , errs = process.communicate()
@@ -305,11 +307,11 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
         if errs :
           logger.error( output.decode() )
           logger.error( errs.decode() )
+          error_message = errs.decode()
         
+        error = process.returncode
         logger.debug("Return code = " + str(process.returncode) )
-      
-     
-          
+                
   else:
     logger.debug("No config found")
     path = None
@@ -342,8 +344,11 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
         logger.info("Executing script: " + path )  
     
     else:
-      logger.error('Invalid or unsupported URI:\t' + repo)    
-  pass  
+      logger.error('Invalid or unsupported URI:\t' + repo)
+  
+  return (error, error_message)        
+  
+    
   
 def build(config):
   """docstring for fname"""
@@ -351,57 +356,119 @@ def build(config):
   build_dir = None
   deploy_dir = None
   
-  if global_config and \
-    "hints" in  global_config and \
-    "directories" in global_config["hints"] and \
-    "build" in global_config["hints"]["directories"] :
-    build_dir = global_config["hints"]["directories"]["build"]
+  
   if config and \
     "hints" in config and \
     "directories" in config["hints"] and \
     "build" in config["hints"]["directories"] :
     build_dir = config["hints"]["directories"]["build"]  
+  elif global_config and \
+    "directories" in global_config and \
+    "build" in global_config["directories"] :
+    build_dir = global_config["directories"]["build"]  
+  else:  
+    logger.error("No build directory")
+    logger.debug(pprint(config))
+    logger.debug(pprint(global_config))
+    sys.exit("No build directory")
     
-  if global_config and \
-    "hints" in  global_config and \
-    "directories" in global_config["hints"] and \
-    "deploy" in global_config["hints"]["directories"] :
-    deploy_dir = global_config["hints"]["directories"]["deploy"]
   if config and \
     "hints" in config and \
     "directories" in config["hints"] and \
     "deploy" in config["hints"]["directories"] :
     deploy_dir = config["hints"]["directories"]["deploy"]  
+  elif global_config and \
+    "directories" in global_config and \
+    "deploy" in global_config["directories"] :
+    deploy_dir = global_config["directories"]["deploy"]
+  else:
+    logger.error("No deploy directory")
+    logger.debug(pprint(config))
+    logger.debug(pprint(global_config))
+    sys.exit("No deploy directory") 
+      
+  
+  
+  
+  logger.debug( " ".join(["Dirs in build:", str(build_dir) , str(deploy_dir)]))
+  if not deploy_dir or not build_dir :
+    logger.error("No direcories for deploy and build")
+    pprint(config)
+    pprint(global_config)
+    sys.exit("No direcories for deploy and build")
+  else:
+    pprint(config)
+    pprint(global_config)  
+  
+  # Check for deploy and build dir - build dir should not be same as deploy dir
+  logger.debug(deploy_dir)
+  logger.debug(build_dir)
   
   if deploy_dir != build_dir :
     logger.info("Creating build dir and copying code")
+    logger.info("Copying code from " + deploy_dir + " to " + build_dir)
+    
+    process = subprocess.Popen(["cp" , "-R" , deploy_dir , build_dir],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=False)
+    output , errs = process.communicate()
+    if output :
+      logger.info("Output:" + output.decode())
+    if errs :
+      logger.error( output.decode() )
+      logger.error( errs.decode() )
+    
+    # conflict if directory exists
+    # shutil.copytree(deploy_dir, build_dir)
+    
   else: 
-    logger.info("Same deploy and build directory: " + build_dir ) 
+    logger.info("Same deploy and build directory: " + str(build_dir) ) 
   
   build = None
   
   if config and "steps" in config and "build" in config["steps"] :
     build = config["steps"]["build"]
   
-  command = build['run'] 
+  command = None
+  if "run" in build :
+    command = build['run']
+  elif "baseCommand" in build :
+    command = build['baseCommand']   
+  else:
+    logger.error("No execution in build step")
+      
   path    = build_dir
+  # set path to build command
   if 'relative_path_to_run_command' in build and build['relative_path_to_run_command'] :
     path = path + build["relative_path_to_run_command"]
+  elif 'path' in build and build['path']:
+    path = path + build["path"]    
   else:
     logger.error( "Missing path to build command" )  
   
+  if not path or not os.path.isdir(path):
+    logger.error("Missing build dir")
+    # update report and exit test - missing
+    return (1 , "Missing build dir")
+    
   logger.debug( "Switching into " + path )  
   current_dir = os.getcwd()
   os.chdir(path)
 
-  logger.info("Executing:\t" + command)
-  process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
-  output , errs = process.communicate()
-  if output :
-    logger.info("Output:" + output.decode())
-  if errs :
-    logger.error( output.decode() )
-    logger.error( errs.decode() )
+  # only execute if command
+  if command :
+    logger.info("Executing:\t" + str(command))
+    if type(command) is str : 
+      process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
+    elif type(command) is list :
+      process = subprocess.Popen(command,  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
+    else:
+      logger.error("Can not run command neither string nor list of strings")
+      sys.exit("Wrong type")    
+    output , errs = process.communicate()
+    if output :
+      logger.info("Output:" + output.decode())
+    if errs :
+      logger.error( output.decode() )
+      logger.error( errs.decode() )
 
   # Go back to top level dir
   os.chdir(current_dir)
@@ -410,9 +477,10 @@ def run(config , step_report=None):
   """docstring for fname"""
   
   
-  build_dir = None
-  deploy_dir = None
-  run = None
+  build_dir   = None
+  deploy_dir  = None
+  run_dir     = None
+  run         = None
   
   if config and "steps" in config and "run" in config["steps"] :
     run = config["steps"]["run"]
@@ -443,6 +511,12 @@ def run(config , step_report=None):
     run_dir = build_dir
   
   # Change into run directory  
+  
+  if not run_dir or not os.path.isdir(run_dir):
+    logger.error("Missing run dir")
+    # update report and exit test - missing
+    return (1 , "Missing run dir")
+  
   current_dir = os.getcwd()
   logger.debug("current path " + current_dir)
   logger.debug("changing to " + run_dir )
@@ -470,12 +544,17 @@ def run(config , step_report=None):
     output , errs = process.communicate()
     if output :
       logger.info("Output:" + output.decode())
+      step_report.message = output.decode()
+    else:
+      step_report.message = "YEAH"
     if errs :
       logger.error( output.decode() )
       logger.error( errs.decode() )
    
   # Change back into current dir
   os.chdir(current_dir)
+  pprint(step_report)
+  return step_report
   
   
  
@@ -529,6 +608,9 @@ def main(config=None):
     else:
       test_name = str(counter)
     
+    # set to true if a step in the test failed and ignore next depending steps
+    test_run_error = 0
+    
     # Setup one run per config file  
     report_for_current_test_run = report.init_tests_run(test_name)
       
@@ -552,7 +634,15 @@ def main(config=None):
 #             logger.info('Step ' + step + " finished")
 
           if (step == 'deploy'): 
-            deploy(test , branch=args.branch , repo=args.clone , base_dir=current_dir)
+            (error , message) = deploy(test , branch=args.branch , repo=args.clone , base_dir=current_dir)
+            if ((error != 0)) :
+              logger.error('Error in deploy: ' + message)
+              logger.error('Error: ' + str(error))
+              
+              # update test report - missing
+              # exit loop - next steps can't succeed
+              break
+              sys.exit(1)
           if (step == 'build') :
             logger.info('Build step')
             build(test)
