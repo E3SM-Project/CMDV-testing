@@ -1,0 +1,14 @@
+
+***** GLOBAL STATISTICS (    24 MPI TASKS) *****
+
+$Id: gptl.c,v 1.157 2011-03-28 20:55:18 rosinski Exp $
+'count' is cumulative. All other stats are max/min
+name                processes  threads        count      walltotal   wallmax (proc   thrd  )   wallmin (proc   thrd  )
+Total                      24       24 2.400000e+01   7.065181e+02    29.439 (     8      0)    29.438 (    18      0)
+init                       24       24 2.400000e+01   6.835644e-01     0.029 (    16      0)     0.028 (    18      0)
+sweq                       24       24 2.400000e+01   7.058262e+02    29.410 (     0      0)    29.409 (    19      0)
+repro_sum_int              24       24 1.075200e+04   1.002959e+00     0.051 (     4      0)     0.024 (     0      0)
+interp_movie_output        24       24 5.186400e+04   2.473861e+00     0.109 (    23      0)     0.097 (     2      0)
+biwk_bexchV                24       24 1.555200e+05   1.001744e+02     4.498 (    23      0)     3.912 (    16      0)
+t_prf                       0        0 0.000000e+00   0.000000e+00     0.000 (     0      0)     0.000 (     0      0)
+
