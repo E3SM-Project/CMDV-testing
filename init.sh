@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo $0
+
 repo_dir=`dirname "$0"`
 current_dir=`pwd`
 
