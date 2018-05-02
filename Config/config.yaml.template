@@ -1,0 +1,61 @@
+cmdvVersion: v1.0
+class: CMDVGlobalConfig
+
+label: Global-Config
+doc:  |
+    Template for global config
+    
+
+hints:
+  cime: {}
+  git: {}
+  docker: {}
+
+repo:
+  path: URI  # e.g http://... | file://.... | ./tmp , default path of config file
+  type: enum # e.g git|local|...  , default local
+  
+
+tests:
+  suffix: string # suffix for test config file, default test.json
+
+session:
+  prefix: none   # prefix for session dir
+  
+dashboard:
+  path: URI
+  type: enum # e.g cdash| cmdv-testing |...  , default local 
+  
+archive:
+  path: URI
+  type: enum # e.g cdash| cmdv-testing |...  , default local
+  
+workflow:
+  steps: ["deploy" , "build" , "run" "postprocessing"]
+  
+custom: {}       
+
+
+
+# requirements:
+#   - class: SchemaDefRequirement
+#     types:
+#       - type: enum
+#         name: repo_types
+#         label: Repo types
+#         symbols:
+#           - git
+#           - local
+#       - type: record
+#         label: Repository type
+#         name: Repository
+#         fields:
+#           - name: location
+#             type: URI
+#             doc: |
+#               This may be a relative reference, in which case it must be resolved using the base IRI
+#               of the document.
+#           - name: type
+#             label: whole numbers
+#             doc: Type of repository
+#             type: repo_types

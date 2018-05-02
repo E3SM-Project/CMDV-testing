@@ -1,0 +1,48 @@
+{  
+  "hints" : {  
+    "cime": {
+      "machine_config" : {
+        "name" : "name_of_config" ,
+        "path" : "path to config file" ,
+        "machine" : "machine name" 
+      }
+    },
+    "directories" : {
+      "deploy" : "/tmp/testing/deploy/CMDV-Verification" ,
+      "build"  : "/tmp/testing/deploy/" ,
+      "run"    : "/tmp/testing/run/" ,
+      "postproc" : null  ,
+      "data"   : null 
+    },
+    "archive_test_results" : {
+      "module" : "Archive" , 
+      "execute" : "boolean" ,
+      "destination" : "url"
+    },  
+  "git" : {
+    "clone" : null  ,
+    "branch" : null
+    }
+  },
+  "steps" : {
+    "deploy" : {
+      "run" : "cp -R /CMDV/CMDV-Verification /tmp/testing/deploy/",
+      "path" : "" ,
+      "in" : {} ,
+      "out" :{} ,
+      "options" : ""
+    },
+    "build" : {
+      "run" : "cp coag_a1_driver.F90 driver.F90 && make",
+      "relative_path_to_run_command" : "CMDV-Verification/tests/mam/mam_box_coag/src",
+      "options" : "" 
+    } ,
+    "run" : {
+      "run" : "dd.x",
+      "relative_path_to_run_command" : "CMDV-Verification/tests/mam/mam_box_coag/src/",
+      "options" : "" 
+    },
+
+    "postproc" : [{}]
+  }
+}
