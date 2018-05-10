@@ -14,13 +14,23 @@ hints:
 repo:
   path: URI  # e.g http://... | file://.... | ./tmp , default path of config file
   type: enum # e.g git|local|...  , default local
-  
+
+directories:
+  working: string           # parent directory for session directories 
+  session: null             # ${directories.working}/session.name/
+  test: null                # ${directories.session}/test.name/ 
+  deploy: ./deploy          # ${directories.test}/./deploy/ 
+  build: ./build            # ${directories.test}/./build/ 
+  run: ./run                # ${directories.test}/./run/ 
+  postprocessing: ./run     # ${directories.test}/./run/ 
+   
 
 tests:
   suffix: string # suffix for test config file, default test.json
 
 session:
   prefix: none   # prefix for session dir
+  
   
 dashboard:
   path: URI
