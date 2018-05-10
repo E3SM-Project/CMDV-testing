@@ -1,0 +1,42 @@
+<!--external javascript files-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="Retina/js/bootstrap.min.js"></script>
+    
+    <!--basic javascript files-->
+
+    <script type="text/javascript" src="Retina/js/stm.js"></script>
+    <script type="text/javascript" src="Retina/js/retina.js"></script>
+    
+    <!--bootstrap style-->
+    <link rel="stylesheet" type="text/css" href="Retina/js/bootstrap.css">
+    
+    <!--initialization-->
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+        stm.init({});
+        Retina.init({ renderer_resources: "Retina/renderers" ,
+                      widget_resources: "Retina/widgets" ,
+                      library_resources: "Retina/js" });
+        alert( document.getElementById("content") ) ;
+        var field = document.getElementById("content")
+        field.innerHTML = "New text";             
+        Retina.load_widget("Example").then( function () {
+                     Retina.Widget.create("Example", { "target": document.getElementById("content")});
+        	});
+      });
+    </script>
+    
+    <title>TESTING</title>
+  </head>
+  <body>
+    <h2>What a wonderful world</h2>    
+    <p>Say hello to it!</p>
+
+ 	  <!--the content div-->
+ 	  <div id="content">I like not world!</div>
+  </body>
+</html>
