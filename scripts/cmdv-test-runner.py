@@ -14,22 +14,25 @@ import importlib
 from pprint import pprint
 import Archive
 import Report
-from Config import TestConfig as Config
+from Deploy import Deploy
+# from Config import TestConfig as Config
+#from Config import TestWorkflow as Workflow 
+from Config import Config as Config
 from Report.TestRunnerLogging import TestRunnerLogging as ll 
 from Report.TestRunnerLogging import getLogger
 from Report import Tests
+from Workflows.CMDV import Workflow 
+#from Workflows.Test import Test as Workflow
 # from Report import LocalLogging as ll
 
 import xml.etree.ElementTree as xmlet
 
 
-# def eval(x):
-#   if not x:
-#     return "undefined"
-#   return x
-# print("Hello: "+eval(x))
-# x = "world"
-# print("Hello: "+eval(x))
+import yaml
+
+
+
+
 
 
 def execute_command(cmd , config=None , step_report=None) :
@@ -192,12 +195,19 @@ def create_test_step_summary(receipt , step_name) :
   
   # Count errors in stdout, stderr and test output files
   errors_in_reports = 0
-  
+
   for k in receipt :
+     
     results = None
-    logger.debug('Checking ' + k)   
+    logger.debug('Checking ' + k)
+    
+    # skip if exit_status
+    if (k == "exit_status"):
+      continue
+         
     if receipt[k] :
-      logger.debug('Value for ' + k)   
+      logger.debug('Value for ' + k + ": " + receipt[k]) 
+      pprint(receipt[k])  
       if isinstance(receipt[k] , list) :
         for entry in receipt[k] :
           # test if file and grep errors in file
@@ -206,7 +216,7 @@ def create_test_step_summary(receipt , step_name) :
           else:
             results = parse_test_result_text(entry)  
       else:
-        if os.path.isfile(receipt[k]) :
+        if receipt[k] and os.path.isfile(receipt[k]) :
           # test if file and grep errors in file
           logger.debug('Checking file from ' + k) 
           results = parse_test_result_file(file_name)
@@ -228,7 +238,7 @@ def create_test_step_summary(receipt , step_name) :
     else:
       logger.debug('No value for ' + k)   
 
-  
+
   return summary
   
 def parse_test_result_text(text) :    
@@ -249,7 +259,7 @@ def parse_test_result_file(file_name) :
   matches = parse_test_result_text(filetext) 
   return matches        
       
-def deploy(current_config , repo=None , branch=None , base_dir=None , command="git clone" ):
+def deploy(current_config , repo=None , branch=None , base_dir=None , repo_dir=None , command="git clone" ):
   """docstring for fname"""
   
   error = 0
@@ -269,7 +279,10 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
     if "git" in hints :
       logger.debug("Checking git section")
       if not repo and "clone" in hints['git'] :
-        repo = hints['git']['clone'] 
+        repo = hints['git']['clone']
+      else:
+        logger.debug("No git repo to clone") 
+        repo = None   
       if not branch and "branch" in hints['git'] :
         branch = hints['git']['branch']
     
@@ -286,6 +299,24 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
     output = process.communicate()[0]
   
   # Checking steps in config - if deployment step build command line argument and execute  
+  elif repo_dir and os.path.isdir(repo_dir) and config.deploy_dir() :
+    logger.info("Copying repo from " + repo_dir + " to " + config.deploy_dir() ) 
+    logger.debug( "Current: " + os.getcwd() + "\tRepo dir: " + repo_dir)
+    #logger.debug( current_config )
+    command = "cp -R " + repo_dir + " " + config.deploy_dir()
+
+
+    logger.info("Running " + command )
+    process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
+    output , errs = process.communicate()
+    if output :
+      logger.info("Output:" + output.decode())
+    if errs :
+      logger.error( output.decode() )
+      logger.error( errs.decode() )
+      error_message = errs.decode()
+      exit(1)
+   
   elif "steps" in current_config:
     logger.debug("Checking steps in config")
     
@@ -298,7 +329,8 @@ def deploy(current_config , repo=None , branch=None , base_dir=None , command="g
       if  "run" in deploy and deploy["run"] is not None :
         # Build command
         command = deploy["run"]
-        logger.debug(os.getcwd())
+        logger.debug("Dir:" + os.getcwd())
+        logger.debug(deploy)
         logger.info("Running " + deploy["run"] )
         process = subprocess.Popen([command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
         output , errs = process.communicate()
@@ -356,20 +388,27 @@ def build(config):
   build_dir = None
   deploy_dir = None
   
+  print("Local")
+  pprint(config)
+  print("Global")
+  pprint(defaults.__dict__)
+  pprint("Directories")
+  pprint(defaults.directories.__dict__)
+  # sys.exit(1)
   
   if config and \
     "hints" in config and \
     "directories" in config["hints"] and \
     "build" in config["hints"]["directories"] :
     build_dir = config["hints"]["directories"]["build"]  
-  elif global_config and \
-    "directories" in global_config and \
-    "build" in global_config["directories"] :
-    build_dir = global_config["directories"]["build"]  
+  elif defaults and \
+    defaults.directories and \
+    defaults.directories.build :
+    build_dir = defaults.directories.build  
   else:  
     logger.error("No build directory")
     logger.debug(pprint(config))
-    logger.debug(pprint(global_config))
+    logger.debug(pprint(defaults))
     sys.exit("No build directory")
     
   if config and \
@@ -377,14 +416,14 @@ def build(config):
     "directories" in config["hints"] and \
     "deploy" in config["hints"]["directories"] :
     deploy_dir = config["hints"]["directories"]["deploy"]  
-  elif global_config and \
-    "directories" in global_config and \
-    "deploy" in global_config["directories"] :
-    deploy_dir = global_config["directories"]["deploy"]
+  elif defaults and \
+    defaults.directories and \
+    defaults.directories.deploy :
+    deploy_dir = defaults.directories.deploy
   else:
     logger.error("No deploy directory")
     logger.debug(pprint(config))
-    logger.debug(pprint(global_config))
+    logger.debug(pprint(defaults))
     sys.exit("No deploy directory") 
       
   
@@ -394,11 +433,11 @@ def build(config):
   if not deploy_dir or not build_dir :
     logger.error("No direcories for deploy and build")
     pprint(config)
-    pprint(global_config)
+    pprint(defaults)
     sys.exit("No direcories for deploy and build")
   else:
     pprint(config)
-    pprint(global_config)  
+    pprint(defaults)  
   
   # Check for deploy and build dir - build dir should not be same as deploy dir
   logger.debug(deploy_dir)
@@ -484,23 +523,21 @@ def run(config , step_report=None):
   
   if config and "steps" in config and "run" in config["steps"] :
     run = config["steps"]["run"]
+  else:
+    logger.error("No 'run' step") 
   
-  if global_config and \
-    "hints" in  global_config and \
-    "directories" in global_config["hints"] and \
-    "build" in global_config["hints"]["directories"] :
-    build_dir = global_config["hints"]["directories"]["build"]
+  if defaults and \
+    defaults.directories.build :
+    build_dir = defaults.directories.build
   if config and \
     "hints" in config and \
     "directories" in config["hints"] and \
     "build" in config["hints"]["directories"] :
     build_dir = config["hints"]["directories"]["build"]  
     
-  if global_config and \
-    "hints" in  global_config and \
-    "directories" in global_config["hints"] and \
-    "run" in global_config["hints"]["directories"] :
-    run_dir = global_config["hints"]["directories"]["run"]
+  if defaults and \
+    defaults.directories.run :
+    run_dir = defaults.directories.run 
   if config and \
     "hints" in config and \
     "directories" in config["hints"] and \
@@ -522,7 +559,7 @@ def run(config , step_report=None):
   logger.debug("changing to " + run_dir )
   os.chdir(run_dir)
   
-  command = run['run'] 
+  
   path    = None
   
   if run['relative_path_to_run_command'] :
@@ -532,7 +569,7 @@ def run(config , step_report=None):
     logger.debug("Found baseCommand in run - executing step")
     receipt = execute_step(run , environment={ "PATH" : [bin_path] }) 
     summary = create_test_step_summary(receipt , "run" )
-  else:
+  elif "run" in run:
     # support for older style - deprecated 
     logger.debug("No baseCommand in run - executing run command")
     command = bin_path + "/" + run['run']
@@ -550,6 +587,8 @@ def run(config , step_report=None):
     if errs :
       logger.error( output.decode() )
       logger.error( errs.decode() )
+  else:
+    logger.warning("No run nor baseCommand in step")  
    
   # Change back into current dir
   os.chdir(current_dir)
@@ -588,7 +627,7 @@ def main(config=None):
     logger.debug('Missing working directory, creating ' + tmp_dir)
     os.makedirs(tmp_dir)
   else:
-    logger.debug('Working directory already exists.')
+    logger.debug('Working directory ' + tmp_dir + ' already exists.')
   
   current_dir = os.getcwd()
   os.chdir(tmp_dir)
@@ -619,7 +658,7 @@ def main(config=None):
     
     
     for step in ['deploy' , 'build' , 'run' , 'postproc'] :
-      logger.debug('Executing step:\t' + step) 
+      logger.info('Executing step:\t' + step) 
     
       if (args.step == 'all' or args.step == step ) :      
         if step in test['steps'] : 
@@ -634,7 +673,17 @@ def main(config=None):
 #             logger.info('Step ' + step + " finished")
 
           if (step == 'deploy'): 
-            (error , message) = deploy(test , branch=args.branch , repo=args.clone , base_dir=current_dir)
+            # 1. copy code from project dir into working dir + /deploy
+            # 2. clone from repo into working dir + /deploy
+            # 3. execute run command in deploy step
+            pprint(config.__dict__)
+            pprint(test)
+            pprint(current_dir)
+            pprint(args.project)
+            deployment = Deploy(config=test)
+            pprint(deployment)
+            sys.exit(1)
+            (error , message) = deploy(test , branch=args.branch , repo=args.clone , base_dir=current_dir , repo_dir=args.project)
             if ((error != 0)) :
               logger.error('Error in deploy: ' + message)
               logger.error('Error: ' + str(error))
@@ -657,17 +706,17 @@ def main(config=None):
 
   
   
-  if (args.archive or  ( "archive" in global_config and \
-                         "execute" in global_config['archive'] and \
-                         global_config['archive']['execute'])) :
+  if (args.archive or  ( "archive" in defaults and \
+                         "execute" in defaults['archive'] and \
+                         defaults['archive']['execute'])) :
     logger.info("Archiving session")
     
-    module_name="Archive." + global_config['archive']['module']
+    module_name="Archive." + defaults['archive']['module']
   
     # Standard import
     import importlib
     logger.debug("Loading module " + module_name )
-    MyClass = getattr(importlib.import_module(module_name), global_config['archive']['module'])
+    MyClass = getattr(importlib.import_module(module_name), defaults['archive']['module'])
     # Instantiate the class (pass arguments to the constructor, if needed)
     archive = MyClass(logger_name="test-runner" , config = config)
     
@@ -693,12 +742,32 @@ def main(config=None):
 # Logging
 
 # logger = getLogger(__name__)
+handler = logging.FileHandler('error.log')
+
 logger = getLogger("cmdv-test-runner")
+# logger.addHandler(handler) 
 logger.info("Setup")
 
 
 # Command line input
+
+# New config
+
 parser = argparse.ArgumentParser()
+
+parser.add_argument("--cmdv" ,"--config", 
+                    type=str , dest="config" ,
+                    help="config file (json)")
+parser.add_argument("--test", 
+                    type=str , action='append' ,
+                    help="test config(json)")
+parser.add_argument("--format", 
+                    type=str , 
+                    help="yaml | json")                    
+
+
+# OLD
+
 parser.add_argument("-c", "--clone" , 
                     type=str , 
                     help="git clone path")
@@ -708,10 +777,10 @@ parser.add_argument("-v" , "--verbose",
 parser.add_argument("-b" , "--branch", 
                     type=str , 
                     help="increase output verbosity")
-parser.add_argument("--config", 
-                    type=str , 
-                    help="config file (json)")
-parser.add_argument("--global-config", 
+# parser.add_argument("--config",
+#                     type=str ,
+#                     help="config file (json)")
+parser.add_argument("-global-config", "--defaults" , 
                     type=str , 
                     help="global config file (json)")
 parser.add_argument("--archive", 
@@ -726,11 +795,23 @@ parser.add_argument("-s", "--step" ,
                     default="all")
 parser.add_argument("-d", "--dir" , 
                     type=str, 
-                    help="working directory",
-                    default=None)     
+                    help="base directory for session and test directories, default is current working directoy",
+                    default= os.getcwd() )  
+parser.add_argument("--deploy" , 
+                    type=str, 
+                    help="deploy directory , if -d is provided copies data from working dir into deploy dir. Overwrites deployment path in config", 
+                    default=None)    
+parser.add_argument("--project" , "--repo" ,
+                    type=str, dest="repo" ,
+                    help="project/repo/test directory, contains test code; used to discover tests. Default current directory", 
+                    default= None )                                          
 parser.add_argument("--clean" , 
                     help="start with fresh working directory",
-                    action="store_true")                                           
+                    action="store_true")  
+parser.add_argument("--print-config" , 
+                    help="print config and exit",
+                    action="store_true")  
+                                                                                 
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -738,15 +819,50 @@ if __name__ == "__main__":
 
   report = Tests.Report()
 
-  config=Config( master_config=args.global_config , local_config=args.config , working_dir = args.dir )   
-  global_config = config.defaults
+  logger.info("Initializing config")
   
-  if not config.defaults :
+  pprint(args)
+  # Get/set global config
+  config=Config(file=args.config  , dir=args.repo , base_dir=args.dir)
+  
+  # config=Config( master_config=args.defaults , local_config=args.config , base_dir = args.dir , repo_dir = args.project )
+  #defaults = config.defaults
+  
+  if args.print_config :
+    pprint(config.__dict__)
+    sys.exit()
+  
+  # Find tests
+  pprint(config.tests['files'])
+  test_files = config.find_tests( dir = config.repo.path , suffix = config.tests['suffix'])
+  pprint(config.tests['files'])
+  
+  for f in test_files :
+    logger.debug("Initializing test from " + f)
+
+    global_directories = { 
+                          "input"   : None ,
+                          "output"  : None ,
+                          "tmp"     : config.directories.tmp ,
+                          "working" : None ,
+                          "base"    : config.directories.session ,
+                        } 
+
+    workflow = Workflow(file=f , config=config , dirs=global_directories)
+    pprint(workflow)
+    print("/n/n")
+    pprint(vars(workflow))
+
+  
+  if not hasattr(config,"defaults")  or not config.defaults :
     logger.error("No default settings, aborting")
     sys.exit()
-  if not config.global_config :
-    logger.error("Could not find global config")  
 
+
+  # logger.debug("END")
+  # pprint(config.__dict__)
+  # exit()
+  #
   
   # module_name="Archive.CDash"
 #
@@ -758,7 +874,7 @@ if __name__ == "__main__":
 #   archive = MyClass(logger_name="test-runner")
   
  
-
+  logger.info("Starting main")
   main(config)
 
 
