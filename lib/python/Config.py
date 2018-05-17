@@ -69,6 +69,7 @@ class Directories(object):
      self.repo        = None     # source dir containing tests
      self.base        = base_dir # base dir containig deploy,build,run and postprocess directories 
      self.session     = "/".join( [self.base , session] )
+     self.tmp         = None
      
      if test :
        self.test        = "/".join( [self.session , test ] )        
