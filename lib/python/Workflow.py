@@ -195,6 +195,8 @@ class Tool(object):
         self._build_command()
 
         current_dir = os.getcwd()
+        logger.info("Executing " + self.command)
+        logger.debug("Current dir: " + current_dir)
         process = subprocess.Popen([self.command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
         output , errs = process.communicate()
         if output :
@@ -250,7 +252,46 @@ class Step(object):
         if output :
               self.directories.input = output     
 
-        pprint(self.directories.__dict__)            
+        pprint(self.directories.__dict__)    
+
+  def _check_dirs(self) :
+        
+        directories_exists = True if ( 
+            os.path.isdir(self.directories.working) and  
+            os.path.isdir(self.directories.input) and  
+            os.path.isdir(self.directories.output) ) else False
+
+        return directories_exists
+
+  def _make_dirs(self) :
+        
+        # create step directories
+        for path in [ self.directories.working , self.directories.input , self.directories.output] :
+              
+            try:
+                  os.mkdirs(path)
+            except os.error, e:
+                  if e.errno != errno.EEXIST:
+                        raise
+
+  def execute(self) :
+        
+        if not self._check_dirs :
+              logger.warning("Step directories missing - creating directories")
+              self._make_dirs
+
+        if self.run :
+            if isinstance(self.run, basestring) :
+                logger.warning("Not implemenetd - run command is string")
+            elif isinstance(self.run, Workflow) :
+                  logger.warning("Not implemenetd - run command is workflow object")
+            elif isinstance(self.run, Tool) :
+                  logger.warning("Not implemenetd - run command is tool object")   
+                  # Init tool - check for input directory,output directory etc.
+                  self.run.execute({"source" : source , "destination" : destination})
+        else :
+              logger.error("Can not execute step - missing run command or tool")                     
+                            
     
 
     
