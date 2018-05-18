@@ -57,154 +57,154 @@ class Requirement(object):
 
 class Tool(object):
   
-  def __init__(self, cfg) :
-    
-    self.type     = None
-    self.command  = None
-    self.inputs   = None
-    self.outputs  = None
-    self.baseCommand = None
-    self.arguments = None
+      def __init__(self, cfg) :
+
+            self.type     = None
+            self.command  = None
+            self.inputs   = None
+            self.outputs  = None
+            self.baseCommand = None
+            self.arguments = None
 
 
-    if cfg :
-          
-          if "inputs" in cfg and not isinstance(cfg['inputs'] , dict) :
-                # convert into dict
-                logger.error("Inputs not a dict - need to convert")
-                self._convert_tool_inputs(cfg['inputs'])
-          self.baseCommand    = cfg['baseCommand']
-          self.inputs         = cfg['inputs']      if 'inputs' in cfg else None
-          self.outputs        = cfg['outputs']     if 'outputs' in cfg else None
-          self.arguments      = cfg['arguments']   if 'arguments' in cfg else None
+            if cfg :
+                  
+                  if "inputs" in cfg and not isinstance(cfg['inputs'] , dict) :
+                        # convert into dict
+                        logger.error("Inputs not a dict - need to convert")
+                        self._convert_tool_inputs(cfg['inputs'])
+                  self.baseCommand    = cfg['baseCommand']
+                  self.inputs         = cfg['inputs']      if 'inputs' in cfg else None
+                  self.outputs        = cfg['outputs']     if 'outputs' in cfg else None
+                  self.arguments      = cfg['arguments']   if 'arguments' in cfg else None
 
-  def _convert_tool_inputs(self, inputs) :
-        
-        # Convert into dict
-        logger.error("Not implemented - _convert_tool_inputs")
-        sys.exit(38)
-    
-  def _map_inputs(self, inputs) :
-        # map step inputs to tool command line inputs/positions
-        mapped=True
-        if self.inputs :
-              # Inputs can be dict or list
-              if  isinstance(self.inputs , dict) :
-                    logger.debug("Mapping input options to step input")
-                    for k in self.inputs :
-                          if k not in inputs :
-                                mapped=False
-                                logger.error("Missing " + k + " in step inputs")
-                          
-              else:
-                    logger.error("Not implemented - inputs is not a dictionary")
-                    logger.debug(self.inputs)
-                    sys.exit(38)
-        else:
-          logger.warning("No inputs specified for tool")
-        
-        return mapped      
+      def _convert_tool_inputs(self, inputs) :
+            
+            # Convert into dict
+            logger.error("Not implemented - _convert_tool_inputs")
+            sys.exit(38)
 
-  def _assign_values(self, inputs) :
-        
-        if self.inputs :
-              # Inputs can be dict or list
-              if  isinstance(self.inputs , dict) :
-              
-                    for k in self.inputs :
-                          # 1. type checking
-                          # 2. assign value
+      def _map_inputs(self, inputs) :
+            # map step inputs to tool command line inputs/positions
+            mapped=True
+            if self.inputs :
+                  # Inputs can be dict or list
+                  if  isinstance(self.inputs , dict) :
+                        logger.debug("Mapping input options to step input")
+                        for k in self.inputs :
+                              if k not in inputs :
+                                    mapped=False
+                                    logger.error("Missing " + k + " in step inputs")
+                              
+                  else:
+                        logger.error("Not implemented - inputs is not a dictionary")
+                        logger.debug(self.inputs)
+                        sys.exit(38)
+            else:
+                  logger.warning("No inputs specified for tool")
+            
+            return mapped      
 
-                          # Covers one use case
-                          self.inputs[k]['value'] = inputs[k]
-        else :
-              logger.warning("Can't assign values to inputs. No tool inputs specified")
-        
+      def _assign_values(self, inputs) :
+            
+            if self.inputs :
+                  # Inputs can be dict or list
+                  if  isinstance(self.inputs , dict) :
+                  
+                        for k in self.inputs :
+                              # 1. type checking
+                              # 2. assign value
 
-  def _build_command(self) :
-        
-        pprint(self.__dict__)
+                              # Covers one use case
+                              self.inputs[k]['value'] = inputs[k]
+            else :
+                  logger.warning("Can't assign values to inputs. No tool inputs specified")
+            
 
-        options_positional  = []
-        options_named       = []
+      def _build_command(self) :
+            
+            pprint(self.__dict__)
 
-        if self.inputs and not  isinstance(self.inputs , dict) :
-              logger.error("Tool input not a dict")
-              sys.exit(1)
+            options_positional  = []
+            options_named       = []
 
-        for k in self.inputs :
-              
-              if isinstance(self.inputs[k] , dict) :
-                    i = self.inputs[k]
-                    if 'inputBinding' in i :
-                          prefix = i['inputBinding'] if 'prefix' in i['inputBinding'] else ''
-                          value  = i['value'] if 'value' in i else ''
-                          option = " ".join([prefix , value])
-                          
-                          
-                          if 'position' in i['inputBinding'] and i['inputBinding']['position'] :
-                                options_positional.append( { "value" : option , 'position' : i['inputBinding']['position'] })
-                          else : 
-                                options_named.append( option )
-                      
-                    else :
-                          logger.error("Missing inputBinding")
-                          sys.exit(1)
-              
-              elif isinstance(self.inputs[k] , str) :
-                    logger.error("Input for " + k + " is string not dict")
-                    sys.exit(1)  
-                    
-              else : 
-                logger.error("Not Implemented - Argumemt type not determined ")
-                sys.exit(1)    
+            if self.inputs and not  isinstance(self.inputs , dict) :
+                  logger.error("Tool input not a dict")
+                  sys.exit(1)
 
-        for o in self.arguments :
-              if isinstance(o,str) :
-                    logger.debug("Found string")
-              else : 
-                logger.error("Not Implemented - Argumemt not string ")
-                sys.exit(1)    
+            for k in self.inputs :
+                  
+                  if isinstance(self.inputs[k] , dict) :
+                        i = self.inputs[k]
+                        if 'inputBinding' in i :
+                              prefix = i['inputBinding'] if 'prefix' in i['inputBinding'] else ''
+                              value  = i['value'] if 'value' in i else ''
+                              option = " ".join([prefix , value])
+                              
+                              
+                              if 'position' in i['inputBinding'] and i['inputBinding']['position'] :
+                                    options_positional.append( { "value" : option , 'position' : i['inputBinding']['position'] })
+                              else : 
+                                    options_named.append( option )
+                        
+                        else :
+                              logger.error("Missing inputBinding")
+                              sys.exit(1)
+                  
+                  elif isinstance(self.inputs[k] , str) :
+                        logger.error("Input for " + k + " is string not dict")
+                        sys.exit(1)  
+                        
+                  else : 
+                        logger.error("Not Implemented - Argumemt type not determined ")
+                        sys.exit(1)    
 
-        cmd = [ " ".join(self.baseCommand )]
-        cmd = cmd + options_named
-        
-        # missing check for duplicate positions
-        for o in options_positional :
-              cmd.insert( o['position'] , o['value'])
+            for o in self.arguments :
+                  if isinstance(o,str) :
+                        logger.debug("Found string")
+                  else : 
+                        logger.error("Not Implemented - Argumemt not string ")
+                        sys.exit(1)    
 
-        # set command for run command    
-        self.command = " ".join(cmd)
-       
-      
-  def map(self) :
-    pass  
+            cmd = [ " ".join(self.baseCommand )]
+            cmd = cmd + options_named
+            
+            # missing check for duplicate positions
+            for o in options_positional :
+                  cmd.insert( o['position'] , o['value'])
 
-  def execute(self , inputs):
-        
-        if not inputs or not isinstance(inputs,dict):
-              logger.error("Missing input or not a dictionary")
-              sys.exit(1)
-        
-        if self._map_inputs(inputs) :
-              self._assign_values(inputs)
-        else :
-              logger.error("Can not map tool input to task input")
-              sys.exit(1)
-              
-        self._build_command()
+            # set command for run command    
+            self.command = " ".join(cmd)
+            
 
-        current_dir = os.getcwd()
-        logger.info("Executing " + self.command)
-        logger.debug("Current dir: " + current_dir)
-        process = subprocess.Popen([self.command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
-        output , errs = process.communicate()
-        if output :
-          logger.info("Tool Output: " + output.decode())
-          logger.error( errs.decode() )
-        if errs :
-          logger.error( output.decode() )
-          logger.error( errs.decode() )
+      def map(self) :
+            pass  
+
+      def execute(self , inputs):
+            
+            if not inputs or not isinstance(inputs,dict):
+                  logger.error("Missing input or not a dictionary")
+                  sys.exit(1)
+            
+            if self._map_inputs(inputs) :
+                  self._assign_values(inputs)
+            else :
+                  logger.error("Can not map tool input to task input")
+                  sys.exit(1)
+                  
+            self._build_command()
+
+            current_dir = os.getcwd()
+            logger.info("Executing " + self.command)
+            logger.debug("Current dir: " + current_dir)
+            process = subprocess.Popen([self.command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
+            output , errs = process.communicate()
+            if output :
+                  logger.info("Tool Output: " + output.decode())
+                  logger.error( errs.decode() )
+            if errs :
+                  logger.error( output.decode() )
+                  logger.error( errs.decode() )
 
 
 
