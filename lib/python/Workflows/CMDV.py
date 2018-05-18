@@ -160,6 +160,10 @@ class Deploy(Step):
         
     logger.info("Executing deploy")
 
+    if not self._check_dirs :
+              logger.warning("Step directories missing - creating directories")
+              self._make_dirs
+
     if self.run :
           if isinstance(self.run, basestring) :
                 logger.warning("Not implemenetd - run command is string")
