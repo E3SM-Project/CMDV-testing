@@ -4,6 +4,9 @@
 Convert a Jupyter notebook to HTML, including the processing of citations
 """
 
+########################################################################
+
+# Module imports
 import argparse
 import glob
 import nbconvert
@@ -12,21 +15,30 @@ import os
 import pypandoc
 import sys
 
-from traitlets import Bool
-from traitlets import List
-from traitlets import Unicode
-from traitlets.config import Config
-from urllib import urlopen
+################################################################################
 
+# Object imports
+from traitlets        import Bool
+from traitlets        import List
+from traitlets        import Unicode
+from traitlets.config import Config
+from urllib           import urlopen
+
+################################################################################
+
+# Aliases
 HTMLExporter        = nbconvert.HTMLExporter
 Preprocessor        = nbconvert.preprocessors.Preprocessor
 ExecutePreprocessor = nbconvert.preprocessors.ExecutePreprocessor
 FilesWriter         = nbconvert.writers.FilesWriter
 NotebookNode        = nbformat.notebooknode.NotebookNode
 
-########################################################################
+################################################################################
 
 def print_notebook(nb):
+    """
+    Print the ASCII contents of a notebook, cell by cell.
+    """
     numcells = len(nb.cells)
     for c in range(numcells):
         output = "%d: %s" % (c, str(nb.cells[c]))
@@ -35,9 +47,12 @@ def print_notebook(nb):
             output = output[:157] + "..."
         print(output)
 
-########################################################################
+################################################################################
 
 class AddCitationsExporter(HTMLExporter):
+    """
+    Add the AddCitationsPreprocessor class to the Preprocessor configuration.
+    """
     @property
     def default_config(self):
         c = Config({
@@ -46,7 +61,7 @@ class AddCitationsExporter(HTMLExporter):
         c.merge(super(HTMLExporter,self).default_config)
         return c
 
-########################################################################
+################################################################################
 
 class AddCitationsPreprocessor(Preprocessor):
     """
@@ -61,7 +76,7 @@ class AddCitationsPreprocessor(Preprocessor):
         bibliography - The name of the BibTeX bibliography file (default
                        "ref.bib")
         csl          - The name of the Citation Style Language file (default
-                       "NatureClimateChange.csl")
+                       "Climate.csl")
         csl_path     - The list of pathnames to search for CSL files (default
                        ['.', <location-of-this-script>/CSL])
         header       - The name of the bibliography section appended to the end
@@ -80,7 +95,7 @@ class AddCitationsPreprocessor(Preprocessor):
     bibliography = Unicode(u'ref.bib',
                            help='Name of the BibTeX bibliography file',
                            config=True)
-    csl          = Unicode(u'NatureClimateChange.csl',
+    csl          = Unicode(u'Climate.csl',
                            help='Name of the Citation Style Language file',
                            config=True)
     csl_path     = List(   [u'.', os.path.join(os.path.split(os.path.abspath(__file__))[0], u'CSL')],
@@ -90,7 +105,7 @@ class AddCitationsPreprocessor(Preprocessor):
                            help='Header name for the references section',
                            config=True)
 
-    ####################################################################
+    ############################################################################
 
     def _is_cell_empty(self, cell):
         """
@@ -101,7 +116,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 return True
         return False
 
-    ####################################################################
+    ############################################################################
 
     def _clear_empty_cells(self, nb):
         """
@@ -113,7 +128,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 new_list.append(cell)
         nb.cells = new_list
 
-    ####################################################################
+    ############################################################################
 
     def _is_index_in_ranges(self, index, ranges):
         """
@@ -124,7 +139,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 return True
         return False
 
-    ####################################################################
+    ############################################################################
 
     def _extract_citations(self, nb):
         """
@@ -160,7 +175,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 start = source.find('@',end)
         return citations
 
-    ####################################################################
+    ############################################################################
 
     def _find_csl_file(self):
         """
@@ -171,9 +186,9 @@ class AddCitationsPreprocessor(Preprocessor):
             candidate = os.path.join(path, self.csl)
             if os.path.isfile(candidate):
                 return candidate
-        sys.exit("'%s' not found" % self.csl)
+        raise IOError('Could not find "%s"' % self.csl)
 
-    ####################################################################
+    ############################################################################
 
     def _process_citations(self, nb):
         """
@@ -186,19 +201,34 @@ class AddCitationsPreprocessor(Preprocessor):
         the _substitute_citations() method, and the references returned by this
         method is suitable as input to the _add_references() method.
         """
-        # Find the CSL file
-        csl_file = self._find_csl_file()
+
+        # Initialize the return arguments
+        substitutions = {}
+        references    = ""
+
+        # Extract and check the number of citations
+        citations = self._extract_citations(nb)
+        num_citations = len(citations)
+        if self.verbose:
+            if num_citations== 1:
+                print('    1 citation found')
+            else:
+                print('    %d citations found' % num_citations)
+        if num_citations == 0:
+            return (substitutions, references)
 
         # Build a markdown text field with citations only
-        citations = self._extract_citations(nb)
         body = ""
         for citation in citations:
             body += citation + "\n\n"
 
         # Run the markdown text through pandoc with the pandoc-citeproc filter
+        csl_file = self._find_csl_file()
         if self.verbose:
             print('    Citation Style Language = "%s"' % csl_file         )
             print('    BibTeX reference file   = "%s"' % self.bibliography)
+        if not os.path.isfile(self.bibliography):
+            raise IOError('Could not find "%s"' % self.bibliography)
         filters = ['pandoc-citeproc']
         extra_args = ['--bibliography="%s"' % self.bibliography,
                       '--csl="%s"' % csl_file]
@@ -211,17 +241,12 @@ class AddCitationsPreprocessor(Preprocessor):
 
         # Extract the citation substitutions and the references section from the
         # resulting HTML text
-        substitutions = {}
-        num_citations = len(citations)
-        if num_citations > 0:
-            for i in range(num_citations):
-                substitutions[citations[i]] = body[i][26:-11]
-            references = "\n<p></p>\n".join(body[num_citations:])
-        else:
-            references = ""
+        for i in range(num_citations):
+            substitutions[citations[i]] = body[i][26:-11]
+        references = "\n<p></p>\n".join(body[num_citations:])
         return (substitutions, references)
 
-    ####################################################################
+    ############################################################################
 
     def _substitute_citations(self, nb, substitutions):
         """
@@ -241,7 +266,7 @@ class AddCitationsPreprocessor(Preprocessor):
                 source = source.replace(old, new)
             cell.source = source
 
-    ####################################################################
+    ############################################################################
 
     def _add_references(self, nb, references):
         """
@@ -263,7 +288,7 @@ class AddCitationsPreprocessor(Preprocessor):
                                            u'metadata': {}})]
                 nb.cells.extend(new_cells)
 
-    ####################################################################
+    ############################################################################
 
     def preprocess(self, nb, resources):
         """
@@ -273,13 +298,19 @@ class AddCitationsPreprocessor(Preprocessor):
         """
         self._clear_empty_cells(nb)
         (subs, refs) = self._process_citations(nb)
-        self._substitute_citations(nb, subs)
-        self._add_references(nb, refs)
+        if refs != "":
+            self._substitute_citations(nb, subs)
+            self._add_references(nb, refs)
         return (nb, resources)
 
-########################################################################
+################################################################################
 
 def convert(filename, options):
+    """
+    Take as input a filename for a Jupyter Notebook (and a variety of options)
+    and write an HTML file that is a representation of that notebook.
+    """
+
     # Open the Jupyter notebook
     (basename, ext) = os.path.splitext(filename)
     response = urlopen(filename).read().decode()
@@ -391,6 +422,45 @@ if __name__ == "__main__":
                         type=str,
                         nargs='*',
                         help='Jupyter notebook filename(s) to be processed')
+    parser.add_argument('--header',
+                        dest='header',
+                        type=str,
+                        default=defaultPreprocessor.header,
+                        help='provide the title of the bibliography section')
+    parser.add_argument('-b',
+                        '--bib',
+                        dest='bib',
+                        type=str,
+                        default=defaultPreprocessor.bibliography,
+                        help='specify the BibTeX bibliography database')
+    parser.add_argument('--csl',
+                        dest='csl',
+                        type=str,
+                        default=defaultPreprocessor.csl,
+                        help='specify the Citation Style Language file')
+    parser.add_argument('--list-csl',
+                        dest='list_csl',
+                        action='store_true',
+                        default=False,
+                        help='list the available CSL files and exit')
+    parser.add_argument('--list-csl-path',
+                        dest='list_csl_path',
+                        action='store_true',
+                        default=False,
+                        help='list the CSL path names and exit')
+    parser.add_argument('--replace-csl-path',
+                        dest='csl_path',
+                        action=replace_list,
+                        default=defaultPreprocessor.csl_path,
+                        help='replace the list of CSL path names')
+    parser.add_argument('--prepend-csl-path',
+                        dest='csl_path',
+                        action=prepend_list,
+                        help='prepend a comma-separated list of path names to the CSL path name list')
+    parser.add_argument('--append-csl-path',
+                        dest='csl_path',
+                        action=append_list,
+                        help='append a comma-separated list of path names to the CSL path name list')
     parser.add_argument('-v',
                         '--verbose',
                         dest='verbose',
@@ -403,54 +473,11 @@ if __name__ == "__main__":
                         action='store_false',
                         default=False,
                         help='set verbose to False')
-    parser.add_argument('--csl',
-                        dest='csl',
-                        type=str,
-                        default=defaultPreprocessor.csl,
-                        help='specify the Citation Style Language file')
-    parser.add_argument('--list-csl-path',
-                        dest='list_csl_path',
-                        action='store_true',
-                        default=False,
-                        help='list the CSL path names and exit')
-    parser.add_argument('--list-csl',
-                        dest='list_csl',
-                        action='store_true',
-                        default=False,
-                        help='list the available CSL files and exit')
-    parser.add_argument('--replace-csl-path',
-                        dest='csl_path',
-                        action=replace_list,
-                        default=defaultPreprocessor.csl_path,
-                        help='replace the list of CSL path names')
-    parser.add_argument('--append-csl-path',
-                        dest='csl_path',
-                        action=append_list,
-                        help='append a comma-separated list of path names to the CSL path name list')
-    parser.add_argument('--prepend-csl-path',
-                        dest='csl_path',
-                        action=prepend_list,
-                        help='prepend a comma-separated list of path names to the CSL path name list')
-    parser.add_argument('--bib',
-                        dest='bib',
-                        type=str,
-                        default=defaultPreprocessor.bibliography,
-                        help='specify the BibTeX bibliography database')
-    parser.add_argument('--header',
-                        dest='header',
-                        type=str,
-                        default=defaultPreprocessor.header,
-                        help='provide the title of the bibliography section')
 
     # Parse the command-line arguments
     options = parser.parse_args()
 
     # Process the options
-    if options.list_csl_path:
-        msg = "List of CSL path names:\n"
-        for path in options.csl_path:
-            msg += "    %s\n" % path
-        parser.exit(0, msg)
     if options.list_csl:
         msg = ""
         for path in options.csl_path:
@@ -463,18 +490,26 @@ if __name__ == "__main__":
                 for filename in filenames:
                     msg += "    %s\n" % filename
         parser.exit(0, msg)
+    if options.list_csl_path:
+        msg = "List of CSL path names:\n"
+        for path in options.csl_path:
+            msg += "    %s\n" % path
+        parser.exit(0, msg)
     sep = '----------------'
     if options.verbose:
         print(sep)
 
     # Check for no specified filenames. We allow len(options.files) == 0 up to
-    # this point so that we can execute the --list-csl-path or --list-csl
+    # this point so that we can execute the --list-csl or --list-csl-path
     # options if requested.
     if len(options.files) == 0:
         parser.error("too few arguments")
 
     # Process the files
     for filename in options.files:
-        convert(filename, options)
+        try:
+            convert(filename, options)
+        except Exception as e:
+            print("Error: %s" % e.message)
         if options.verbose:
             print(sep)
