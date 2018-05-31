@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 
 """
-Convert a Jupyter notebook to HTML, including the processing of citations
+Convert a Jupyter notebook to HTML, by executing the notebook and then
+processing any references to publications to generate citations in the text and
+a bibliography section at the end of the notebook
 """
 
-########################################################################
+################################################################################
 
 # Module imports
 import argparse
@@ -26,18 +28,20 @@ from urllib           import urlopen
 
 ################################################################################
 
-# Aliases
-HTMLExporter        = nbconvert.HTMLExporter
-Preprocessor        = nbconvert.preprocessors.Preprocessor
-ExecutePreprocessor = nbconvert.preprocessors.ExecutePreprocessor
-FilesWriter         = nbconvert.writers.FilesWriter
-NotebookNode        = nbformat.notebooknode.NotebookNode
+# Aliases and global variables
+HTMLExporter         = nbconvert.HTMLExporter
+Preprocessor         = nbconvert.preprocessors.Preprocessor
+ExecutePreprocessor  = nbconvert.preprocessors.ExecutePreprocessor
+FilesWriter          = nbconvert.writers.FilesWriter
+NotebookNode         = nbformat.notebooknode.NotebookNode
+python_version_major = str(sys.version_info.major)
 
 ################################################################################
 
 def print_notebook(nb):
     """
-    Print the ASCII contents of a notebook, cell by cell.
+    Print the ASCII contents of a notebook, cell by cell, limiting lines to 160
+    characters.
     """
     numcells = len(nb.cells)
     for c in range(numcells):
@@ -46,6 +50,34 @@ def print_notebook(nb):
         if len(output) > 160:
             output = output[:157] + "..."
         print(output)
+
+################################################################################
+
+class VerboseExecutePreprocessor(ExecutePreprocessor):
+    """
+    Simple extension of ExecutePreprocessor that optionally prints when it is
+    executing the notebook. It has the following configurable attributes:
+
+        verbose      - Boolean that determines whether output to stdout is
+                       turned on (default False)
+
+        Inherited from ExecuteProcess:
+
+            kernel_name  - The name of the kernel for executing the
+                           notebook. Either 'python2' or 'python3'
+            timeout      - Execution time before quitting
+    """
+
+    verbose = Bool(False,
+                   help='Determines whether to provide output to stdout',
+                   config=True)
+
+    ############################################################################
+
+    def preprocess(self, nb, resources):
+        if self.verbose:
+            print('    Executing notebook...')
+        return ExecutePreprocessor.preprocess(self, nb, resources)
 
 ################################################################################
 
@@ -71,16 +103,16 @@ class AddCitationsPreprocessor(Preprocessor):
     bibliographic entry in a .bib file. This class has the following
     configurable attributes:
 
-        verbose      - Boolean that determines whether output to stdout is
-                       turned on (default False) 
+        header       - The name of the bibliography section appended to the end
+                       of the notebook (default "References")
         bibliography - The name of the BibTeX bibliography file (default
                        "ref.bib")
         csl          - The name of the Citation Style Language file (default
                        "Climate.csl")
         csl_path     - The list of pathnames to search for CSL files (default
                        ['.', <location-of-this-script>/CSL])
-        header       - The name of the bibliography section appended to the end
-                       of the notebook (default "References")
+        verbose      - Boolean that determines whether output to stdout is
+                       turned on (default False) 
 
     This preprocessor converts each citation instance with the appropriate text
     for the citation as defined by the CSL file. It also adds two cells to the
@@ -89,8 +121,8 @@ class AddCitationsPreprocessor(Preprocessor):
     notebook.
     """
 
-    verbose      = Bool(   False,
-                           help='Determines whether to provide output to stdout',
+    header       = Unicode(u'References',
+                           help='Header name for the references section',
                            config=True)
     bibliography = Unicode(u'ref.bib',
                            help='Name of the BibTeX bibliography file',
@@ -101,8 +133,8 @@ class AddCitationsPreprocessor(Preprocessor):
     csl_path     = List(   [u'.', os.path.join(os.path.split(os.path.abspath(__file__))[0], u'CSL')],
                            help='A list of paths to search for CSL files',
                            config=True)
-    header       = Unicode(u'References',
-                           help='Header name for the references section',
+    verbose      = Bool(   False,
+                           help='Determines whether to provide output to stdout',
                            config=True)
 
     ############################################################################
@@ -320,13 +352,18 @@ def convert(filename, options):
 
     # Configure the HTMLExporter to use the preprocessors
     c = Config()
+    c.ExecutePreprocessor.enabled           = True
+    c.ExecutePreprocessor.kernel_name       = options.kernel
+    c.ExecutePreprocessor.timeout           = options.timeout
+    c.VerboseExecutePreprocessor.enabled    = True
+    c.VerboseExecutePreprocessor.verbose    = options.verbose
     c.AddCitationsPreprocessor.enabled      = True
     c.AddCitationsPreprocessor.verbose      = options.verbose
     c.AddCitationsPreprocessor.csl          = options.csl
     c.AddCitationsPreprocessor.csl_path     = options.csl_path
     c.AddCitationsPreprocessor.bibliography = options.bib
     c.AddCitationsPreprocessor.header       = options.header
-    c.HTMLExporter.preprocessors = [#ExecutePreprocessor(),
+    c.HTMLExporter.preprocessors = [VerboseExecutePreprocessor(config=c),
                                     AddCitationsPreprocessor(config=c)]
 
     # Convert the notebook to HTML
@@ -414,7 +451,8 @@ class prepend_list(argparse.Action):
 if __name__ == "__main__":
 
     # Set up the command-line argument processor
-    defaultPreprocessor = AddCitationsPreprocessor()
+    defaultAddCitation = AddCitationsPreprocessor()
+    defaultExecute     = VerboseExecutePreprocessor()
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('files',
@@ -422,21 +460,32 @@ if __name__ == "__main__":
                         type=str,
                         nargs='*',
                         help='Jupyter notebook filename(s) to be processed')
+    parser.add_argument('--kernel',
+                        dest='kernel',
+                        choices=['python2','python3'],
+                        default='python' + python_version_major,
+                        help='notebook execution kernel')
+    parser.add_argument('-t',
+                        '--timeout',
+                        dest='timeout',
+                        type=int,
+                        default=defaultExecute.timeout,
+                        help='defines maximum time (in seconds) each notebook cell is allowed to run')
     parser.add_argument('--header',
                         dest='header',
                         type=str,
-                        default=defaultPreprocessor.header,
+                        default=defaultAddCitation.header,
                         help='provide the title of the bibliography section')
     parser.add_argument('-b',
                         '--bib',
                         dest='bib',
                         type=str,
-                        default=defaultPreprocessor.bibliography,
+                        default=defaultAddCitation.bibliography,
                         help='specify the BibTeX bibliography database')
     parser.add_argument('--csl',
                         dest='csl',
                         type=str,
-                        default=defaultPreprocessor.csl,
+                        default=defaultAddCitation.csl,
                         help='specify the Citation Style Language file')
     parser.add_argument('--list-csl',
                         dest='list_csl',
@@ -451,7 +500,7 @@ if __name__ == "__main__":
     parser.add_argument('--replace-csl-path',
                         dest='csl_path',
                         action=replace_list,
-                        default=defaultPreprocessor.csl_path,
+                        default=defaultAddCitation.csl_path,
                         help='replace the list of CSL path names')
     parser.add_argument('--prepend-csl-path',
                         dest='csl_path',
