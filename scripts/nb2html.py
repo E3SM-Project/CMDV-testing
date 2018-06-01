@@ -24,7 +24,6 @@ from traitlets        import Bool
 from traitlets        import List
 from traitlets        import Unicode
 from traitlets.config import Config
-from urllib           import urlopen
 
 ################################################################################
 
@@ -345,7 +344,7 @@ def convert(filename, options):
 
     # Open the Jupyter notebook
     (basename, ext) = os.path.splitext(filename)
-    response = urlopen(filename).read().decode()
+    response = open(filename,"r").read()
     if options.verbose:
         print('Reading "%s"' % filename)
     notebook = nbformat.reads(response, as_version=4)
@@ -510,6 +509,11 @@ if __name__ == "__main__":
                         dest='csl_path',
                         action=append_list,
                         help='append a comma-separated list of path names to the CSL path name list')
+    parser.add_argument('--debug',
+                        dest='debug',
+                        action='store_true',
+                        default=False,
+                        help='provide full stack trace for errors')
     parser.add_argument('-v',
                         '--verbose',
                         dest='verbose',
@@ -556,9 +560,12 @@ if __name__ == "__main__":
 
     # Process the files
     for filename in options.files:
-        try:
+        if options.debug:
             convert(filename, options)
-        except Exception as e:
-            print("Error: %s" % e.message)
+        else:
+            try:
+                convert(filename, options)
+            except Exception as e:
+                print("Error: %s" % str(e))
         if options.verbose:
             print(sep)
