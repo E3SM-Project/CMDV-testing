@@ -27,7 +27,7 @@ absolute_source_path=`pwd`
 find . -type d -exec mkdir -p -- ${destination}/{} \;
 
 # create symlinks in dirs
-find . -type f -exec ln  -s ${absolute_source_path}/{} ${destination}/{} \; 
+find -L . -type f -exec ln  -s ${absolute_source_path}/{} ${destination}/{} \; 
 
 
 cd ${current}   
