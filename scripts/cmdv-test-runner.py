@@ -771,9 +771,9 @@ parser.add_argument("--format",
 parser.add_argument("-c", "--clone" , 
                     type=str , 
                     help="git clone path")
-parser.add_argument("-v" , "--verbose", 
-                    action="store_true", 
-                    help="increase output verbosity")
+# parser.add_argument("-v" , "--verbose", 
+#                     action="store_true", 
+#                     help="increase output verbosity")
 parser.add_argument("-b" , "--branch", 
                     type=str , 
                     help="increase output verbosity")
@@ -811,6 +811,10 @@ parser.add_argument("--clean" ,
 parser.add_argument("--print-config" , 
                     help="print config and exit",
                     action="store_true")  
+parser.add_argument("--debug" , 
+                    action="count", default=0 ,
+                    help="debug level, multiple calls increase the level" )
+parser.add_argument("-v", "--verbosity", action="count", default=0)                      
                                                                                  
 args = parser.parse_args()
 
@@ -821,12 +825,8 @@ if __name__ == "__main__":
 
   logger.info("Initializing config")
   
-  pprint(args)
   # Get/set global config
   config=Config(file=args.config  , dir=args.repo , base_dir=args.dir)
-  
-  # config=Config( master_config=args.defaults , local_config=args.config , base_dir = args.dir , repo_dir = args.project )
-  #defaults = config.defaults
   
   if args.print_config :
     pprint(config.__dict__)
@@ -849,14 +849,21 @@ if __name__ == "__main__":
                         } 
 
     workflow = Workflow(file=f , config=config , dirs=global_directories)
-    pprint(workflow)
-    print("/n/n")
-    pprint(vars(workflow))
+
+    m = re.search( config.repo.path + '(.+)', f)
+
+    workflow.relative_test_path = os.path.dirname(m.group(1))
+    # pprint(workflow)
+    # print("/n/n")
+    # pprint(vars(workflow))
+    logger.info("Executing workflow")
+    workflow.execute()
+
 
   
-  if not hasattr(config,"defaults")  or not config.defaults :
-    logger.error("No default settings, aborting")
-    sys.exit()
+  # if not hasattr(config,"defaults")  or not config.defaults :
+  #   logger.error("No default settings, aborting")
+  #   sys.exit()
 
 
   # logger.debug("END")
@@ -874,8 +881,8 @@ if __name__ == "__main__":
 #   archive = MyClass(logger_name="test-runner")
   
  
-  logger.info("Starting main")
-  main(config)
+  # logger.info("Starting main")
+  # main(config)
 
 
 
