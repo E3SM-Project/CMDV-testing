@@ -60,6 +60,7 @@ class Tool(object):
       def __init__(self, cfg) :
 
             self.type     = None
+            self.name     = None
             self.command  = None
             self.inputs   = None
             self.outputs  = None
@@ -87,6 +88,7 @@ class Tool(object):
       def _map_inputs(self, inputs) :
             # map step inputs to tool command line inputs/positions
             mapped=True
+      
             if self.inputs :
                   # Inputs can be dict or list
                   if  isinstance(self.inputs , dict) :
@@ -106,7 +108,7 @@ class Tool(object):
             return mapped      
 
       def _assign_values(self, inputs) :
-            
+            # pprint(inputs)
             if self.inputs :
                   # Inputs can be dict or list
                   if  isinstance(self.inputs , dict) :
@@ -123,7 +125,7 @@ class Tool(object):
 
       def _build_command(self) :
             
-            pprint(self.__dict__)
+            # pprint(self.__dict__)
 
             options_positional  = []
             options_named       = []
@@ -131,40 +133,44 @@ class Tool(object):
             if self.inputs and not  isinstance(self.inputs , dict) :
                   logger.error("Tool input not a dict")
                   sys.exit(1)
+            print(type(self.inputs))
 
-            for k in self.inputs :
-                  
-                  if isinstance(self.inputs[k] , dict) :
-                        i = self.inputs[k]
-                        if 'inputBinding' in i :
-                              prefix = i['inputBinding'] if 'prefix' in i['inputBinding'] else ''
-                              value  = i['value'] if 'value' in i else ''
-                              option = " ".join([prefix , value])
+            if not self.inputs is None :
+                  for k in self.inputs :
+                        # pprint(k)
+                        if isinstance(self.inputs[k] , dict) :
+                              i = self.inputs[k]
+                              if 'inputBinding' in i :
+                                    prefix = i['inputBinding']['prefix'] if 'prefix' in i['inputBinding'] else ''
+                                    value  = i['value'] if 'value' in i and i['value'] else ''
+                                    option = " ".join([prefix , value])
+                                    
+                                    
+                                    if 'position' in i['inputBinding'] and i['inputBinding']['position'] :
+                                          options_positional.append( { "value" : option , 'position' : i['inputBinding']['position'] })
+                                    else : 
+                                          options_named.append( option )
                               
+                              else :
+                                    logger.error("Missing inputBinding")
+                                    sys.exit(1)
+                        
+                        elif isinstance(self.inputs[k] , str) :
+                              logger.error("Input for " + k + " is string not dict")
+                              sys.exit(1)  
                               
-                              if 'position' in i['inputBinding'] and i['inputBinding']['position'] :
-                                    options_positional.append( { "value" : option , 'position' : i['inputBinding']['position'] })
-                              else : 
-                                    options_named.append( option )
-                        
-                        else :
-                              logger.error("Missing inputBinding")
-                              sys.exit(1)
-                  
-                  elif isinstance(self.inputs[k] , str) :
-                        logger.error("Input for " + k + " is string not dict")
-                        sys.exit(1)  
-                        
-                  else : 
-                        logger.error("Not Implemented - Argumemt type not determined ")
-                        sys.exit(1)    
+                        else : 
+                              logger.error("Not Implemented - Argumemt type not determined ")
+                              sys.exit(1)    
 
-            for o in self.arguments :
-                  if isinstance(o,str) :
-                        logger.debug("Found string")
-                  else : 
-                        logger.error("Not Implemented - Argumemt not string ")
-                        sys.exit(1)    
+                  for o in self.arguments :
+                        if isinstance(o,str) :
+                              logger.debug("Found string")
+                        else : 
+                              logger.error("Not Implemented - Argumemt not string ")
+                              sys.exit(1)  
+            else :
+                  logger.warning("No inputs for step")                    
 
             cmd = [ " ".join(self.baseCommand )]
             cmd = cmd + options_named
@@ -182,8 +188,9 @@ class Tool(object):
 
       def execute(self , inputs):
             
-            if not inputs or not isinstance(inputs,dict):
+            if  inputs is None or not isinstance(inputs,dict):
                   logger.error("Missing input or not a dictionary")
+                  # pprint(inputs)
                   sys.exit(1)
             
             if self._map_inputs(inputs) :
@@ -211,130 +218,211 @@ class Tool(object):
 
 
 class Step(object):
-  """Workflow step"""
+      """Workflow step"""
   
-  def __init__(self) :
-        
-        logger.debug("Init base class step")
-        self.name     = None
-        self.id       = None
-        self.inputs   = None
-        self.outputs  = None
-        self.parents  = [None]
-        self.children = [None]
-        self.run      = Tool(None)
-        self.status   = None
-        self.error    = None
-        self.directories = Directories()
+      def __init__(self) :
+            
+            logger.debug("Init base class step")
+            self.name     = None
+            self.id       = None
+            self.inputs   = None
+            self.outputs  = None
+            self.parents  = [None]
+            self.children = [None]
+            self.run      = Tool(None)
+            self.status   = None
+            self.error    = None
+            self.directories = Directories()
       
-  def map(self) :
-    pass  
+      def init(self, cfg) :
+            # run:
+            #       baseCommand: []
+            # in: {}
+            # out: 
+            #       - report:
+            #         type: File
+            #         glob: build.log
+            #       - dir: 
+            #         type: Directory
+            #         glob: none
+            #       - binary: 
+            #         type: File[]
+            #         glob: "*local-test"  # name of executable
 
-  def _set_dirs(self , base=None , working=None , input=None , output=None):
-        # set step dirs
-        logger.debug("Setting step directories")
-        logger.debug(base)
-        
-        if not self.name :
-              logger.error("Can't set step directories, missing step name")
-              sys.exit(1)
-        if base :
-          self.directories.working = os.path.join( base , "working")  
-          self.directories.input = os.path.join( base , "input")  
-          self.directories.output = os.path.join( base , "output") 
 
-        if working :
-          self.directories.working = working
+            tool_cfg = {
+                'baseCommand' : ['clone-dir.sh']  ,
+                'arguments' : [] ,
+                'inputs' : {
+                  "source" : {
+                    "type" : "Directory" ,
+                    "inputBinding" : {
+                      "position" : 1
+                    },
+                  },
+                  "destination" : {
+                    "type" : "Directory" ,
+                    "inputBinding" : {
+                      "position" : 2
+                    }
+                  }
+                }
+            }          
 
-        if input :
-              self.directories.input = input
+            if cfg :
+                  tool = self.run 
+                  if not "run" in cfg :
+                        logger.error("Can't initialize step, missing run command")
+                        sys.exit(1)
+                  if 'baseCommand' in cfg['run'] :
+                        if isinstance(cfg['run']['baseCommand'] , list ) :
+                              tool.baseCommand = cfg['run']['baseCommand']
+                              tool.type = 'Script'
+                        elif  isinstance(cfg['run']['baseCommand'] , str ) :
+                              tool.baseCommand = [ cfg['run']['baseCommand'] ]
+                              tool.type = 'Script'
+                        else :
+                              logger.error("Unsupported type for run: " + type(cfg['run']['baseCommand']) ) 
+                              sys.exit(1)
+                  elif  not cfg['run'] or cfg['run'] == 'none' :
+                        logger.warning('Run command empty - setting to default')
+                        tool.baseCommand = [ 'echo' , 'No run command' ]                      
+                  else :
+                        logger.error("Can't initialize step, missing baseCommand. Tools or Workflows not implemented")
+                        sys.exit(1)
 
-        if output :
-              self.directories.input = output     
+                  if "arguments" in cfg['run'] :
+                        tool.arguments = cfg['arguments']
+                  if 'in' in cfg :
+                        self.inputs = cfg['in']
+                  if 'out' in cfg :
+                        self.outputs = cfg['out']
+                  if 'name' in cfg :
+                        self.name = cfg['name']                  
+                              
+                        
+            else :
+                  logger.error("Can't initialize step, missing step config")
+                  sys.exit(1)
 
-        pprint(self.directories.__dict__)    
 
-  def _check_dirs(self) :
-        
-        directories_exists = True if ( 
-            os.path.isdir(self.directories.working) and  
-            os.path.isdir(self.directories.input) and  
-            os.path.isdir(self.directories.output) ) else False
 
-        return directories_exists
 
-  def _make_dirs(self) :
-        
-        # create step directories
-        for path in [ self.directories.working , self.directories.input , self.directories.output] :
-              
-            try:
-                  os.mkdirs(path)
-            except os.error, e:
-                  if e.errno != errno.EEXIST:
-                        raise
+      def map(self) :
+            pass  
 
-  def execute(self) :
-        
-        if not self._check_dirs :
-              logger.warning("Step directories missing - creating directories")
-              self._make_dirs
+      def _set_dirs(self , base=None , working=None , input=None , output=None):
+            # set step dirs
+            logger.debug("Setting step directories")
+            logger.debug(base)
+            
+            if not self.name :
+                  logger.error("Can't set step directories, missing step name")
+                  sys.exit(1)
+            if base :
+                  self.directories.working = os.path.join( base , "working")  
+                  self.directories.input = os.path.join( base , "input")  
+                  self.directories.output = os.path.join( base , "output") 
 
-        if self.run :
-            if isinstance(self.run, basestring) :
-                logger.warning("Not implemenetd - run command is string")
-            elif isinstance(self.run, Workflow) :
-                  logger.warning("Not implemenetd - run command is workflow object")
-            elif isinstance(self.run, Tool) :
-                  logger.warning("Not implemenetd - run command is tool object")   
-                  # Init tool - check for input directory,output directory etc.
-                  self.run.execute({"source" : source , "destination" : destination})
-        else :
-              logger.error("Can not execute step - missing run command or tool")                     
-                            
-    
+            if working :
+                  self.directories.working = working
+
+            if input :
+                  self.directories.input = input
+
+            if output :
+                  self.directories.input = output     
+
+            #  pprint(self.directories.__dict__)    
+
+      def _check_dirs(self) :
+            
+            logger.debug("Checking for step dirs")
+            directories_exists = True if ( 
+                  os.path.isdir(self.directories.working) and  
+                  os.path.isdir(self.directories.input) and  
+                  os.path.isdir(self.directories.output) ) else False
+            
+            return directories_exists
+
+      def _make_dirs(self) :
+            
+            # create step directories
+            for path in [ self.directories.working , self.directories.input , self.directories.output] :
+                  logger.debug("Creating directory: " + path)  
+                  try:
+                        os.makedirs(path)
+                  except os.error, e:
+                        if e.errno != errno.EEXIST:
+                              raise
+
+      def execute(self) :
+            
+            logger.debug("Executing step " + self.name )
+            inputs = {} # Get step inputs
+            if not self._check_dirs() :
+                  logger.warning("Step directories missing - creating directories")
+                  self._make_dirs
+            pprint(self.directories.__dict__)
+            logger.debug("Step dirs: " + self.directories.working)
+            if self.run :
+                  if isinstance(self.run, basestring) :
+                        logger.warning("Not implemenetd - run command is string")
+                  elif isinstance(self.run, Workflow) :
+                        logger.warning("Not implemenetd - run command is workflow object")
+                  elif isinstance(self.run, Tool) :
+                        logger.warning("Run command is tool object - executing")   
+                        # Init tool - check for input directory,output directory etc.
+                        self.run.execute(inputs)
+            else :
+                  logger.error("Can not execute step - missing run command or tool")                     
+                              
+      
 
     
 
 class Workflow(object):
-  """Test Class"""
+      """Test Class"""
   
-  def __init__(self) :
-    
-    self.version          = None
-    self.label            = None
-    self.doc              = None
-    self.inputs           = None # {}
-    self.outputs          = None # {}
-    self.steps            = None # [Step()]
-    self.requirements     = None # [Requirement()]
-    self.hints            = None # [Hint()]
-    self.self             =  {
-      "name" : None ,
-      "file" : None ,
-      "path" : None ,  
-    }
-    self.directories = { 
-      "input"   : None ,
-      "output"  : None ,
-      "tmp"     : None ,
-      "working" : None ,
-      "base"    : None ,
-    }
-    
-    
-    
-    
-  def init_step(self) :
-    return Step()
-      
-  def load(self) :
-    pass
-  
-  
-  def execute(self) :
-        logger.error("Not implemented: Workflow.execute" )
-        sys.exit(1)
+      def __init__(self) :
+
+            self.version          = None
+            self.label            = None
+            self.doc              = None
+            self.inputs           = None # {}
+            self.outputs          = None # {}
+            self.steps            = None # [Step()]
+            self.requirements     = None # [Requirement()]
+            self.hints            = None # [Hint()]
+            self.self             =  {
+            "name" : None ,
+            "file" : None ,
+            "path" : None ,  
+            }
+            self.directories = { 
+            "input"   : None ,
+            "output"  : None ,
+            "tmp"     : None ,
+            "working" : None ,
+            "base"    : None ,
+            }
+
+
+
+
+      def init_step(self) :
+            return Step()
+
+      def load(self) :
+            pass
+
+
+      def execute(self) :
+            logger.debug("Executing workflow" )
+            for step in self.steps :
+                  logger.debug("Executing step " + str(step.name) )
+                  step.execute()
+            sys.exit(1)
   
   
 
