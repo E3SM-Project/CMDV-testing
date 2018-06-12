@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import yaml
+import re
 from pprint import pprint
 from time import gmtime, strftime
 from Report.TestRunnerLogging import getLogger
@@ -405,9 +406,17 @@ class Config(object):
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith(suffix):
+                 logger.debug( current_dir + " :: " + root + " :: " + file)
                  logger.debug(os.path.join(root, file))
+                 logger.debug( root.find(current_dir) )
+                 logger.debug( root.rfind(current_dir) )
+                 m = re.search( current_dir + '(.+)', root)
+                 logger.debug(m)
+                 logger.debug(m.group(1))
+                 pprint(m.groups())
                  self.tests['files'].append(os.path.join(root, file) )
                  # cls.tests.append(self.load( os.path.join(root, file) ))
+              
     return self.tests['files']
 
 
