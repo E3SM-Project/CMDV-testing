@@ -1,0 +1,57 @@
+cmdvVersion: v1.0
+class: TestWorkflow
+
+label: Test-Config
+doc:  |
+    Simplified template for test workflow
+
+inputs: {}
+  # repo:
+  #   location: none
+  # directories : 
+  #   deploy : null
+  #   build  : null
+  #   run    : null
+  #   postprocessing : null  
+  #   data   : null  
+     
+    
+outputs:
+  reports:
+    type: File[]
+    outputSource: [deploy/report , build/report , run/report , postprocessing/report]
+
+        
+steps: 
+  deploy:
+    label: Default deploy step
+    run: 
+      baseCommand: [ 'git' , 'clone' , 'https://github.com/E3SM-Project/CMDV-testing.git']
+    in: {}
+    out: {}
+          
+  build:
+    run:
+      baseCommand: ['echo' , 'No build step']
+    in: {}
+    out: {}
+    
+  run:
+    run:
+      baseCommand: [ 'pytest' , 'CMDV-testing/scripts/cmdv-test-runner.py']
+    in: {}
+    out: 
+      report:
+        type: File
+        glob: run.log
+        
+  postprocessing:
+    run: 
+      baseCommand: [ 'wc' , 'run.log']
+    in: {}
+    out: {}
+    
+  archive:
+    run: none
+    in: {}
+    out: {}    
