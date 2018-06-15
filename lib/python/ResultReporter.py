@@ -112,7 +112,7 @@ class ResultReporter(object):
         indicating that the named test passed
         """
         if self.__file:
-            self.__file.write("%s: Test PASSED" % name)
+            self.__file.write("%s: Test PASSED\n" % name)
         else:
             raise IOError("ResultReporter file '%s' is not open")
 
@@ -124,7 +124,7 @@ class ResultReporter(object):
         indicating that the named test failed
         """
         if self.__file:
-            self.__file.write("%s: Test FAILED" % name)
+            self.__file.write("%s: Test FAILED\n" % name)
         else:
             raise IOError("ResultReporter file '%s' is not open")
 
@@ -210,7 +210,7 @@ class ResultReporterTestCase(unittest.TestCase):
         self.rr.report_test_passed('Convergence test')
         self.rr.finished()
         self.assertEqual(open(self.name,"r").read(),
-                         "Convergence test: Test PASSED")
+                         "Convergence test: Test PASSED\n")
 
     ############################################################################
 
@@ -218,7 +218,7 @@ class ResultReporterTestCase(unittest.TestCase):
         self.rr.report_test_failed('Convergence test')
         self.rr.finished()
         self.assertEqual(open(self.name,"r").read(),
-                         "Convergence test: Test FAILED")
+                         "Convergence test: Test FAILED\n")
 
 ################################################################################
 
