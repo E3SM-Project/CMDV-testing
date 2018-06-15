@@ -1,0 +1,154 @@
+cmdvVersion: v1.0
+class: TestConfig | Workflow
+
+label: Test-Config
+doc:  |
+    Template for test config
+
+
+
+
+
+inputs:
+  repo:
+    location: none
+  directories : 
+    deploy : null
+    build  : null
+    run    : null
+    postprocessing : null  
+    data   : null  
+     
+    
+outputs:
+  reports:
+    type: File[]
+    outputSource: [deploy/report , build/report , run/report , postprocessing/report]
+
+        
+steps: 
+  deploy:
+    label: Default deploy step
+    run: 
+      baseCommand: []
+    in: 
+      repo:
+        type: Directory
+        location: URI #
+      destination: 
+        valueFrom: ${inputs.directories.deploy}
+        default: ${config.base}   
+    out:
+      - report:
+          type: File
+          glob: deploy.log
+      - dir: 
+          type: Directory
+          glob: none
+          
+  build:
+    run:
+      baseCommand: []
+    in: {}
+    out: 
+      - report:
+        type: File
+        glob: build.log
+      - dir: 
+        type: Directory
+        glob: none
+      - binary: 
+        type: File[]
+        glob: "*local-test"  # name of executable
+    
+  run:
+    run:
+      baseCommand: []
+    in: {}
+    out: 
+      - report:
+        type: File
+        glob: "run.log"
+      - dir:
+        type: Directory?
+        glob: none
+        
+  postprocessing:
+    run: # workflow or tool or baseCommand
+      baseCommand: []
+    in: {}
+    out: {}
+    
+  archive:
+    run: none
+    in: {}
+    out: {}    
+
+
+
+
+requirements:
+  - class: CMDV-Config
+    include:
+      name: config
+      glob: global_test_config.json
+      class: CMDVGlobalConfig
+      
+  - class: SchemaDefRequirement
+    types:
+      - type: enum
+        name: repo_types
+        label: Repo types
+        symbols:
+          - git
+          - local
+      - type: record
+        label: Repository type
+        name: Repository
+        fields:
+          - name: location
+            type: URI
+            doc: |
+              This may be a relative reference, in which case it must be resolved using the base IRI
+              of the document.
+          - name: type
+            label: whole numbers
+            doc: Type of repository
+            type: repo_types
+
+
+
+   
+    },
+    "archive_test_results" : {
+      "module" : "Archive" , 
+      "execute" : "boolean" ,
+      "destination" : "url"
+    },  
+  "git" : {
+    "clone" : null  ,
+    "branch" : null
+    }
+  },
+  "steps" : {
+    "deploy" : {
+      "run" : "cp -R /CMDV/CMDV-Verification /tmp/testing/deploy/",
+      "path" : "" ,
+      "in" : {} ,
+      "out" :{} ,
+      "options" : ""
+    },
+    "build" : {
+      "run" : "cp coag_a1_driver.F90 driver.F90 && make",
+      "relative_path_to_run_command" : "CMDV-Verification/tests/mam/mam_box_coag/src",
+      "options" : "" 
+    } ,
+    "run" : {
+      "run" : "dd.x",
+      "relative_path_to_run_command" : "CMDV-Verification/tests/mam/mam_box_coag/src/",
+      "options" : "" 
+    },
+
+    "postproc" : [{}]
+  }
+}
