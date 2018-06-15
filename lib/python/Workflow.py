@@ -133,7 +133,7 @@ class Tool(object):
             if self.inputs and not  isinstance(self.inputs , dict) :
                   logger.error("Tool input not a dict")
                   sys.exit(1)
-            print(type(self.inputs))
+            
 
             if not self.inputs is None :
                   for k in self.inputs :
@@ -208,9 +208,7 @@ class Tool(object):
             output , errs = process.communicate()
             if output :
                   logger.info("Tool Output: " + output.decode())
-                  logger.error( errs.decode() )
             if errs :
-                  logger.error( output.decode() )
                   logger.error( errs.decode() )
 
 
