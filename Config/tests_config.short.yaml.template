@@ -1,0 +1,54 @@
+cmdvVersion: v1.0
+class: TestWorkflow
+
+label: Test-Config
+doc:  |
+    Simplified template for test workflow
+
+inputs: {}
+  # repo:
+  #   location: none
+  # directories : 
+  #   deploy : null
+  #   build  : null
+  #   run    : null
+  #   postprocessing : null  
+  #   data   : null  
+     
+    
+outputs:
+  reports:
+    type: File[]
+    outputSource: [deploy/report , build/report , run/report , postprocessing/report]
+
+        
+steps: 
+  deploy:
+    label: Default deploy step
+    run: 
+      baseCommand: []
+    in: {}
+    out: {}
+          
+  build:
+    run:
+      baseCommand: []
+    in: {}
+    out: {}
+    
+  run:
+    run:
+      baseCommand: []
+    in: {}
+    out: {}
+        
+  postprocessing:
+    run: 
+      baseCommand: []
+    in: {}
+    out: {}
+    
+  archive:
+    run: none
+    in: {}
+    out: {}    
