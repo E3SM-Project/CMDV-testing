@@ -9,18 +9,16 @@ ResultReporter module:
 
         from ResultReporter import ResultReporter
         reporter = ResultReporter('results.log')
-        # Perform a test, putting the results in variable 'result'...
+        # Perform a test, putting the results in boolean variable 'result'...
         name = 'Test 1'
         if result:
             reporter.report_test_passed(name)
         else:
             reporter.report_test_failed(name)
         # Perform a second test, putting the results in 'result' again...
+        # This time, use a different reporting method
         name = 'Test 2'
-        if result:
-            reporter.report_test_passed(name)
-        else:
-            reporter.report_test_failed(name)
+        reporter.report_test(name, result)
         # ...
         reporter.finished()
 """
@@ -30,14 +28,14 @@ ResultReporter module:
 class ResultReporter(object):
     """
     A simple class that writes a file with simple pass/fail results of a series
-    of one or more tests. The constructor takes a filename to write to.
+    of one or more tests. The constructor takes a filename to write to
     """
 
     ############################################################################
 
     def __init__(self, filename):
         """
-        Construct ResultReporter object and intialize the output file.
+        Construct ResultReporter object and intialize the results output file
         """
         self.__filename = filename
         self.__file = None
@@ -48,7 +46,7 @@ class ResultReporter(object):
     def reopen(self):
         """
         If the file is not open, open it. If the file is open, close it and then
-        reopen it.
+        reopen it
         """
         if self.__file is None:
             self.__file = open(self.__filename, "w")
@@ -61,7 +59,7 @@ class ResultReporter(object):
     def finished(self):
         """
         If the file is open, close it, and set the ResultReporter object status
-        to closed.
+        to closed
         """
         if self.__file:
             self.__file.close()
@@ -127,6 +125,19 @@ class ResultReporter(object):
             self.__file.write("%s: Test FAILED\n" % name)
         else:
             raise IOError("ResultReporter file '%s' is not open")
+
+    ############################################################################
+
+    def report_test(self, name, result):
+        """
+        Write a line to the results file, in the results-file convention,
+        indicating that the named test passed if result == True, or failed if
+        result == False
+        """
+        if result:
+            self.report_test_passed(name)
+        else:
+            self.report_test_failed(name)
 
 ################################################################################
 
@@ -219,6 +230,16 @@ class ResultReporterTestCase(unittest.TestCase):
         self.rr.finished()
         self.assertEqual(open(self.name,"r").read(),
                          "Convergence test: Test FAILED\n")
+
+    ############################################################################
+
+    def testReportTest(self):
+        self.rr.report_test('Convergence test 1', True )
+        self.rr.report_test('Convergence test 2', False)
+        self.rr.finished()
+        self.assertEqual(open(self.name,"r").read(),
+                         "Convergence test 1: Test PASSED\n" +
+                         "Convergence test 2: Test FAILED\n")
 
 ################################################################################
 
