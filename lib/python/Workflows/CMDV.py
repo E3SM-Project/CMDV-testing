@@ -332,7 +332,7 @@ class Workflow(Parent):
         
     for k in vars(self) :   
       if k in cfg :
-        logger.info("Setting " + k  )  
+        logger.debug("Setting " + k  )  
         setattr(self, k , cfg.pop(k) )
       else:
         logger.warning("Missing key " + k + " in config file")
@@ -359,7 +359,7 @@ class Workflow(Parent):
   def _load_from_file(self, config_file , format=None ) :
 
     logger.info("Loading Workflow from file " + config_file )
-    logger.debug("Loading config " + config_file)
+    
     cfg = None
     # load config file
     
@@ -415,7 +415,7 @@ class Workflow(Parent):
         logger.info("Setting Workflow directories")
 
         if not self.directories['tmp'] :
-              logger.info("Missing tmp dir for workflow")
+              logger.debug("Missing tmp dir for workflow")
 
               if 'TMPDIR' in os.environ :
                    self.directories['tmp'] = os.environ['TMPDIR']
@@ -423,16 +423,16 @@ class Workflow(Parent):
                   logger.warning("Can't find any env for tmp - setting to current working dir")
                   self.directories['tmp'] = "/".join( [os.getcwd() , "tmp" ])
 
-              logger.info("Set tmp dir to " + self.directories['tmp'])    
+              logger.debug("Set tmp dir to " + self.directories['tmp'])    
 
 
         if not self.directories['base'] :
-              logger.info("Missing base dir for workflow - setting to tmp")
+              logger.debug("Missing base dir for workflow - setting to tmp")
               self.directories['base'] = self.directories['tmp']
         
         # Set working direcory to session dir + test name    
         if not self.directories['working'] :
-              logger.info("Missing working directory - setting to base + test name")
+              logger.debug("Missing working directory - setting to base + test name")
               self.directories['working'] = "/".join( 
                                                       [ 
                                                         self.directories['base'] , 
@@ -456,7 +456,7 @@ class Workflow(Parent):
         if not s in steps_dict :
           logger.warning("Missing " + s + " step")
         else:
-          logger.info("Creating step " + s )  
+          logger.debug("Creating step " + s )  
           if s == "deploy" :
             cfg =  steps_dict['deploy']  if "deploy" in steps_dict else None
             deploy = Deploy(cfg)
@@ -470,7 +470,15 @@ class Workflow(Parent):
             steps.append(deploy)
             # print("Stopped - deploy - @1752")
             # sys.exit(1)
-          if s == "run" :
+          elif s == "build" :
+            build = self.init_step()
+            build.name = s
+            # set step dirs
+            build._set_dirs(base = os.path.join( self.directories['working'] , build.name ))
+            build._make_dirs()
+            build.init(steps_dict[s])
+            steps.append(build)  
+          elif s == "run" :
             run = self.init_step()
             run.name = s
             # set step dirs
@@ -478,20 +486,24 @@ class Workflow(Parent):
             run._make_dirs()
             run.init(steps_dict[s])
             steps.append(run)
-          if s == "postprocessing" :
+          elif s == "postprocessing" :
             pp = self.init_step()
             pp.name = s
             pp._set_dirs(base = os.path.join( self.directories['working'] , pp.name ))
             pp._make_dirs()
             pp.init(steps_dict[s])
             steps.append(pp)
-          if s == "archive" :  
+          elif s == "archive" :  
             archive = self.init_step()
             archive.name = s 
             archive._set_dirs(base = os.path.join( self.directories['working'] , archive.name ))
             archive._make_dirs()
             archive.init(steps_dict[s])
-            steps.append(archive)      
+            steps.append(archive)
+          else:
+            logger.error("Unsupported step " + s)
+            logger.warning('Custom steps not implemented yet')
+            sys.exit(1)        
     
     self.steps = steps
 
@@ -513,7 +525,6 @@ class Workflow(Parent):
       output , errs = process.communicate()
       if output :
             logger.info("Tool Output: " + output.decode())
-            logger.error( errs.decode() )
       if errs :
             logger.error( output.decode() )
             logger.error( errs.decode() )
