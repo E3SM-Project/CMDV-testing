@@ -285,7 +285,7 @@ class AddCitationsPreprocessor(Preprocessor):
         _process_citations() method, substitute the formatted citation text for
         every instance of a citation key found in the notebook.
         """
-        keys = substitutions.keys()
+        keys = list(substitutions.keys())
         # As we loop over the substitution keys, we want to process [@key]
         # before @key, which sorting and reversing will ensure
         keys.sort()
