@@ -3,29 +3,38 @@
 """
 ResultReporter module:
 
-    Provide a simple class, ResultReporter, that writes a file with simple
-    pass/fail results, in the results-file convention, of a series of one or
-    more tests. Sample usage within a script:
+    Provide two simple classes, ResultWriter and ResultReader, that respectively
+    write and read a file with simple pass/fail results, in the results-file
+    convention, of a series of one or more tests. Sample usage within a script:
 
-        from ResultReporter import ResultReporter
-        reporter = ResultReporter('results.log')
+        from ResultReporter import ResultWriter, ResultReader
+        writer = ResultWriter('results.log')
         # Perform a test, putting the results in boolean variable 'result'...
         name = 'Test 1'
         if result:
-            reporter.report_test_passed(name)
+            writer.report_test_passed(name)
         else:
-            reporter.report_test_failed(name)
+            writer.report_test_failed(name)
         # Perform a second test, putting the results in 'result' again...
         # This time, use a different reporting method
         name = 'Test 2'
-        reporter.report_test(name, result)
+        writer.report_test(name, result)
         # ...
-        reporter.finished()
+        writer.finished()
+
+        reader = ResultReader('results.log')
+        assert reader.num_tests == 2
+        assert reader.all_passed
 """
 
 ################################################################################
 
-class ResultReporter(object):
+from __future__ import print_function
+import sys
+
+################################################################################
+
+class ResultWriter(object):
     """
     A simple class that writes a file with simple pass/fail results of a series
     of one or more tests. The constructor takes a filename to write to
@@ -35,7 +44,10 @@ class ResultReporter(object):
 
     def __init__(self, filename):
         """
-        Construct ResultReporter object and intialize the results output file
+        Construct ResultWriter object and intialize the results output file
+
+        Arguments:
+            filename  -      Name of the results file to be written
         """
         self.__filename = filename
         self.__file = None
@@ -58,7 +70,7 @@ class ResultReporter(object):
 
     def finished(self):
         """
-        If the file is open, close it, and set the ResultReporter object status
+        If the file is open, close it, and set the ResultWriter object status
         to closed
         """
         if self.__file:
@@ -91,6 +103,9 @@ class ResultReporter(object):
     def set_filename(self, filename):
         """
         Set the filename for the results file for the next time it is opened
+
+        Arguments:
+            filename  -      Name of the results fiel to be written
         """
         self.__filename = filename
 
@@ -108,11 +123,14 @@ class ResultReporter(object):
         """
         Write a line to the results file, in the results-file convention,
         indicating that the named test passed
+
+        Arguments:
+            name  -      Name of the test to be reported
         """
         if self.__file:
             self.__file.write("%s: Test PASSED\n" % name)
         else:
-            raise IOError("ResultReporter file '%s' is not open")
+            raise IOError("ResultWriter file '%s' is not open")
 
     ############################################################################
 
@@ -120,11 +138,14 @@ class ResultReporter(object):
         """
         Write a line to the results file, in the results-file convention,
         indicating that the named test failed
+
+        Arguments:
+            name  -      Name of the test to be reported
         """
         if self.__file:
             self.__file.write("%s: Test FAILED\n" % name)
         else:
-            raise IOError("ResultReporter file '%s' is not open")
+            raise IOError("ResultWriter file '%s' is not open")
 
     ############################################################################
 
@@ -133,6 +154,10 @@ class ResultReporter(object):
         Write a line to the results file, in the results-file convention,
         indicating that the named test passed if result == True, or failed if
         result == False
+
+        Arguments:
+            name    -    Name of the test to be reported
+            result  -    Boolean result of the test
         """
         if result:
             self.report_test_passed(name)
@@ -141,19 +166,103 @@ class ResultReporter(object):
 
 ################################################################################
 
+class ResultReader(object):
+    """
+    A simple class that reads a file written by a ResultsWriter object and
+    provides various attributes about statistics of the results file. The
+    constructor takes a filename to read from.
+
+    Attributes:
+        text_data     -  A string with the results file contents
+        test_names    -  A list of strings of the valid test names
+        test_results  -  A list of strings of the valid test results
+        num_tests     -  The number of valid test results reported
+        num_passed    -  The number of tests reported to pass
+        num_failed    -  The number of tests reported to fail
+        all_passed    -  True if all reported tests passed. If num_tests == 0,
+                         this will be False
+    """
+
+    ############################################################################
+
+    def __init__(self, filename, handle_errors_as="exceptions"):
+        """
+        Construct a ResultsReader object, read the contents of the given
+        filename, parse it and store the statistics
+
+        Arguments:
+            filename          -  Name of the results file to be read
+            handle_errors_as  -  Error handling method.  Valid values are
+                                 "exceptions" and "warnings". Defaults to
+                                 "exceptions"
+        """
+        if handle_errors_as not in ["exceptions", "warnings"]:
+            raise ValueError(("'ResultReader' constructor argument " +
+                             "'handle_errors_as' must be either\n" +
+                             "'exceptions' or 'warnings'. Got value '%s'") %
+                             handle_errors_as)
+        self.__error_handler = handle_errors_as
+        self.text_data = open(filename, "r").read()
+        self._parse_data()
+
+    ############################################################################
+
+    def _parse_data(self):
+        """
+        Parse the text data read at construction and populate the ResultReader
+        attributes
+        """
+        self.test_names   = []
+        self.test_results = []
+        self.num_tests    = 0
+        self.num_passed   = 0
+        self.num_failed   = 0
+        lines = self.text_data.split('\n')
+        for line in lines:
+            if line == "":
+                break
+            try:
+                name, result = line.split(':')
+                name   = name.strip()
+                result = result.strip()
+                if result not in ["Test PASSED", "Test FAILED"]:
+                    raise ValueError(("Test result '%s' is neither 'Test " +
+                                      "PASSED' nor 'Test FAILED'") % result)
+                self.test_names.append(name)
+                self.test_results.append(result)
+                self.num_tests += 1
+                if result == "Test PASSED":
+                    self.num_passed += 1
+                else:
+                    self.num_failed += 1
+            except ValueError as e:
+                if self.__error_handler == "warnings":
+                    print("Warning:"                 , file=sys.stderr)
+                    print("    Line    = '%s'" % line, file=sys.stderr)
+                    print("    Message = '%s'" % e   , file=sys.stderr)
+                else:
+                    raise e
+        self.all_passed = (self.num_tests  >  0 and
+                           self.num_passed == self.num_tests)
+
+################################################################################
+
 import unittest
 import os
+import StringIO
 
-class ResultReporterTestCase(unittest.TestCase):
+################################################################################
+
+class ResultWriterTestCase(unittest.TestCase):
     """
-    TestCase for ResultReporter class
+    TestCase for ResultWriter class
     """
 
     ############################################################################
 
     def setUp(self):
         self.name = 'test.log'
-        self.rr   = ResultReporter(self.name)
+        self.rr   = ResultWriter(self.name)
 
     ############################################################################
 
@@ -243,11 +352,130 @@ class ResultReporterTestCase(unittest.TestCase):
 
 ################################################################################
 
+class ResultReaderTestCase(unittest.TestCase):
+    """
+    TestCase for ResultReader class
+    """
+
+    ############################################################################
+
+    def setUp(self):
+        self.name = 'test.log'
+        self.stderr = sys.stderr
+        sys.stderr  = StringIO.StringIO()
+
+    ############################################################################
+
+    def tearDown(self):
+        if os.path.isfile(self.name):
+            os.remove(self.name)
+        sys.stderr.close()
+        sys.stderr = self.stderr
+
+    ############################################################################
+
+    def file_all_pass(self):
+        rw = ResultWriter(self.name)
+        rw.report_test("Test 1", True)
+        rw.report_test("Test 2", True)
+        rw.report_test("Test 3", True)
+
+    ############################################################################
+
+    def file_some_fail(self):
+        rw = ResultWriter(self.name)
+        rw.report_test("Test 1", False)
+        rw.report_test("Test 2", True )
+        rw.report_test("Test 3", False)
+
+    ############################################################################
+
+    def file_no_colon(self):
+        f = open(self.name, "w")
+        f.write("This line has no colon\n")
+        f.write("Neither does this one\n")
+        f.close()
+
+    ############################################################################
+
+    def file_bad_result(self):
+        f = open(self.name, "w")
+        f.write("Test 1: Test PAST\n")
+        f.close()
+
+    ############################################################################
+
+    def testAllPass(self):
+        self.file_all_pass()
+        rr = ResultReader(self.name)
+        self.assertEqual(rr.num_tests, 3)
+        self.assertTrue(rr.all_passed)
+
+    ############################################################################
+
+    def testSomeFailed(self):
+        self.file_some_fail()
+        rr = ResultReader(self.name)
+        self.assertEqual(rr.num_tests, 3)
+        self.assertFalse(rr.all_passed)
+
+    ############################################################################
+
+    def testNoColonException(self):
+        self.file_no_colon()
+        self.assertRaises(ValueError, ResultReader, self.name)
+
+    ############################################################################
+
+    def testNoColonWarning(self):
+        self.file_no_colon()
+        rr = ResultReader(self.name, "warnings")
+        self.assertEqual(rr.num_tests, 0)
+        warning = "Warning:\n" + \
+                  "    Line    = 'This line has no colon'\n" + \
+                  "    Message = 'need more than 1 value to unpack'\n" + \
+                  "Warning:\n" + \
+                  "    Line    = 'Neither does this one'\n" + \
+                  "    Message = 'need more than 1 value to unpack'\n"
+        self.assertEqual(sys.stderr.getvalue(), warning)
+
+    ############################################################################
+
+    def testBadResultException(self):
+        self.file_bad_result()
+        self.assertRaises(ValueError, ResultReader, self.name)
+
+    ############################################################################
+
+    def testBadResultWarning(self):
+        self.file_bad_result()
+        rr = ResultReader(self.name, "warnings")
+        self.assertEqual(rr.num_tests, 0)
+        warning = "Warning:\n" + \
+                  "    Line    = 'Test 1: Test PAST'\n" + \
+                  "    Message = 'Test result 'Test PAST' is neither 'Test " + \
+                  "PASSED' nor 'Test FAILED''\n"
+        self.assertEqual(sys.stderr.getvalue(), warning)
+
+    ############################################################################
+
+    def testNoValidResults(self):
+        self.file_bad_result()
+        rr = ResultReader(self.name, "warnings")
+        self.assertEqual(rr.num_tests, 0)
+        self.assertFalse(rr.all_passed)
+
+################################################################################
+
 if __name__ == "__main__":
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ResultReporterTestCase))
-    print("****************************")
-    print("Testing ResultReporter class")
-    print("****************************")
+    suite.addTest(unittest.makeSuite(ResultWriterTestCase))
+    suite.addTest(unittest.makeSuite(ResultReaderTestCase))
+    print("*****************************")
+    print("Testing ResultReporter module")
+    print("*****************************")
     verbosity = 2
     result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+
+
+
