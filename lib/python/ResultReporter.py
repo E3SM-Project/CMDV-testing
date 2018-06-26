@@ -249,7 +249,10 @@ class ResultReader(object):
 
 import unittest
 import os
-import StringIO
+try:
+    import StringIO                                                    #Python 2
+except ImportError:
+    from io import StringIO                                            #Python 3
 
 ################################################################################
 
