@@ -22,18 +22,19 @@ if not exist %destination%\* (
     exit /b 2
 )
 
-REM make sure we have absolute path:
+REM set current so we can go back to it at the end:
 set current=%cd%
-cd %source%
-set absolute_source_path=%cd%
 
 REM duplicate directory structure:
 xcopy %source% %destination% /T /E
 
+REM move to source directory:
+cd %source%
+
 REM create symlinks in dirs:
-for /R %%f in (*.*) do (
+for /R %%f in (*) do (
     set B=%%f
-    mklink %destination%\!B:%CD%\=! %source%\!B:%CD%\=!
+    mklink %destination%\!B:%cd%\=! !B!
 )
 
 endlocal
