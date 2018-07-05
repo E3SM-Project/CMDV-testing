@@ -1,8 +1,13 @@
 Prerequisites
 -------------
-  * Jupyter
-  * Pandoc   (http://pandoc.org/installing.html)
-  * Pandoc-citeproc
+It is recommended to run the `nb2html` script under an Anaconda
+environment. That will automatically install Jupyter. Other
+requirements:
+
+  * pypandoc
+      - The most portable installation process, which also installs
+        `pandoc-citeproc` (another requirement) is:
+      - `conda install -c conda-forge pypandoc`
 
 Using Citations in a Jupyter Notebook
 -------------------------------------
