@@ -1,0 +1,17 @@
+version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+     - "5000:5000"
+     - "8080:8080"
+    volumes:
+     - ${JENKINS_HOME}:/var/jenkins_home
+     - ${CMDV_BASE_DIR}/CMDV-testing/Examples/flashTestExample:/application
+  mydockerslave:
+     image: "cmdv/jenkinsslave:latest"
+     ports: 
+     - "22:22" 
+volumes:
+  jenkins:     
+     
