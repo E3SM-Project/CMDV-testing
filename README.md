@@ -7,3 +7,5 @@ Start Jenkins server and slave, server UI at localhost:8080:
 
 User name and password for Jenkins admin:
 - cmdv:cmdv
+
+[Documentation](https://github.com/E3SM-Project/CMDV-testing/wiki) 
