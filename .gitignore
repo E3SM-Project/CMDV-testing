@@ -6,4 +6,5 @@
 *.pyc
 
 # Ignore myTest directory
-/Examples/myTest*
+Examples/myTest*
+tmp/
