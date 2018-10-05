@@ -1,0 +1,37 @@
+cmdvVersion: v1.0
+class: CMDVGlobalConfig
+
+label: Global-Config
+doc:  |
+    Global cmdv-test-runner config
+    
+
+hints:
+  cime: {}
+  git: {}
+  docker: {}
+
+repo:
+  path: ./ # e.g http://... | file://.... | ./tmp , default path of config file
+  type: local # e.g git|local|...  , default local
+
+
+tests:
+  suffix: test.yaml # suffix for test config file, default test.json
+
+session:
+  prefix:   # prefix for session dir
+  path: /tmp/testing/cmdv/
+  
+dashboard:
+  path: URI
+  type: enum # e.g cdash| cmdv-testing |...  , default local 
+  
+archive:
+  path: URI
+  type: enum # e.g cdash| cmdv-testing |...  , default local
+  
+workflow:
+  steps: ["deploy" , "build" , "run" , "postprocessing"]
+  
+custom: {}       
