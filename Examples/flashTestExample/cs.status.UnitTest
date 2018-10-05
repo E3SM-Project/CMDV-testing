@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/Users/Andi/Development/CMDV/ACME/cime/scripts/Tools/cs.status "$@" /Users/Andi/Development/CMDV/CMDV-testing/Examples/flashTestExample/*.UnitTest/TestStatus

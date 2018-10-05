@@ -281,7 +281,6 @@ RUN cd /usr/local/bin \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 9.0.1
-
 RUN set -ex; \
   \
   wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' ; \
@@ -291,8 +290,7 @@ RUN set -ex; \
     --no-cache-dir \
     "pip==$PYTHON_PIP_VERSION" \
   ; \
-  ln -s /usr/local/bin/pip3.6 /usr/local/bin/pip ; \
-  pip --version; \
+  pip3.6 --version; \
   \
   find /usr/local -depth \
     \( \

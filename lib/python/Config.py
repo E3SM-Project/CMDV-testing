@@ -32,9 +32,9 @@ class Session(object):
       id = strftime("%Y-%m-%d-%H%M%S", gmtime())
       logger.debug("Missing session id, setting id to " + id)
     if not name:
-      name = (self.prefix + id) if self.prefix else id
+      name = id 
       logger.debug("Missing session name, setting to session id")  
-    self.name = self.prefix + name # if self.prefix else name
+    self.name = self.prefix + name  if self.prefix else name
     self.id   = id
     self.path = path
     # TODO set location for later use - assuming local file system for now
@@ -60,8 +60,8 @@ class Directories(object):
        session = strftime("%Y-%m-%d-%H%M%S", gmtime())
        logger.debug("Missing session name, setting session dir to " + session) 
      if not test:
-       logger.warning("No test name - not setting test and subdirectories") 
-       pass
+       test = 'test-' + strftime("%Y-%m-%d-%H%M%S", gmtime())
+       logger.warning("No test name - setting test name to " + test ) 
        
      if not base_dir:
        base_dir = os.getcwd()
@@ -146,8 +146,9 @@ class Config(object):
         
     # load config
     for k in cfg :
-      # print(k + "\t" + str(cfg[k]))
+      print(k + "\t" + str(cfg[k]))
       setattr(self, k , cfg[k])
+    
     
     if dir:
       logger.debug("Repo dir provided")

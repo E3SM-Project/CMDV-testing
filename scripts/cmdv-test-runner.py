@@ -142,8 +142,8 @@ if __name__ == "__main__":
 
         workflow = Workflow(file=f, config=config, dirs=global_directories)
 
-        # remember path to test config relative to repo dir
-        m = re.search(config.repo.path + '(.+)', f)
+        # remember path to test config relative to repo dir 
+        m = re.search(config.repo.path + '\/*(.+)', f)
         workflow.relative_test_path = os.path.dirname(m.group(1))
 
         logger.info("Executing workflow")
