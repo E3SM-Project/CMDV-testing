@@ -1,5 +1,0 @@
-# Linux
-#mpirun -np <numProcs> <pathToFlashExe> -par_file <parfile>
-
-# SGI
-#mpirun -d <pathToRunDir> -np <numProcs> <pathToFlashExe> -par_file <parfile>

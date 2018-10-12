@@ -1,0 +1,7 @@
+gitpython \
+ipykernel \
+jupyter_client \
+matplotlib \
+nbconvert \
+pypandoc \
+pyyaml

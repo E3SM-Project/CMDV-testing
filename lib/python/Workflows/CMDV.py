@@ -535,8 +535,8 @@ class Workflow(Parent):
           
           # preserve current working directory
           current_working_dir = os.getcwd()   
-          logger.debug("Executing workflow - starting from " + current_working_dir )
-
+          logger.debug("Executing workflow with " + str(len(self.steps)) + " steps,  starting from " + current_working_dir )
+       
           # Initial dirs - get from config
           input_dir   = None
           working_dir = None

@@ -1,9 +1,19 @@
 # Ignore netCDF files.
 *.nc
 
+# Ignore log files
+*.log
+
 # Ignore compiled files
 *.o
 *.pyc
 
 # Ignore myTest directory
-/Examples/myTest*
+Examples/myTest*
+tmp/
+
+# Ignore vscode
+.vscode
+
+# Ignore
+.env

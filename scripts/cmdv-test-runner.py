@@ -125,8 +125,11 @@ if __name__ == "__main__":
         sys.exit()
 
     # Find tests
-    test_files = config.find_tests(
-        dir=config.repo.path, suffix=config.tests['suffix'])
+    if not args.test :
+        test_files = config.find_tests(
+            dir=config.repo.path, suffix=config.tests['suffix'])
+    else:
+        test_files = args.test        
   
 
     for f in test_files:
@@ -142,9 +145,12 @@ if __name__ == "__main__":
 
         workflow = Workflow(file=f, config=config, dirs=global_directories)
 
-        # remember path to test config relative to repo dir
-        m = re.search(config.repo.path + '(.+)', f)
-        workflow.relative_test_path = os.path.dirname(m.group(1))
+        # remember path to test config relative to repo dir 
+        if os.path.isabs(f):
+            m = re.search(config.repo.path + '\/*(.+)', f)
+            workflow.relative_test_path = os.path.dirname(m.group(1))
+        else: 
+            workflow.relative_test_path = os.path.dirname(f)   
 
         logger.info("Executing workflow")
         workflow.execute()
