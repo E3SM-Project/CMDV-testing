@@ -66,6 +66,8 @@ class Tool(object):
             self.outputs  = None
             self.baseCommand = None
             self.arguments = None
+            self.stderr = None
+            self.stdout = None
 
 
             if cfg :
@@ -78,6 +80,10 @@ class Tool(object):
                   self.inputs         = cfg['inputs']      if 'inputs' in cfg else None
                   self.outputs        = cfg['outputs']     if 'outputs' in cfg else None
                   self.arguments      = cfg['arguments']   if 'arguments' in cfg else None
+                  self.stderr      = cfg['stderr']   if 'stderr' in cfg else None
+                  self.stdout      = cfg['stdout']   if 'stdout' in cfg else None
+
+
 
       def _convert_tool_inputs(self, inputs) :
             
@@ -208,8 +214,16 @@ class Tool(object):
             output , errs = process.communicate()
             if output :
                   logger.info("Tool Output: " + output.decode())
+                  if self.stdout :
+                        file = open(self.stdout , "a")
+                        file.write(output.decode())
+                        file.close()
             if errs :
                   logger.error( errs.decode() )
+                  if self.stdout :
+                        file = open(self.stderr , "a")
+                        file.write(errs.decode())
+                        file.close()
 
 
 
@@ -416,7 +430,7 @@ class Workflow(object):
 
 
       def execute(self) :
-            logger.debug("Executing workflow" )
+            logger.debug("Executing workflow with " + str(len(self.steps)) )
             for step in self.steps :
                   logger.debug("Executing step " + str(step.name) )
                   step.execute()
