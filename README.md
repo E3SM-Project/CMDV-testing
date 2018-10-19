@@ -9,3 +9,8 @@ User name and password for Jenkins admin:
 - cmdv:cmdv
 
 [Documentation](https://github.com/E3SM-Project/CMDV-testing/wiki) 
+
+
+Quick start:
+
+1. [Testing instructions for the cmdv-test-runner](Tests/SOP-Create-test-environment-for-self-tests)
