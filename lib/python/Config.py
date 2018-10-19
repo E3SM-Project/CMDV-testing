@@ -123,7 +123,7 @@ class Location(object):
         setattr(self, k , loc[k])
         
 class Config(object):
-  """Global config class"""
+  """Global config for session and test workflows"""
   
   def __init__(self , file=None  , dir=None , base_dir = None):
     """
@@ -301,10 +301,10 @@ class Config(object):
   
  
     
-
+  
     
   def _find_config(self, repo_dir=None ,  config_name = "cmdv-testing.config.yaml" , repo_type=None) :  
-    
+    """Find config file in   """
     if not repo_dir :
       logger.error("Can't search for config, missing directory")
       sys.exit(1)
