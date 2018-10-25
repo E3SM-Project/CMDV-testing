@@ -24,6 +24,8 @@ RUN yum -y update && yum -y upgrade &&  yum -y install \
   m4 \
   make \
   mpfr-devel.x86 \
+  python-devel \
+  python-pip \
 	tcl \
   tcl-devel \
 	tk \
@@ -305,7 +307,7 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 
 
 # ACME
-WORKDIR /ACME
+WORKDIR /E3SM
 RUN mkdir scratch && \
   mkdir -p cime/utils/git && \
   wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh && \
