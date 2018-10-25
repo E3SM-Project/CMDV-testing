@@ -213,16 +213,27 @@ class Tool(object):
             process = subprocess.Popen([self.command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
             output , errs = process.communicate()
             if output :
-                  logger.info("Tool Output: " + output.decode())
+                  try:
+                        out_msg = output.decode()
+                  except UnicodeDecodeError, e:
+                        logger.warning("Unable to decode output " + str(e))
+                        out_msg = output
+                                       
+                  logger.info("Tool Output: " + out_msg)
                   if self.stdout :
                         file = open(self.stdout , "a")
-                        file.write(output.decode())
+                        file.write(out_msg)
                         file.close()
             if errs :
-                  logger.error( errs.decode() )
-                  if self.stdout :
+                  try:
+                        err_msg = errs.decode()
+                  except UnicodeDecodeError, e:
+                        logger.warning("Unable to decode error message: " + str(e))
+                        err_msg = errs
+                  logger.error( err_msg )
+                  if self.stderr :
                         file = open(self.stderr , "a")
-                        file.write(errs.decode())
+                        file.write(err_msg)
                         file.close()
 
 

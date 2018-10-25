@@ -13,4 +13,4 @@ User name and password for Jenkins admin:
 
 Quick start:
 
-1. [Testing instructions for the cmdv-test-runner](Tests/SOP-Create-test-environment-for-self-tests)
+1. [Testing instructions for the cmdv-test-runner](Tests/SOP-Create-test-environment-for-self-tests.md)
