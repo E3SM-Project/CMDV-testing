@@ -478,7 +478,7 @@ class Workflow(Parent):
             build._make_dirs()
             build.init(steps_dict[s])
             steps.append(build)  
-          elif s == "run" :
+          elif s == "run" or s == "execute" :
             run = self.init_step()
             run.name = s
             # set step dirs
