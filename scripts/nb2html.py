@@ -20,9 +20,9 @@ import sys
 ################################################################################
 
 # Object imports
-from traitlets        import Bool
-from traitlets        import List
-from traitlets        import Unicode
+from traitlets import Bool
+from traitlets import List
+from traitlets import Unicode
 from traitlets.config import Config
 
 ################################################################################
@@ -36,6 +36,7 @@ NotebookNode         = nbformat.notebooknode.NotebookNode
 python_version_major = str(sys.version_info.major)
 
 ################################################################################
+
 
 def print_notebook(nb):
     """
@@ -51,6 +52,7 @@ def print_notebook(nb):
         print(output)
 
 ################################################################################
+
 
 class VerboseExecutePreprocessor(ExecutePreprocessor):
     """
@@ -80,6 +82,7 @@ class VerboseExecutePreprocessor(ExecutePreprocessor):
 
 ################################################################################
 
+
 class AddCitationsExporter(HTMLExporter):
     """
     Add the AddCitationsPreprocessor class to the Preprocessor configuration.
@@ -87,12 +90,13 @@ class AddCitationsExporter(HTMLExporter):
     @property
     def default_config(self):
         c = Config({
-            'AddCitationsPreprocessor': {'enabled':True}
+            'AddCitationsPreprocessor': {'enabled': True}
             })
-        c.merge(super(HTMLExporter,self).default_config)
+        c.merge(super(HTMLExporter, self).default_config)
         return c
 
 ################################################################################
+
 
 class AddCitationsPreprocessor(Preprocessor):
     """
@@ -181,29 +185,32 @@ class AddCitationsPreprocessor(Preprocessor):
         for cell in nb.cells:
             ranges = []
             source = cell.source
-            start = source.find('@',0)
+            start = source.find('@', 0)
             end = 0
             while start >= 0:
-                if start == 0 or source[start-1] in ['[',' ','-']:
-                    index = source.rfind('[',end,start)
+                if start == 0 or source[start-1] in ['[', ' ', '-']:
+                    index = source.rfind('[', end, start)
                     if not (index == -1 or self._is_index_in_ranges(index, ranges)):
                         start = index
-                        end = source.find(']',start) + 1
+                        end = source.find(']', start) + 1
                     else:
                         end1 = source.find(' ', start)
                         end2 = source.find(',', start)
                         end3 = source.find('.', start)
-                        if end1 == -1: end1 = len(source)
-                        if end2 == -1: end2 = len(source)
-                        if end3 == -1: end3 = len(source)
+                        if end1 == -1:
+                            end1 = len(source)
+                        if end2 == -1:
+                            end2 = len(source)
+                        if end3 == -1:
+                            end3 = len(source)
                         end = min(end1, end2, end3)
                     citation = source[start:end]
                     if citation not in citations:
                         citations.append(citation)
-                    ranges.append((start,end))
+                    ranges.append((start, end))
                 else:
                     end = start + 1
-                start = source.find('@',end)
+                start = source.find('@', end)
         return citations
 
     ############################################################################
@@ -235,13 +242,13 @@ class AddCitationsPreprocessor(Preprocessor):
 
         # Initialize the return arguments
         substitutions = {}
-        references    = ""
+        references = ""
 
         # Extract and check the number of citations
         citations = self._extract_citations(nb)
         num_citations = len(citations)
         if self.verbose:
-            if num_citations== 1:
+            if num_citations == 1:
                 print('    1 citation found')
             else:
                 print('    %d citations found' % num_citations)
@@ -256,7 +263,7 @@ class AddCitationsPreprocessor(Preprocessor):
         # Run the markdown text through pandoc with the pandoc-citeproc filter
         csl_file = self._find_csl_file()
         if self.verbose:
-            print('    Citation Style Language = "%s"' % csl_file         )
+            print('    Citation Style Language = "%s"' % csl_file)
             print('    BibTeX reference file   = "%s"' % self.bibliography)
         if not os.path.isfile(self.bibliography):
             raise IOError('Could not find "%s"' % self.bibliography)
@@ -336,6 +343,7 @@ class AddCitationsPreprocessor(Preprocessor):
 
 ################################################################################
 
+
 def convert(filename, options):
     """
     Take as input a filename for a Jupyter Notebook (and a variety of options)
@@ -344,7 +352,7 @@ def convert(filename, options):
 
     # Open the Jupyter notebook
     (basename, ext) = os.path.splitext(filename)
-    response = open(filename,"r").read()
+    response = open(filename, "r").read()
     if options.verbose:
         print('Reading "%s"' % filename)
     notebook = nbformat.reads(response, as_version=4)
@@ -379,6 +387,7 @@ def convert(filename, options):
 
 ########################################################################
 
+
 class replace_list(argparse.Action):
     """
     Define an ArgumentParser action that will replace the destination list with
@@ -400,6 +409,7 @@ class replace_list(argparse.Action):
         setattr(namespace, self.dest, values.split(','))
 
 ########################################################################
+
 
 class append_list(argparse.Action):
     """
@@ -424,6 +434,7 @@ class append_list(argparse.Action):
 
 ########################################################################
 
+
 class prepend_list(argparse.Action):
     """
     Define an ArgumentParser action that will prepend the given arguments to a
@@ -447,11 +458,12 @@ class prepend_list(argparse.Action):
 
 ########################################################################
 
+
 if __name__ == "__main__":
 
     # Set up the command-line argument processor
     defaultAddCitation = AddCitationsPreprocessor()
-    defaultExecute     = VerboseExecutePreprocessor()
+    defaultExecute = VerboseExecutePreprocessor()
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('files',
@@ -461,7 +473,7 @@ if __name__ == "__main__":
                         help='Jupyter notebook filename(s) to be processed')
     parser.add_argument('--kernel',
                         dest='kernel',
-                        choices=['python2','python3'],
+                        choices=['python2', 'python3'],
                         default='python' + python_version_major,
                         help='notebook execution kernel')
     parser.add_argument('-t',
