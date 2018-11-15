@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+import unittest
+import os
 """
 ResultReporter module:
 
@@ -33,6 +35,7 @@ from __future__ import print_function
 import sys
 
 ################################################################################
+
 
 class ResultWriter(object):
     """
@@ -166,6 +169,7 @@ class ResultWriter(object):
 
 ################################################################################
 
+
 class ResultReader(object):
     """
     A simple class that reads a file written by a ResultsWriter object and
@@ -198,8 +202,8 @@ class ResultReader(object):
         """
         if handle_errors_as not in ["exceptions", "warnings"]:
             raise ValueError(("'ResultReader' constructor argument " +
-                             "'handle_errors_as' must be either\n" +
-                             "'exceptions' or 'warnings'. Got value '%s'") %
+                              "'handle_errors_as' must be either\n" +
+                              "'exceptions' or 'warnings'. Got value '%s'") %
                              handle_errors_as)
         self.__error_handler = handle_errors_as
         self.text_data = open(filename, "r").read()
@@ -212,18 +216,18 @@ class ResultReader(object):
         Parse the text data read at construction and populate the ResultReader
         attributes
         """
-        self.test_names   = []
+        self.test_names = []
         self.test_results = []
-        self.num_tests    = 0
-        self.num_passed   = 0
-        self.num_failed   = 0
+        self.num_tests = 0
+        self.num_passed = 0
+        self.num_failed = 0
         lines = self.text_data.split('\n')
         for line in lines:
             if line == "":
                 break
             try:
                 name, result = line.split(':')
-                name   = name.strip()
+                name = name.strip()
                 result = result.strip()
                 if result not in ["Test PASSED", "Test FAILED"]:
                     raise ValueError(("Test result '%s' is neither 'Test " +
@@ -237,24 +241,24 @@ class ResultReader(object):
                     self.num_failed += 1
             except ValueError as e:
                 if self.__error_handler == "warnings":
-                    print("Warning:"                 , file=sys.stderr)
+                    print("Warning:", file=sys.stderr)
                     print("    Line    = '%s'" % line, file=sys.stderr)
-                    print("    Message = '%s'" % e   , file=sys.stderr)
+                    print("    Message = '%s'" % e, file=sys.stderr)
                 else:
                     raise e
-        self.all_passed = (self.num_tests  >  0 and
+        self.all_passed = (self.num_tests > 0 and
                            self.num_passed == self.num_tests)
 
 ################################################################################
 
-import unittest
-import os
+
 try:
-    import StringIO                                                    #Python 2
+    import StringIO  # Python 2
 except ImportError:
-    from io import StringIO                                            #Python 3
+    from io import StringIO  # Python 3
 
 ################################################################################
+
 
 class ResultWriterTestCase(unittest.TestCase):
     """
@@ -265,7 +269,7 @@ class ResultWriterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.name = 'test.log'
-        self.rr   = ResultWriter(self.name)
+        self.rr = ResultWriter(self.name)
 
     ############################################################################
 
@@ -332,7 +336,7 @@ class ResultWriterTestCase(unittest.TestCase):
     def testReportTestPassed(self):
         self.rr.report_test_passed('Convergence test')
         self.rr.finished()
-        self.assertEqual(open(self.name,"r").read(),
+        self.assertEqual(open(self.name, "r").read(),
                          "Convergence test: Test PASSED\n")
 
     ############################################################################
@@ -340,20 +344,21 @@ class ResultWriterTestCase(unittest.TestCase):
     def testReportTestFailed(self):
         self.rr.report_test_failed('Convergence test')
         self.rr.finished()
-        self.assertEqual(open(self.name,"r").read(),
+        self.assertEqual(open(self.name, "r").read(),
                          "Convergence test: Test FAILED\n")
 
     ############################################################################
 
     def testReportTest(self):
-        self.rr.report_test('Convergence test 1', True )
+        self.rr.report_test('Convergence test 1', True)
         self.rr.report_test('Convergence test 2', False)
         self.rr.finished()
-        self.assertEqual(open(self.name,"r").read(),
+        self.assertEqual(open(self.name, "r").read(),
                          "Convergence test 1: Test PASSED\n" +
                          "Convergence test 2: Test FAILED\n")
 
 ################################################################################
+
 
 class ResultReaderTestCase(unittest.TestCase):
     """
@@ -365,7 +370,7 @@ class ResultReaderTestCase(unittest.TestCase):
     def setUp(self):
         self.name = 'test.log'
         self.stderr = sys.stderr
-        sys.stderr  = StringIO.StringIO()
+        sys.stderr = StringIO.StringIO()
 
     ############################################################################
 
@@ -388,7 +393,7 @@ class ResultReaderTestCase(unittest.TestCase):
     def file_some_fail(self):
         rw = ResultWriter(self.name)
         rw.report_test("Test 1", False)
-        rw.report_test("Test 2", True )
+        rw.report_test("Test 2", True)
         rw.report_test("Test 3", False)
 
     ############################################################################
@@ -470,6 +475,7 @@ class ResultReaderTestCase(unittest.TestCase):
 
 ################################################################################
 
+
 if __name__ == "__main__":
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ResultWriterTestCase))
@@ -479,6 +485,3 @@ if __name__ == "__main__":
     print("*****************************")
     verbosity = 2
     result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-
-
-

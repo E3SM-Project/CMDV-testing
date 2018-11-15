@@ -26,9 +26,6 @@ from Report import Tests
 from Workflows.CMDV import Workflow
 
 
-
-
-
 ###############################
 # Setup
 ###############################
@@ -109,8 +106,6 @@ parser.add_argument("-v", "--verbosity", action="count", default=0)
 args = parser.parse_args()
 
 
-
-
 if __name__ == "__main__":
 
     report = Tests.Report()
@@ -125,12 +120,11 @@ if __name__ == "__main__":
         sys.exit()
 
     # Find tests
-    if not args.test :
+    if not args.test:
         test_files = config.find_tests(
             dir=config.repo.path, suffix=config.tests['suffix'])
     else:
-        test_files = args.test        
-  
+        test_files = args.test
 
     for f in test_files:
         logger.debug("Initializing test from " + f)
@@ -145,18 +139,16 @@ if __name__ == "__main__":
 
         workflow = Workflow(file=f, config=config, dirs=global_directories)
 
-        # remember path to test config relative to repo dir 
+        # remember path to test config relative to repo dir
         if os.path.isabs(f):
             m = re.search(config.repo.path + '\/*(.+)', f)
             workflow.relative_test_path = os.path.dirname(m.group(1))
-        else: 
-            workflow.relative_test_path = os.path.dirname(f)   
+        else:
+            workflow.relative_test_path = os.path.dirname(f)
 
         logger.info("Executing workflow")
         workflow.execute()
         logger.info("Workflow done")
-
-   
 
         # module_name="Archive.CDash"
         #
@@ -166,4 +158,3 @@ if __name__ == "__main__":
         #   MyClass = getattr(importlib.import_module(module_name), "CDash")
         #   # Instantiate the class (pass arguments to the constructor, if needed)
         #   archive = MyClass(logger_name="test-runner")
-        
