@@ -24,17 +24,22 @@ run_acme_log="${public_scratch}/run_acme.log"
 rm -rf ${case_scratch}
 
 # Change to ACME dir, where script must be run, using CMake for absolute path
-cd /CMDV/CMDV-testing/cdash/../scripts
+echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
+echo "**********************************************"
+echo "Configure"
+
+cd /CMDV/CMDV-testing/
+
 
 # Run run_acme
-echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
+# echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
 echo
 echo "**********************************************"
 echo "Running UnitTest/Verification suite :"
 echo
 
-echo `python ./cmdv-test-runner.py --config /CMDV/CMDV-testing/Config/test_config.json --archive True`
-
+# echo `python ./cmdv-test-runner.py --config /CMDV/CMDV-testing/Config/test_config.json --archive True`
+echo `python ./scripts/cmdv-test-runner --help`
 # cat CaseStatus so it is seen on CDash
 echo
 echo "**********************************************"
@@ -53,9 +58,10 @@ echo
 echo
 echo "**********************************************"
 echo "Test"
-echo
+# echo `python ./cmdv-test-runner.py --config /CMDV/CMDV-testing/Config/test_config.json --archive True`
+echo `python ./scripts/cmdv-test-runner --test Tests/unittest-discovery.test.yaml`
 
-# # echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
+# echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
 # echo
 # echo
 # echo "**********************************************"
