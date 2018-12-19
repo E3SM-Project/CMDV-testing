@@ -6,10 +6,10 @@
 ##   ENABLE_TESTING()
 ##   INCLUDE(CTest)
 
-set(CTEST_PROJECT_NAME "CMDV-testing")
+set(CTEST_PROJECT_NAME "CMDV-Testing")
 set(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
 
 set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "cdash.sandia.gov")
-set(CTEST_DROP_LOCATION "/CDash-2-3-0/submit.php?project=CMDV-testing")
+set(CTEST_DROP_LOCATION "/CDash-2-3-0/submit.php?project=CMDV-Testing")
 set(CTEST_DROP_SITE_CDASH TRUE)

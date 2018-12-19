@@ -5,7 +5,7 @@ set (CTEST_TEST_TYPE Nightly)
 
 # What to build and test
 set (DOWNLOAD TRUE)
-set (CLEAN_BUILD TRUE)
+set (CLEAN_BUILD FALSE)
 set (BUILD_CMDV_TESTING TRUE)
 
 # Begin User inputs:
@@ -17,7 +17,7 @@ set (CTEST_BUILD_CONFIGURATION  Release) # What type of build do you want ?
 
 set (INITIAL_LD_LIBRARY_PATH $ENV{LD_LIBRARY_PATH})
 
-set (CTEST_PROJECT_NAME "CMDV-testing" )
+set (CTEST_PROJECT_NAME "CMDV-Testing" )
 set (CTEST_SOURCE_NAME repos)
 set (CTEST_BUILD_NAME "fedora29-gcc8.2.1-${CTEST_BUILD_CONFIGURATION}")
 set (CTEST_BINARY_NAME build)
@@ -46,8 +46,8 @@ set (CTEST_DROP_METHOD "http")
 
 if (CTEST_DROP_METHOD STREQUAL "http")
   set (CTEST_DROP_SITE "cdash.sandia.gov")
-  set (CTEST_PROJECT_NAME "CMDV-testing")
-  set (CTEST_DROP_LOCATION "/CDash-2-3-0/submit.php?project=CMDV-testing")
+  set (CTEST_PROJECT_NAME "CMDV-Testing")
+  set (CTEST_DROP_LOCATION "/CDash-2-3-0/submit.php?project=CMDV-Testing")
   set (CTEST_TRIGGER_SITE "")
   set (CTEST_DROP_SITE_CDASH TRUE)
 endif ()
@@ -55,7 +55,7 @@ endif ()
 find_program (CTEST_GIT_COMMAND NAMES git)
 find_program (CTEST_SVN_COMMAND NAMES svn)
 
-set (CMDVTesting_REPOSITORY_LOCATION git@github.com:E3SM-Project/CMDV-testing.git)
+set (CMDVTesting_REPOSITORY_LOCATION git@github.com:E3SM-Project/CMDV-Testing.git)
 
 if (CLEAN_BUILD)
   # Initial cache info
@@ -162,7 +162,7 @@ if (BUILD_CMDV_TESTING)
 
   CTEST_CONFIGURE(
     BUILD "${CTEST_BINARY_DIRECTORY}/IKTTest"
-    SOURCE "${CTEST_SOURCE_DIRECTORY}/CMDV-testing"
+    SOURCE "${CTEST_SOURCE_DIRECTORY}/CMDV-Testing"
     OPTIONS "${CONFIGURE_OPTIONS}"
     RETURN_VALUE HAD_ERROR
     APPEND
@@ -174,16 +174,16 @@ if (BUILD_CMDV_TESTING)
       )
 
     if (S_HAD_ERROR)
-      message(FATAL_ERROR "Cannot submit CMDV-testing configure results!")
+      message(FATAL_ERROR "Cannot submit CMDV-Testing configure results!")
     endif ()
   endif ()
 
   if (HAD_ERROR)
-    message(FATAL_ERROR "Cannot configure CMDV-testing build!")
+    message(FATAL_ERROR "Cannot configure CMDV-Testing build!")
   endif ()
 
   #
-  # "Build" CMDV-testing
+  # "Build" CMDV-Testing
   #
 
   set (CTEST_BUILD_TARGET all)
@@ -204,20 +204,20 @@ if (BUILD_CMDV_TESTING)
       )
 
     if (S_HAD_ERROR)
-      message(FATAL_ERROR "Cannot submit CMDV-testing build results!")
+      message(FATAL_ERROR "Cannot submit CMDV-Testing build results!")
     endif ()
   endif ()
 
   if (HAD_ERROR)
-    message(FATAL_ERROR "Cannot build CMDV-testing!")
+    message(FATAL_ERROR "Cannot build CMDV-Testing!")
   endif ()
 
   if (BUILD_LIBS_NUM_ERRORS GREATER 0)
-    message(FATAL_ERROR "Encountered build errors in CMDV-testing build. Exiting!")
+    message(FATAL_ERROR "Encountered build errors in CMDV-Testing build. Exiting!")
   endif ()
 
   #
-  # Run CMDV-testing tests
+  # Run CMDV-Testing tests
   #
   
   set (CTEST_TEST_TIMEOUT 600)
@@ -236,12 +236,12 @@ if (BUILD_CMDV_TESTING)
       )
 
     if (S_HAD_ERROR)
-      message(FATAL_ERROR "Cannot submit CMDV-testing test results!")
+      message(FATAL_ERROR "Cannot submit CMDV-Testing test results!")
     endif ()
   endif ()
 
   #if (HAD_ERROR)
-  #	message(FATAL_ERROR "Some CMDV-testing tests failed.")
+  #	message(FATAL_ERROR "Some CMDV-Testing tests failed.")
   #endif ()
 
 endif ()
