@@ -1,0 +1,7 @@
+rm -f CMakeCache.txt
+rm -rf CMakeFiles
+
+cmake \
+      -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+..
+

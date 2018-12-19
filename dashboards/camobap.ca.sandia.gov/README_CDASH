@@ -1,0 +1,22 @@
+CDash testing scripts are executed as follows:
+
+cd ~/
+mkdir nightlyCMDVTestingCDash
+cd nightlyCMDVTestingCDash
+bash nightly_cron_script.sh
+
+This will create a repos and build directory for the cloning 
+of the CMDV-testing repo and the build/test running, respectively.
+
+The output from the entire procedure is sent to the output file nightly_log.txt.
+
+The results from the configure/build/run are sent to the following 
+CDash site: http://cdash.sandia.gov/CDash-2-3-0/index.php?project=CMDV-testing
+(note that this is only accessible from Sandia's SRN network).
+To change to a difference site, one would need to modify ctest_nightly.cmake,
+CTestConfig.cmake and Project.xml.
+
+Note that there is no need to source init.sh to get the paths with 
+this build approach.   
+ 
+The requirement is to have cmake version 2.8 or higher.  
