@@ -9,6 +9,10 @@ requirements:
         `pandoc-citeproc` (another requirement) is:
       - `conda install -c conda-forge pypandoc`
 
+  * matplotlib
+
+  * netcdf4
+
 Using Citations in a Jupyter Notebook
 -------------------------------------
 It is possible to cite references from a BibTeX .bib file within a
