@@ -3,6 +3,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Tests/config.test.yaml
                ${CMAKE_CURRENT_BINARY_DIR}/config.test.yaml COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/runUnitTest.sh
                ${CMAKE_CURRENT_BINARY_DIR}/runUnitTest.sh COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.sh
+               ${CMAKE_CURRENT_BINARY_DIR}/set_paths.sh COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Tests/unittest-discovery.test.yaml
                ${CMAKE_CURRENT_BINARY_DIR}/unittest-discovery.test.yaml COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake
@@ -14,5 +16,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmdv-testing.config.yaml
 get_filename_component(testName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 #create test
-add_test(NAME ${testName}_run_unit_verification_test COMMAND ${CMAKE_COMMAND} -DTEST_NAME=Cohesive -DPY_PATH=$ENV{PYTHONPATH} -P ${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake)
+add_test(NAME ${testName}_run_unit_verification_test COMMAND ${CMAKE_COMMAND} -DTEST_NAME=Cohesive -DPY_PATH=$ENV{PYTHONPATH} -DCMDV_PY_DIR=${CMAKE_CURRENT_BINARY_DIR}/../lib/python/Workflows -DCLONE_DIR_PATH=${CMAKE_CURRENT_BINARY_DIR}/../scripts -P ${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake)
 

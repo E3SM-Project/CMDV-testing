@@ -20,9 +20,12 @@ add_subdirectory(scripts)
 
 enable_testing()
 MESSAGE("\nTests are on.") 
-set(ENV{PYTHONPATH} "${CMAKE_CURRENT_SOURCE_DIR}/lib/python")
-MESSAGE("\n   PYTHONPATH=$ENV{PYTHONPATH}")
-SET(CMDV_TESTING_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}) 
+SET(CMDV_TESTING_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+MESSAGE("   CMDV_TESTING_BIN_DIR ${CMDV_TESTING_BIN_DIR}") 
+set(ENV{PYTHONPATH} "${CMDV_TESTING_BIN_DIR}/lib/python")
+MESSAGE("   PYTHONPATH=$ENV{PYTHONPATH}")
+MESSAGE("")
 add_subdirectory(tests)
+add_subdirectory(lib)
 
 
