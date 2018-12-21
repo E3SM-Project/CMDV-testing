@@ -5,6 +5,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/runUnitTest.sh
                ${CMAKE_CURRENT_BINARY_DIR}/runUnitTest.sh COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.sh
                ${CMAKE_CURRENT_BINARY_DIR}/set_paths.sh COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/check_error.sh
+               ${CMAKE_CURRENT_BINARY_DIR}/check_error.sh COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../Tests/unittest-discovery.test.yaml
                ${CMAKE_CURRENT_BINARY_DIR}/unittest-discovery.test.yaml COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake
