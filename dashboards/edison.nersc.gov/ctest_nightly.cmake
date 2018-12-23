@@ -9,7 +9,7 @@ set (CLEAN_BUILD FALSE)
 set (BUILD_CMDV_TESTING TRUE)
 
 # Begin User inputs:
-set (CTEST_SITE "edison.nersc.gov" ) # generally the output of hostname
+set (CTEST_SITE "cmdv-test-runner" ) # generally the output of hostname
 set (CTEST_DASHBOARD_ROOT "$ENV{TEST_DIRECTORY}" ) # writable path
 set (CTEST_SCRIPT_DIRECTORY "$ENV{SCRIPT_DIRECTORY}" ) # where the scripts live
 set (CTEST_CMAKE_GENERATOR "Unix Makefiles" ) # What is your compilation apps ?
