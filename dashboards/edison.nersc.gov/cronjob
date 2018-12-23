@@ -1,0 +1,1 @@
+00 21 * * * cd /global/homes/i/ikalash/CMDV/nightlyCDash; bash -l -c "source modules.sh >& modules.out; bash nightly_cron_script.sh" 
