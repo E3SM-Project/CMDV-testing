@@ -1,0 +1,15 @@
+This file contains instructions for configuring, building
+and testing the code using cmake and ctest. 
+
+cd ~/
+git clone git@github.com:E3SM-Project/CMDV-testing.git
+cd CMDV-testing
+git checkout ikalash/cdash
+mkdir build
+cd build
+cp ../dashboards/camobap.ca.sandia.gov/do-cmake .
+./do-cmake
+make -j 8
+ctest -V
+
+The requirement is to have cmake version 2.8 or higher.  
