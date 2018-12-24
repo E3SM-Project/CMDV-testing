@@ -17,6 +17,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmdv-testing.config.yaml
 #Name the test with the directory name
 get_filename_component(testName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
+IF (NOT ENABLE_GITPYTHON) 
+execute_process(COMMAND bash turn_off_gitpython.sh) 
+ENDIF()
+
 #create test
 add_test(NAME ${testName}_run_unit_verification_test COMMAND ${CMAKE_COMMAND} -DTEST_NAME=Cohesive -DPY_PATH=$ENV{PYTHONPATH} -DPY_DIR=${CMAKE_CURRENT_BINARY_DIR}/../lib/python -DCLONE_DIR_PATH=${CMAKE_CURRENT_BINARY_DIR}/../scripts -P ${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake)
 

@@ -3,5 +3,6 @@ rm -rf CMakeFiles
 
 cmake \
       -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+      -D ENABLE_GITPYTHON:BOOL=OFF \
 ..
 

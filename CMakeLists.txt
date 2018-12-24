@@ -3,14 +3,14 @@
 cmake_minimum_required(VERSION 2.6.4)
 
 #keeping this for example
-#OPTION (MATRIX_MARKET_OUTPUT "Toggle to turn on writing of matrices/vectors to matrix market file, off by default" OFF)
-#IF (MATRIX_MARKET_OUTPUT) 
-  #enable writing to matrix market?
-#  MESSAGE("\nMatrix Market output is on.  Configuring with -DWRITE_MATRIX_MARKET flag.") 
-#  ADD_DEFINITIONS(-DWRITE_TO_MATRIXMARKET)
-#ELSE()
-#  MESSAGE("\nMatrix Market output is off.") 
-#ENDIF()
+OPTION (ENABLE_GITPYTHON "Toggle to turn on when gitpython is available, ON by default" ON)
+IF (ENABLE_GITPYTHON) 
+  MESSAGE("\nGitpython is ON.") 
+  SET (ENABLE_GITPYTHON TRUE)
+ELSE()
+  MESSAGE("\nGitpython is OFF.") 
+  SET (ENABLE_GITPYTHON FALSE) 
+ENDIF()
 
 PROJECT(CMDV_TESTING)
 
