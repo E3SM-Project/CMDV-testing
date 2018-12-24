@@ -7,5 +7,4 @@ TTTT=`grep "(Not Run)" nightly_log.txt -c`
 TTTTT=`grep "(Timeout)" nightly_log.txt -c`
 TT=`grep "...   Passed" nightly_log.txt -c`
 
-#/bin/mail -s "Albany ($ALBANY_BRANCH): $TTT" "albany-regression@software.sandia.gov" < $ALBOUTDIR/albany_runtests.out
 /bin/mail -s "cmdv-test-runner, edison.nersc.gov: $TT tests passed, $TTT tests failed, $TTTT tests not run, $TTTTT timeouts" "ikalash@sandia.gov" -F "Irina Tezaur" < results

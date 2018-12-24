@@ -1,15 +1,32 @@
 This file contains instructions for configuring, building
-and testing the code using cmake and ctest. 
+and testing the code using cmake and ctest on Edison.  It 
+can easily be modified for other machines. 
 
 cd ~/
-git clone git@github.com:E3SM-Project/CMDV-testing.git
-cd CMDV-testing
+module purge; module load cmake 
+git clone git@github.com:E3SM-Project/CMDV-testing.git CMDV-Testing
+cd CMDV-Testing
 git checkout ikalash/cdash
 mkdir build
 cd build
-cp ../dashboards/camobap.ca.sandia.gov/do-cmake .
+cp ../dashboards/edison.nersc.gov/do-cmake .
 ./do-cmake
 make -j 8
 ctest -V
 
+NOTES:
+
+The do-cmake configuration script has 2 options:
+
+-D ENABLE_GITPYTHON:BOOL=ON/OFF
+-D TESTING_OUTPUT_DIR:PATH=...
+
+The first option should be set to OFF if a machine does not have GITPYTHON installed.
+
+The second option lets one specify the path where the testing output directories
+will be created.  By default, these will be created in /tmp/cmdv/testing. 
+
+Note that there is no need to source init.sh to get the paths with 
+this build approach.   
+ 
 The requirement is to have cmake version 2.8 or higher.  
