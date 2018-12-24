@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-#IKT, 12/22/18: turning off import of git 
-#since I do not believe it is necessary. 
-#Need to check with Andreas. 
-#import git
+import git
 import glob
 import importlib
 import json

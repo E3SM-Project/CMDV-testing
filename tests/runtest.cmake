@@ -4,6 +4,16 @@ MESSAGE("CLONE_DIR_PATH=${PY_DIR}")
 
 set(LOGFILE log.txt)
 
+IF (NOT ENABLE_GITPYTHON) 
+EXECUTE_PROCESS(COMMAND bash turn_off_gitpython.sh
+    RESULT_VARIABLE ERROR0)
+if(ERROR0)
+        message(FATAL_ERROR "Error turning off gitpython!")
+endif()
+
+ 
+ENDIF()
+
 EXECUTE_PROCESS(COMMAND bash set_paths.sh ${PY_DIR} ${CLONE_DIR_PATH} 
     RESULT_VARIABLE ERROR1)
 if(ERROR1)
