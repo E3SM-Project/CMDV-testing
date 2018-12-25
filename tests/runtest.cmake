@@ -10,8 +10,6 @@ EXECUTE_PROCESS(COMMAND bash turn_off_gitpython.sh
 if(ERROR0)
         message(FATAL_ERROR "Error turning off gitpython!")
 endif()
-
- 
 ENDIF()
 
 EXECUTE_PROCESS(COMMAND bash set_paths.sh ${PY_DIR} ${CLONE_DIR_PATH} ${TESTING_OUTPUT_PATH} 

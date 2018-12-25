@@ -10,7 +10,7 @@ echo "input ="$input
 output=$2
 echo "output ="$output
 
-export PYTHONPATH=$input:/global/homes/i/ikalash/CMVD/CMDV-Testing/build/lib/python2.7
+export PYTHONPATH=$input
 echo "PYTHONPATH =" $PYTHONPATH
 
 #Case directories  are in HOME unless SCRATCH is specified
