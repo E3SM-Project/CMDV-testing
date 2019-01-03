@@ -209,7 +209,7 @@ class Tool(object):
         if output:
             try:
                 out_msg = output.decode()
-            except UnicodeDecodeError, e:
+            except UnicodeDecodeError as e:
                 logger.warning("Unable to decode output " + str(e))
                 out_msg = output
 
@@ -221,7 +221,7 @@ class Tool(object):
         if errs:
             try:
                 err_msg = errs.decode()
-            except UnicodeDecodeError, e:
+            except UnicodeDecodeError as e:
                 logger.warning("Unable to decode error message: " + str(e))
                 err_msg = errs
             logger.error(err_msg)
