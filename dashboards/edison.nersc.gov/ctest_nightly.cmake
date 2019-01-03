@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 2.8)
 set (CTEST_DO_SUBMIT ON)
-set (CTEST_TEST_TYPE Nightly)
+set (CTEST_TEST_TYPE Experimental)
 
 # What to build and test
 set (DOWNLOAD TRUE)
@@ -17,9 +17,9 @@ set (CTEST_BUILD_CONFIGURATION  Release) # What type of build do you want ?
 
 set (INITIAL_LD_LIBRARY_PATH $ENV{LD_LIBRARY_PATH})
 
-set (CTEST_PROJECT_NAME "CMDV-Testing" )
+set (CTEST_PROJECT_NAME "ACME_Climate" )
 set (CTEST_SOURCE_NAME repos)
-set (CTEST_BUILD_NAME "fedora29-gcc8.2.1-${CTEST_BUILD_CONFIGURATION}")
+set (CTEST_BUILD_NAME "edison-${CTEST_BUILD_CONFIGURATION}")
 set (CTEST_BINARY_NAME build)
 
 set(ENV${PYTHONPATH} "${CMAKE_CURRENT_BINARY_DIR}/lib/python")
@@ -45,9 +45,9 @@ set (CTEST_BUILD_FLAGS "-j16")
 set (CTEST_DROP_METHOD "http")
 
 if (CTEST_DROP_METHOD STREQUAL "http")
-  set (CTEST_DROP_SITE "cdash.sandia.gov")
-  set (CTEST_PROJECT_NAME "CMDV-Testing")
-  set (CTEST_DROP_LOCATION "/CDash-2-3-0/submit.php?project=CMDV-Testing")
+  set (CTEST_DROP_SITE "my.cdash.org")
+  set (CTEST_PROJECT_NAME "ACME_Climate")
+  set (CTEST_DROP_LOCATION "/submit.php?project=ACME_Climate")
   set (CTEST_TRIGGER_SITE "")
   set (CTEST_DROP_SITE_CDASH TRUE)
 endif ()
@@ -81,7 +81,7 @@ if (DOWNLOAD)
 
   if (NOT EXISTS "${CTEST_SOURCE_DIRECTORY}/CMDV-Testing")
     execute_process (COMMAND "${CTEST_GIT_COMMAND}" 
-      clone ${CMDVTesting_REPOSITORY_LOCATION} -b master ${CTEST_SOURCE_DIRECTORY}/CMDV-Testing
+      clone ${CMDVTesting_REPOSITORY_LOCATION} -b ikalash/cdash ${CTEST_SOURCE_DIRECTORY}/CMDV-Testing
       OUTPUT_VARIABLE _out
       ERROR_VARIABLE _err
       RESULT_VARIABLE HAD_ERROR)
@@ -121,8 +121,8 @@ if (DOWNLOAD)
   # Update CMDV-Testing 
   #
 
-  set_property (GLOBAL PROPERTY SubProject IKTTest)
-  set_property (GLOBAL PROPERTY Label IKTTest)
+  #set_property (GLOBAL PROPERTY SubProject Build)
+  #set_property (GLOBAL PROPERTY Label Build)
 
   set (CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
   CTEST_UPDATE(SOURCE "${CTEST_SOURCE_DIRECTORY}/CMDV-Testing" RETURN_VALUE count)
@@ -150,11 +150,13 @@ if (BUILD_CMDV_TESTING)
   # "Builds" code
   #
 
-  set_property (GLOBAL PROPERTY SubProject IKTTest)
-  set_property (GLOBAL PROPERTY Label IKTTest)
+  #set_property (GLOBAL PROPERTY SubProject Build)
+  #set_property (GLOBAL PROPERTY Label Build)
 
   set (CONFIGURE_OPTIONS
-    "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON")
+    "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+    "-DTESTING_OUTPUT_DIR:PATH=${CTEST_BINARY_DIRECTORY}/Build/testing/cmdv"
+    "-DENABLE_GITPYTHON:BOOL=OFF")
   
   if (NOT EXISTS "${CTEST_BINARY_DIRECTORY}/Build")
     file (MAKE_DIRECTORY ${CTEST_BINARY_DIRECTORY}/Build)

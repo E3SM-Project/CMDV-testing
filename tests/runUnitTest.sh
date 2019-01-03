@@ -7,6 +7,8 @@
 
 input=$1
 echo "input ="$input
+output=$2
+echo "output ="$output
 
 export PYTHONPATH=$input
 echo "PYTHONPATH =" $PYTHONPATH
@@ -65,7 +67,7 @@ echo
 echo "**********************************************"
 echo "Test"
 # echo `python ./cmdv-test-runner.py --config /CMDV/CMDV-testing/Config/test_config.json --archive True`
-echo `python ../scripts/cmdv-test-runner --test unittest-discovery.test.yaml`
+echo `python ../scripts/cmdv-test-runner --test unittest-discovery.test.yaml >& ${output}`
 
 # echo "CTEST_FULL_OUTPUT" #This magic string stops CDash from truncating output
 # echo
