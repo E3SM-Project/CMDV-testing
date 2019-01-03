@@ -5,7 +5,7 @@ pipeline {
             steps {
 	        script {
                   sh """echo 'Running PreTest...'
-                  . /etc/profile > /dev/null
+                  set +x && . /etc/profile && set -x
                   whoami
                   hostname
                   rm -f 'dashboards/jenkins.lcrc.anl.gov/nightly_log.txt'"""
@@ -19,7 +19,7 @@ pipeline {
                        . /etc/profile > /dev/null
                        module load cmake
                        cd dashboards/jenkins.lcrc.anl.gov
-                       bash do_cmake > test_log.txt
+                       bash do-cmake > test_log.txt
                        """
 		}
 	    }
