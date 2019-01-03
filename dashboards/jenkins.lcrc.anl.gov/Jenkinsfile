@@ -1,11 +1,6 @@
 pipeline {
     agent {label 'lcrc'}
     stages {
-        stage('printNode') {
-            steps {
-                echo env.NODE_NAME
-            }
-        }
         stage('PreTest') {
             steps {
 	        script {
@@ -13,29 +8,38 @@ pipeline {
                   . /etc/profile
                   whoami
                   hostname
-                  module spider singularity"""
+                  rm -f 'dashboards/jenkins.lcrc.anl.gov/nightly_log.txt'"""
                 }
             }
 	}
+	stage('Make') {
+	    steps {
+		script {
+		    sh """
+                       . etc/profile
+                       module load cmake
+                       cd dashboards/jenkins.lcrc.anl.gov
+                       bash do_cmake > test_log.txt
+                       """
+		}
+	    }
         stage('RunTest') {
             steps {
 	        script {
                     sh """
-                    echo "Running 'RunTest' stage..."
                     . /etc/profile
-                    module load singularity/2.4.2
-                    whoami
-                    ls
-                    pwd
-                    singularity exec -B ${env.workspace}:/CMDV/CMDV-testing --pwd /CMDV/CMDV-testing docker://cmdv/test-runner-env:latest ./dashboards/jenkins.lcrc.anl.gov/run_cdash.sh"""
+                    module load cmake
+		    cd dashboards/jenkins.lcrc.anl.gov
+		    export LOG_FILE=nightly_log.txt
+                    eval "env TEST_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov SCRIPT_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest -VV -s ${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest_jenkins.cmake" >> test_log.txt
+                    """
                 }
             }
         }
     }
     post {
         always{
-            archiveArtifacts 'dashboards/jenkins.lcrc.anl.gov/nightly_log.txt'
-	    deleteDir()
+            archiveArtifacts 'dashboards/jenkins.lcrc.anl.gov/test_log.txt'
         }        
     }
 	    
