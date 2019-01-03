@@ -363,7 +363,7 @@ class Step(object):
             logger.debug("Creating directory: " + path)
             try:
                 os.makedirs(path)
-            except os.error, e:
+            except os.error as e:
                 if e.errno != errno.EEXIST:
                     raise
 
