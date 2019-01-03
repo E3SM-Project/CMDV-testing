@@ -1,22 +1,7 @@
 CDash testing scripts are executed on jenkins.lcrc.anl.gov
 View Jenkinsfile for details.
 
-runs singularity image docker://cmdv/test-runner-env:latest
-
-now=$(date +"%m_%d_%Y-%H_%M")
-LOG_FILE=nightly_log.txt
-
-eval "env  TEST_DIRECTORY=$PWD SCRIPT_DIRECTORY=$PWD ctest -VV -S $PWD/ctest_nightly.cmake" > $LOG_FILE 2>&1
-
-bash nightly_cron_script.sh
-bash process_results.sh
-bash send_email.sh 
-
-The output from the entire procedure is sent to the output file nightly_log.txt.
-
-The results from the configure/build/run are sent to the following 
-CDash site: https://my.cdash.org/index.php?project=ACME_Climate
-under the Experimental section.  
+#no longer runs singularity image docker://cmdv/test-runner-env:latest
 
 
 NOTES:
@@ -36,5 +21,3 @@ this build approach.
  
 The requirement is to have cmake version 2.8 or higher. 
 
-To modify ctest_nightly.cmake for another machine, one should search and replace
-the phrase "edison" with the name of the other machine.  
