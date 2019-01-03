@@ -11,8 +11,8 @@ current_dir=`pwd`
 echo  PYTHONPATH=$PYTHONPATH:${current_dir}/lib/python
 export PYTHONPATH=$PYTHONPATH:${current_dir}/lib/python
 
-echo PATH=$PATH:/${current_dir}/scripts
-export PATH=$PATH:/${current_dir}/scripts
+echo PATH=$PATH:${current_dir}/scripts
+export PATH=$PATH:${current_dir}/scripts
 
 # Setting up persistant Jenkins dir
 # mkdir -p $JENKINS_HOME
