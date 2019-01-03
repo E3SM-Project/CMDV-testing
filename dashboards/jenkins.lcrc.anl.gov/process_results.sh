@@ -1,4 +1,7 @@
-
+echo "processing results"
+if [ ! -f nightly_log.txt ]; then
+    echo "process_results.sh: ERROR: file nightly_log.txt not found"
+fi
 grep "Test   #" nightly_log.txt >& results0
 grep "Test  #" nightly_log.txt >& results1 
 cat results0 results1 >& results11
