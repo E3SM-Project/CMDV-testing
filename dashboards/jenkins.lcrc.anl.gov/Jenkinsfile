@@ -23,6 +23,7 @@ pipeline {
                        """
 		}
 	    }
+	}
         stage('RunTest') {
             steps {
 	        script {
