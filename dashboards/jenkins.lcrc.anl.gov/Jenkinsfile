@@ -10,7 +10,7 @@ pipeline {
                   set -x
                   whoami
                   hostname
-                  rm -f 'dashboards/jenkins.lcrc.anl.gov/nightly_log.txt'"""
+                  rm -f 'dashboards/jenkins.lcrc.anl.gov/test_log.txt'"""
                 }
             }
 	}
@@ -40,7 +40,6 @@ pipeline {
                     set -x
                     conda activate
 		    cd dashboards/jenkins.lcrc.anl.gov
-		    export LOG_FILE=nightly_log.txt
                     eval "env TEST_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov SCRIPT_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest -VV -s ${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest_jenkins.cmake" >> test_log.txt
                     """
                 }
