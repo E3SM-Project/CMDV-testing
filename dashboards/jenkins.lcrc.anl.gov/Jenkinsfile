@@ -1,0 +1,42 @@
+pipeline {
+    agent {label 'lcrc'}
+    stages {
+        stage('printNode') {
+            steps {
+                echo env.NODE_NAME
+            }
+        }
+        stage('PreTest') {
+            steps {
+	        script {
+                  sh """echo 'Running PreTest...'
+                  . /etc/profile
+                  whoami
+                  hostname
+                  module spider singularity"""
+                }
+            }
+	}
+        stage('RunTest') {
+            steps {
+	        script {
+                    sh """
+                    echo "Running 'RunTest' stage..."
+                    . /etc/profile
+                    module load singularity/2.4.2
+                    whoami
+                    ls
+                    pwd
+                    singularity exec -B ${env.workspace}:/CMDV/CMDV-testing --pwd /CMDV/CMDV-testing docker://cmdv/test-runner-env:latest ./dashboards/jenkins.lcrc.anl.gov/run_cdash.sh"""
+                }
+            }
+        }
+    }
+    post {
+        always{
+            archiveArtifacts 'dashboards/jenkins.lcrc.anl.gov/nightly_log.txt'
+	    deleteDir()
+        }        
+    }
+	    
+}
