@@ -16,7 +16,7 @@ pipeline {
 	    steps {
 		script {
 		    sh """
-                       . etc/profile
+                       . /etc/profile
                        module load cmake
                        cd dashboards/jenkins.lcrc.anl.gov
                        bash do_cmake > test_log.txt
