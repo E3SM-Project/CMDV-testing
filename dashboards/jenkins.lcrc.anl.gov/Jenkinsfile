@@ -36,6 +36,7 @@ pipeline {
                     . /etc/profile
                     module load cmake
                     module load anaconda3/5.2.0
+                    . /soft/anaconda3/5.2.0/etc/profile.d/conda.sh
                     set -x
                     conda activate
 		    cd dashboards/jenkins.lcrc.anl.gov
