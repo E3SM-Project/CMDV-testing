@@ -1,0 +1,2 @@
+#runs on edison09
+00 21 * * * cd /global/homes/i/ikalash/CMDV/nightlyCDash; bash -l -c "source modules.sh >& modules.out; bash nightly_cron_script.sh; bash process_results.sh; bash send_email.sh" 

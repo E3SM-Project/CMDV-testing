@@ -1,5 +1,5 @@
 This file contains instructions for configuring, building
-and testing the code using cmake and ctest on a linux workstation.  It 
+and testing the code using cmake and ctest on Edison.  It 
 can easily be modified for other machines. 
 
 cd ~/
@@ -9,7 +9,7 @@ cd CMDV-Testing
 git checkout ikalash/cdash
 mkdir build
 cd build
-cp ../dashboards/camobap.sandia.gov/do-cmake .
+cp ../dashboards/edison.nersc.gov/do-cmake .
 ./do-cmake
 make -j 8
 ctest -V
@@ -22,9 +22,6 @@ The do-cmake configuration script has 2 options:
 -D TESTING_OUTPUT_DIR:PATH=...
 
 The first option should be set to OFF if a machine does not have GITPYTHON installed.
-
-GITPYTHON can be installed as follows (requires sudo priviledges): 
-sudo pip install gitpython
 
 The second option lets one specify the path where the testing output directories
 will be created.  By default, these will be created in /tmp/cmdv/testing. 

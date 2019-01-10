@@ -2,7 +2,7 @@ CDash testing scripts are executed as follows:
 
 cd ~/
 mkdir nightlyCMDVTestingCDash
-cp /path/to/cmdv-testing-clone/dashboards/camobap.nersc.gov/* .
+cp /path/to/cmdv-testing-clone/dashboards/edison.nersc.gov/* .
 cd nightlyCMDVTestingCDash
 source modules.sh 
 bash nightly_cron_script.sh
@@ -15,10 +15,9 @@ of the CMDV-testing repo and the build/test running, respectively.
 The output from the entire procedure is sent to the output file nightly_log.txt.
 
 The results from the configure/build/run are sent to the following 
-CDash site: http://cdash.sandia.gov/CDash-2-3-0/index.php?project=CMDV-testing
-(note that this is only accessible from Sandia's SRN network).
-To change to a different site, one would need to modify ctest_nightly.cmake,
-CTestConfig.cmake and Project.xml.
+CDash site: https://my.cdash.org/index.php?project=ACME_Climate
+under the Experimental section.  
+
 
 NOTES:
 
