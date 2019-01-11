@@ -6,7 +6,6 @@ cd ~/
 module purge; module load cmake 
 git clone git@github.com:E3SM-Project/CMDV-testing.git CMDV-Testing
 cd CMDV-Testing
-git checkout ikalash/cdash
 mkdir build
 cd build
 cp ../dashboards/camobap.sandia.gov/do-cmake .
