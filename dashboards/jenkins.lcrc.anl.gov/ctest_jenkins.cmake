@@ -78,10 +78,10 @@ if (DOWNLOAD)
   #
   # Get CMDV-Testing repo 
   #
-
+  
   if (NOT EXISTS "${CTEST_SOURCE_DIRECTORY}/CMDV-Testing")
     execute_process (COMMAND "${CTEST_GIT_COMMAND}" 
-      clone ${CMDVTesting_REPOSITORY_LOCATION} -b sarich/jenkins ${CTEST_SOURCE_DIRECTORY}/CMDV-Testing
+      clone ${CMDVTesting_REPOSITORY_LOCATION}  ${CTEST_SOURCE_DIRECTORY}/CMDV-Testing
       OUTPUT_VARIABLE _out
       ERROR_VARIABLE _err
       RESULT_VARIABLE HAD_ERROR)
