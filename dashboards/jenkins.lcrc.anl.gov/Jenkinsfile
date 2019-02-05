@@ -37,10 +37,10 @@ pipeline {
                     module load cmake
                     module load anaconda3/5.2.0
                     . /soft/anaconda3/5.2.0/etc/profile.d/conda.sh
-                    set -x
                     conda activate
+                    set -x
 		    cd dashboards/jenkins.lcrc.anl.gov
-                    eval "env TEST_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov SCRIPT_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest -VV -s ${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest_jenkins.cmake" >> test_log.txt
+                    eval "env TEST_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov SCRIPT_DIRECTORY=${env.workspace}/dashboards/jenkins.lcrc.anl.gov ctest -VV -S ${env.workspace}/dashboards/jenkins.lcrc.anl.gov/ctest_jenkins.cmake" >> test_log.txt
                     """
                 }
             }
