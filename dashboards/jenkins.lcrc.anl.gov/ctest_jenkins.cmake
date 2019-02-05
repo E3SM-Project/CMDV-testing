@@ -55,7 +55,7 @@ endif ()
 find_program (CTEST_GIT_COMMAND NAMES git)
 find_program (CTEST_SVN_COMMAND NAMES svn)
 
-set (CMDVTesting_REPOSITORY_LOCATION git@github.com:E3SM-Project/CMDV-testing.git)
+set (CMDVTesting_REPOSITORY_LOCATION "../..")
 
 if (CLEAN_BUILD)
   # Initial cache info
