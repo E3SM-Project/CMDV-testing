@@ -90,7 +90,7 @@ if (DOWNLOAD)
     message(STATUS "err: ${_err}")
     message(STATUS "res: ${HAD_ERROR}")
     if (HAD_ERROR)
-      message(FATAL_ERROR "Cannot clone CMDV-Testing repository!")
+      message(FATAL_ERROR "Cannot clone CMDV-Testing repository: ${_err}")
     endif ()
   endif ()
 
