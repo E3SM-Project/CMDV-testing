@@ -377,7 +377,7 @@ class Step(object):
         pprint(self.directories.__dict__)
         logger.debug("Step dirs: " + self.directories.working)
         if self.run:
-            if isinstance(self.run, basestring):
+            if isinstance(self.run, str):
                 logger.warning("Not implemenetd - run command is string")
             elif isinstance(self.run, Workflow):
                 logger.warning(
