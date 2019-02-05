@@ -10,6 +10,8 @@ pipeline {
                   set -x
                   whoami
                   hostname
+		  rm -rf dashboards/jenkins.lcrc.anl.gov/repos/CMDV-Testing
+		  rm -rf dashboards/jenkins.lcrc.an.gov/build
                   rm -f 'dashboards/jenkins.lcrc.anl.gov/test_log.txt'"""
                 }
             }
