@@ -4,12 +4,12 @@ set (CTEST_DO_SUBMIT ON)
 set (CTEST_TEST_TYPE Experimental)
 
 # What to build and test
-set (DOWNLOAD FALSE)  #jenkins should have latest version already
+set (DOWNLOAD TRUE)
 set (CLEAN_BUILD FALSE)
 set (BUILD_CMDV_TESTING TRUE)
 
 # Begin User inputs:
-set (CTEST_SITE "cmdv-test-runner" ) # generally the output of hostname
+set (CTEST_SITE "jenkins-bebop" ) # generally the output of hostname
 set (CTEST_DASHBOARD_ROOT "$ENV{TEST_DIRECTORY}" ) # writable path
 set (CTEST_SCRIPT_DIRECTORY "$ENV{SCRIPT_DIRECTORY}" ) # where the scripts live
 set (CTEST_CMAKE_GENERATOR "Unix Makefiles" ) # What is your compilation apps ?
@@ -19,12 +19,12 @@ set (INITIAL_LD_LIBRARY_PATH $ENV{LD_LIBRARY_PATH})
 
 set (CTEST_PROJECT_NAME "ACME_Climate" )
 set (CTEST_SOURCE_NAME repos)
-set (CTEST_BUILD_NAME "jenkins-lcrc-${CTEST_BUILD_CONFIGURATION}")
+set (CTEST_BUILD_NAME "jenkins-bebop-${CTEST_BUILD_CONFIGURATION}")
 set (CTEST_BINARY_NAME build)
 
 set(ENV${PYTHONPATH} "${CMAKE_CURRENT_BINARY_DIR}/lib/python")
 
-set (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}")
+set (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_SOURCE_NAME}")
 set (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_BINARY_NAME}")
 
 if (NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
@@ -40,7 +40,7 @@ configure_file (${CTEST_SCRIPT_DIRECTORY}/CTestConfig.cmake
 set (CTEST_NIGHTLY_START_TIME "00:00:00 UTC")
 set (CTEST_CMAKE_COMMAND "${PREFIX_DIR}/bin/cmake")
 set (CTEST_COMMAND "${PREFIX_DIR}/bin/ctest -D ${CTEST_TEST_TYPE}")
-set (CTEST_BUILD_FLAGS "-j4")
+set (CTEST_BUILD_FLAGS "-j16")
 
 set (CTEST_DROP_METHOD "http")
 
@@ -55,7 +55,7 @@ endif ()
 find_program (CTEST_GIT_COMMAND NAMES git)
 find_program (CTEST_SVN_COMMAND NAMES svn)
 
-set (CMDVTesting_REPOSITORY_LOCATION git@github.com:E3SM-Project/CMDV-Testing.git)
+set (CMDVTesting_REPOSITORY_LOCATION git@github.com:E3SM-Project/CMDV-testing.git)
 
 if (CLEAN_BUILD)
   # Initial cache info
@@ -71,8 +71,6 @@ if (CLEAN_BUILD)
   file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "${CACHE_CONTENTS}")
 endif ()
 
-
-#Skipped
 if (DOWNLOAD)
 
   set (CTEST_CHECKOUT_COMMAND)
@@ -117,7 +115,6 @@ if (CTEST_DO_SUBMIT)
   endif ()
 endif ()
 
-#Skipped
 if (DOWNLOAD)
 
   #
@@ -167,7 +164,7 @@ if (BUILD_CMDV_TESTING)
 
   CTEST_CONFIGURE(
     BUILD "${CTEST_BINARY_DIRECTORY}/Build"
-    SOURCE "${CTEST_SOURCE_DIRECTORY}"
+    SOURCE "${CTEST_SOURCE_DIRECTORY}/CMDV-Testing"
     OPTIONS "${CONFIGURE_OPTIONS}"
     RETURN_VALUE HAD_ERROR
     APPEND

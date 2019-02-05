@@ -7,5 +7,5 @@ cmake \
       -D CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
       -D ENABLE_GITPYTHON:BOOL=OFF \
       -D TESTING_OUTPUT_DIR:PATH=$PWD/testing/cmdv \
-../..
+..
 
