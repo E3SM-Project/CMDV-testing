@@ -20,11 +20,11 @@ logger = None
 logger = getLogger(__name__)
 
 
-class setup(Step):
+class Setup(Step):
     """docstring for ClassName"""
 
     def __init__(self, cfg):
-        super(setup, self).__init__()
+        super(Setup, self).__init__()
 
         logger.debug('Initializing setupment object')
 
@@ -46,7 +46,7 @@ class setup(Step):
 
             repo = "./"
             self.run = " ".join(['find',  repo,  '-type d', '-exec', 'mkdir',
-                                 '-p', '--', self.directories.working + '/{}', '\;'])
+                                 '-p', '--', self.directories.working + '/{}', '\;' , '&'])
             self.run += " ".join(['find',  repo,  '-type f', '-exec',
                                   'ln',  '-s', '{}', self.directories.working + '/{}', '\;'])
 
@@ -130,10 +130,10 @@ class setup(Step):
     def clone(self, source=None, destination=None):
         # check source and destination dir
         if not source or not os.path.exists(source):
-            logger.error("Missing or invalid path " + str(source))
+            logger.error("Missing or invalid source path " + str(source) + " for step " + self.name)
             sys.exit(1)
-        if not destination or not os.path.exists(desination):
-            logger.error("Missing or invalid path " + str(source))
+        if not destination or not os.path.exists(destination):
+            logger.error("Missing or invalid destination path " + str(source) + " for step " + self.name )
             sys.exit(1)
 
         # copy directory structure
@@ -445,24 +445,26 @@ class Workflow(Parent):
                     logger.debug("Creating step " + s)
                     if s == "setup":
                         cfg = steps_dict['setup'] if "setup" in steps_dict else None
-                        setup = setup(cfg)
+                        setup = self.init_step() #Setup(cfg)
                         setup.name = s
                         logger.debug("Setting step dirs")
-                        setup._set_dirs(base=os.path.join(
-                            self.directories['working'], setup.name))
-                        setup._init_tool(None)
+                        setup._set_dirs(working= self.directories['working'] )
+                        # setup._init_tool(None)
+                        setup.init(steps_dict[s])
+                        steps.append(setup)
+                        
                         # EXECUTE from WORKFLOW
                         # setup.execute(source="./" , destination=setup.directories.working )
                         # logger.debug(setup.directories.__dict__)
-                        steps.append(setup)
+                        # steps.append(setup)
                         # print("Stopped - setup - @1752")
                         # sys.exit(1)
                     elif s == "build":
                         build = self.init_step()
                         build.name = s
                         # set step dirs
-                        build._set_dirs(base=os.path.join(
-                            self.directories['working'], build.name))
+                        build._set_dirs(working=os.path.join(
+                            self.directories['working'], '' )) # build.name))
                         build._make_dirs()
                         build.init(steps_dict[s])
                         steps.append(build)
@@ -470,24 +472,24 @@ class Workflow(Parent):
                         run = self.init_step()
                         run.name = s
                         # set step dirs
-                        run._set_dirs(base=os.path.join(
-                            self.directories['working'], run.name))
+                        run._set_dirs(working=os.path.join(
+                            self.directories['working'], '' )) # run.name))
                         run._make_dirs()
                         run.init(steps_dict[s])
                         steps.append(run)
                     elif s == "postprocessing":
                         pp = self.init_step()
                         pp.name = s
-                        pp._set_dirs(base=os.path.join(
-                            self.directories['working'], pp.name))
+                        pp._set_dirs(working=os.path.join(
+                            self.directories['working'], '' )) # pp.name))
                         pp._make_dirs()
                         pp.init(steps_dict[s])
                         steps.append(pp)
                     elif s == "archive":
                         archive = self.init_step()
                         archive.name = s
-                        archive._set_dirs(base=os.path.join(
-                            self.directories['working'], archive.name))
+                        archive._set_dirs(working=os.path.join(
+                            self.directories['working'], '' )) # archive.name))
                         archive._make_dirs()
                         archive.init(steps_dict[s])
                         steps.append(archive)
@@ -533,16 +535,21 @@ class Workflow(Parent):
         working_dir = None
         output_dir = None
 
+        # clone dir prior executing steps
+        # pprint(self.__dict__)
+        # sys.exit(1)
+        # execute steps
         for step in self.steps:
             logger.debug("Executing step " + str(step.name))
             # first step in list
-            if step.name == 'setup':
+            # if step.name == 'setup':
+            if step.name == 'IGNORE':
                 step.execute(source="./", destination=step.directories.working)
                 output_dir = step.directories.working
             else:
                 # 1. link input data
-                self.clone(source=output_dir,
-                           destination=step.directories.working)
+                # self.clone(source=output_dir,
+                        #    destination=step.directories.working)
                 # 2. change into working directory + subdir of config
                 cwd = os.getcwd()
                 os.chdir(os.path.join(
