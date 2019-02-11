@@ -40,6 +40,8 @@ logger.info("Setup")
 #############################
 
 # New config
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--cmdv", "--config",
@@ -51,6 +53,10 @@ parser.add_argument("--test",
 parser.add_argument("--format",
                     type=str,
                     help="yaml | json")
+parser.add_argument("--ignore-python-version",
+                    type=bool,
+                    help="ignore python version and don't exit" ,
+                    default=False )                     
 
 
 # OLD
@@ -107,6 +113,16 @@ args = parser.parse_args()
 
 
 if __name__ == "__main__":
+    
+    if (sys.version_info < (3, 0)):
+        # Python 2 code in this block
+        print('Not python 3, please switch to python3')
+        if args.ignore_python_version :
+            print('Ignoring version')
+        else :
+            sys.exit(-1)
+
+
 
     report = Tests.Report()
 
