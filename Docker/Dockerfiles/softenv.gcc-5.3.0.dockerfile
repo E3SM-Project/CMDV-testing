@@ -304,9 +304,9 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python2 get-pip.py && \
     rm get-pip.py 
     
-RUN pip install numpy && \
-    pip install netCDF4 && \
-    pip install GitPython  
+RUN pip install numpy \
+        netCDF4 \
+        pyyaml  
     
 
 
