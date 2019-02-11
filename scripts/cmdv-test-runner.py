@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import git
+# import git
 import glob
 import importlib
 import json
@@ -18,7 +18,7 @@ import yaml
 # Custom modules
 import Archive
 import Report
-from setup import setup
+from SetupStep import Setup
 from Config import Config as Config
 from Report.TestRunnerLogging import TestRunnerLogging as ll
 from Report.TestRunnerLogging import getLogger
@@ -54,9 +54,11 @@ parser.add_argument("--format",
                     type=str,
                     help="yaml | json")
 parser.add_argument("--ignore-python-version",
-                    type=bool,
+                    dest='ignore_python_version',
+                    action='store_true' ,
                     help="ignore python version and don't exit" ,
-                    default=False )                     
+                    default=False )
+# parser.set_defaults( ignore_python_version=False)                     
 
 
 # OLD
@@ -162,9 +164,15 @@ if __name__ == "__main__":
         else:
             workflow.relative_test_path = os.path.dirname(f)
 
+        # cloning repo into working directory for workflow    
+        workflow.clone_repo(config.repo.path , None)
+        
+        # execute workflow
         logger.info("Executing workflow")
         workflow.execute()
         logger.info("Workflow done")
+
+        # 4. set directory back to original director 
 
         # module_name="Archive.CDash"
         #
