@@ -75,7 +75,7 @@ class CDash(Archive):
 
         os.chdir(current_dir)
 
-        # Collect files for deploy - build - test - compare
+        # Collect files for setup - build - test - compare
         # Create CMAKE file
         # Create CTEST file
         # Execute ctest -D Experimental in test/run dir

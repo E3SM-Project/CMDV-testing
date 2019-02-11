@@ -176,5 +176,5 @@ class Test(object):
     # def directories(self) :
     #   return self.defaults["directories"]
 
-    def deploy_dir(self):
-        return self.defaults.directories.deploy
+    def setup_dir(self):
+        return self.defaults.directories.setup

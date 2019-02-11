@@ -20,15 +20,15 @@ logger = None
 logger = getLogger(__name__)
 
 
-class Deploy(Step):
+class setup(Step):
     """docstring for ClassName"""
 
     def __init__(self, cfg):
-        super(Deploy, self).__init__()
+        super(setup, self).__init__()
 
-        logger.debug('Initializing deployment object')
+        logger.debug('Initializing setupment object')
 
-        self.name = "deploy"
+        self.name = "setup"
         self._set_dirs(base=os.getcwd())
 
         self.source = None
@@ -38,7 +38,7 @@ class Deploy(Step):
 
         if cfg:
             if not 'run' in cfg:
-                logger.debug("Missing deploy command")
+                logger.debug("Missing setup command")
             logger.warning("Not implemented - Step Config")
 
         # Create symlink farm tool
@@ -81,7 +81,7 @@ class Deploy(Step):
         #   process = subprocess.Popen(["git", "clone" , repo], stdout=subprocess.PIPE)
         #   output = process.communicate()[0]
 
-        # # Checking steps in config - if deployment step build command line argument and execute
+        # # Checking steps in config - if setupment step build command line argument and execute
         # if config['path_to_config'] and os.path.isdir(config['path_to_config']) :
         #   self.source = config['path_to_config']
         # if config['path'] :
@@ -96,7 +96,7 @@ class Deploy(Step):
         logger.warning("Not implemented - Tool Config")
         if cfg:
             if not 'run' in cfg:
-                logger.debug("Missing deploy command")
+                logger.debug("Missing setup command")
 
         # Create symlink farm tool
         if True:
@@ -151,7 +151,7 @@ class Deploy(Step):
 
     def execute(self, source=None, destination=None):
 
-        logger.info("Executing deploy")
+        logger.info("Executing setup")
 
         if not self._check_dirs():
             logger.warning("Step directories missing - creating directories")
@@ -306,7 +306,7 @@ class Workflow(Parent):
         #   repo:
         #     location: none
         #   directories :
-        #     deploy : null
+        #     setup : null
         #     build  : null
         #     run    : null
         #     postprocessing : null
@@ -438,24 +438,24 @@ class Workflow(Parent):
         steps = []
 
         if steps_dict:
-            for s in ["deploy", "build", "run", "postprocessing", "archive"]:
+            for s in ["setup", "build", "run", "postprocessing", "archive"]:
                 if not s in steps_dict:
                     logger.warning("Missing " + s + " step")
                 else:
                     logger.debug("Creating step " + s)
-                    if s == "deploy":
-                        cfg = steps_dict['deploy'] if "deploy" in steps_dict else None
-                        deploy = Deploy(cfg)
-                        deploy.name = s
+                    if s == "setup":
+                        cfg = steps_dict['setup'] if "setup" in steps_dict else None
+                        setup = setup(cfg)
+                        setup.name = s
                         logger.debug("Setting step dirs")
-                        deploy._set_dirs(base=os.path.join(
-                            self.directories['working'], deploy.name))
-                        deploy._init_tool(None)
+                        setup._set_dirs(base=os.path.join(
+                            self.directories['working'], setup.name))
+                        setup._init_tool(None)
                         # EXECUTE from WORKFLOW
-                        # deploy.execute(source="./" , destination=deploy.directories.working )
-                        # logger.debug(deploy.directories.__dict__)
-                        steps.append(deploy)
-                        # print("Stopped - deploy - @1752")
+                        # setup.execute(source="./" , destination=setup.directories.working )
+                        # logger.debug(setup.directories.__dict__)
+                        steps.append(setup)
+                        # print("Stopped - setup - @1752")
                         # sys.exit(1)
                     elif s == "build":
                         build = self.init_step()
@@ -536,7 +536,7 @@ class Workflow(Parent):
         for step in self.steps:
             logger.debug("Executing step " + str(step.name))
             # first step in list
-            if step.name == 'deploy':
+            if step.name == 'setup':
                 step.execute(source="./", destination=step.directories.working)
                 output_dir = step.directories.working
             else:

@@ -18,7 +18,7 @@ import yaml
 # Custom modules
 import Archive
 import Report
-from Deploy import Deploy
+from setup import setup
 from Config import Config as Config
 from Report.TestRunnerLogging import TestRunnerLogging as ll
 from Report.TestRunnerLogging import getLogger
@@ -82,7 +82,7 @@ parser.add_argument("--archive",
                     help="enable archiving")
 parser.add_argument("-s", "--step",
                     type=str,
-                    choices=['all', 'deploy', 'build', 'run', 'post'],
+                    choices=['all', 'setup', 'build', 'run', 'post'],
                     help="config file (json)",
 
                     default="all")
@@ -90,9 +90,9 @@ parser.add_argument("-d", "--dir",
                     type=str,
                     help="base directory for session and test directories, default is current working directoy",
                     default=os.getcwd())
-parser.add_argument("--deploy",
+parser.add_argument("--setup",
                     type=str,
-                    help="deploy directory , if -d is provided copies data from working dir into deploy dir. Overwrites deployment path in config",
+                    help="setup directory , if -d is provided copies data from working dir into setup dir. Overwrites setupment path in config",
                     default=None)
 parser.add_argument("--project", "--repo",
                     type=str, dest="repo",

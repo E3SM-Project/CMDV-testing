@@ -77,7 +77,7 @@ class Report():
     #       "status" : None ,
     #       "type" : "cmdv-tests" ,
     #       "steps" : {
-    #         "deploy" : {
+    #         "setup" : {
     #           "status" : None ,
     #           "run" : {
     #             "total" : None ,
