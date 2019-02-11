@@ -1,3 +1,4 @@
+import errno
 import os
 import sys
 import logging
@@ -274,7 +275,7 @@ class Step(object):
 
 
             tool_cfg = {
-                'baseCommand' : ['clone-dir.sh']  ,
+                'baseCommand' : ['clone-dir.sh'] ,
                 'arguments' : [] ,
                 'inputs' : {
                   "source" : {
@@ -291,11 +292,17 @@ class Step(object):
                   }
                 }
             }          
-
+            
+            if type(cfg) is str and cfg.lower() == "none" :
+                  cfg = { 
+                        'run' : {
+                              'baseCommand' : ['echo' , self.name , ";" , "ls" , "-l"]
+                        }
+                  }
             if cfg :
                   tool = self.run 
                   if not "run" in cfg :
-                        logger.error("Can't initialize step, missing run command")
+                        logger.error("Can't initialize step " + self.name + ", missing run command")
                         sys.exit(1)
                   if 'baseCommand' in cfg['run'] :
                         if isinstance(cfg['run']['baseCommand'] , list ) :
@@ -362,9 +369,9 @@ class Step(object):
             
             logger.debug("Checking for step dirs")
             directories_exists = True if ( 
-                  os.path.isdir(self.directories.working) and  
-                  os.path.isdir(self.directories.input) and  
-                  os.path.isdir(self.directories.output) ) else False
+                  os.path.isdir(str(self.directories.working)) and  
+                  os.path.isdir(str(self.directories.input)) and  
+                  os.path.isdir(str(self.directories.output)) ) else False
             
             return directories_exists
 
@@ -372,12 +379,16 @@ class Step(object):
             
             # create step directories
             for path in [ self.directories.working , self.directories.input , self.directories.output] :
-                  logger.debug("Creating directory: " + path)  
-                  try:
-                        os.makedirs(path)
-                  except os.error, e:
-                        if e.errno != errno.EEXIST:
-                              raise
+                  if path :
+                        logger.debug("Creating directory: " + str(path) )
+                        try:
+                              os.makedirs(path)
+                        except os.error, e:
+                              if e.errno != errno.EEXIST:
+                                    raise
+                  else :
+                        logger.debug("Missing path for working, input or output directory for step " + self.name) 
+                  
 
       def execute(self) :
             
@@ -447,7 +458,34 @@ class Workflow(object):
                   step.execute()
             sys.exit(1)
   
-  
+      def clone_repo(self , source , subdir) :
+            
+            # source is absolute path
+            if not subdir :
+                  subdir = ''
+
+            logger.debug("Setting up symlink farm for source code in " + self.directories['working'] + '/' + subdir )
+            current_dir = os.getcwd()
+
+            command = " ".join(['repo_name=`basename ' + source + '` ;' , 'cd' , source , ";"])
+            command += " ".join(['mkdir',  '-p' , self.directories['working'] + '/' + subdir + '/' , ';'])
+            command += " ".join(['find', "." ,  '-type d', '-exec', 'mkdir',
+                                 '-p', '--', self.directories['working'] + '/' + subdir + '/{}', '\;' , '&&'])
+            command += " ".join(['find', "." ,  '-type f', '-exec',
+                                  'ln',  '-s', source + '/{}', self.directories['working'] + '/' + subdir + '/{}' , '\;' , '&&'])
+            command += " ".join(['cd' , current_dir])                            
+
+            process = subprocess.Popen(
+                  [command],  stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            output, errs = process.communicate()
+            if output:
+                  logger.info("Output:" + output.decode())
+            if errs:
+                  logger.error(output.decode())
+                  logger.error(errs.decode())
+                  sys.exit(1)
+
+                                   
 
 # cmdvVersion: v1.0
 # class: TestConfig | Workflow
