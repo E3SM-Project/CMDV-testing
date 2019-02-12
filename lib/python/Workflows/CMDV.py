@@ -529,6 +529,8 @@ class Workflow(Parent):
         current_working_dir = os.getcwd()
         logger.debug("Executing workflow with " + str(len(self.steps)
                                                       ) + " steps,  starting from " + current_working_dir)
+        # check if step reported errors
+        passed = True
 
         # Initial dirs - get from config
         input_dir = None
@@ -556,9 +558,17 @@ class Workflow(Parent):
                     step.directories.working, self.relative_test_path))
                 logger.debug("Changed into " + os.getcwd())
                 # 3. execute step
-                step.execute()
+                if passed :
+                        passed = step.execute()
+                        if not passed :
+                              logger.error('Step ' + step.name + ' failed')
+                else:
+                    logger.error('Skipping step ' + step.name ) 
                 # 4. return to current working dir
 
         # workflow done - return to current working dir
         os.chdir(current_working_dir)
         logger.debug("Workflow done - ending in " + os.getcwd())
+
+
+   
