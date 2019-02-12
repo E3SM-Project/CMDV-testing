@@ -403,7 +403,7 @@ class Step(object):
             logger.debug("Current dir: " + os.getcwd() )
             logger.debug("Step dir: " + self.directories.working)
             if self.inputs :
-                  self._check_inputs()
+                  passed  = self._check_inputs()
             if self.run :
                   if isinstance(self.run, basestring) :
                         logger.warning("Not implemeneted - run command is string")
@@ -492,9 +492,17 @@ class Workflow(object):
 
       def execute(self) :
             logger.debug("Executing workflow with " + str(len(self.steps)) )
+            passed = True
             for step in self.steps :
                   logger.debug("Executing step " + str(step.name) )
-                  step.execute()
+                  if passed :
+                        passed = step.execute()
+                        if not passed :
+                              logger.error('Step ' + step.name + ' failed')
+                  else:
+                        logger.error('Skipping step ' + step.name ) 
+
+
             sys.exit(1)
   
       def clone_repo(self , source , subdir) :
