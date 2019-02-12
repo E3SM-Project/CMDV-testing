@@ -1,4 +1,5 @@
 import errno
+import glob
 import os
 import sys
 import logging
@@ -194,7 +195,7 @@ class Tool(object):
             pass  
 
       def execute(self , inputs):
-            
+            success = True # True of tool executed and exited with correct error code
             if  inputs is None or not isinstance(inputs,dict):
                   logger.error("Missing input or not a dictionary")
                   # pprint(inputs)
@@ -237,6 +238,7 @@ class Tool(object):
                         file.write(err_msg)
                         file.close()
 
+            return success
 
 
 
@@ -392,13 +394,16 @@ class Step(object):
 
       def execute(self) :
             
+            passed = True 
             logger.debug("Executing step " + self.name )
             inputs = {} # Get step inputs
             if not self._check_dirs() :
                   logger.warning("Step directories missing - creating directories")
                   self._make_dirs
             pprint(self.directories.__dict__)
-            logger.debug("Step dirs: " + self.directories.working)
+            logger.debug("Step dir: " + self.directories.working)
+            if self.inputs :
+                  self._check_inputs()
             if self.run :
                   if isinstance(self.run, basestring) :
                         logger.warning("Not implemenetd - run command is string")
@@ -407,12 +412,46 @@ class Step(object):
                   elif isinstance(self.run, Tool) :
                         logger.warning("Run command is tool object - executing")   
                         # Init tool - check for input directory,output directory etc.
-                        self.run.execute(inputs)
+                        passed = self.run.execute(inputs)
+                  if passed and self.outputs :
+                        passed = self._check_outputs()      
             else :
-                  logger.error("Can not execute step - missing run command or tool")                     
-                              
-      
+                  logger.error("Can not execute step - missing run command or tool")
 
+            return passed                           
+                              
+      def _check_inputs(self) :
+            for name , s in self.inputs :
+                  if s['type'] :
+                        pass
+                  else :
+                        logger.error("Missing type in inputs for step " + step.name )
+                        sys.exit(1)
+            
+
+      def _check_outputs(self) :
+
+            passed = True
+            for key in self.outputs :
+                
+                  if self.outputs[key]['type'] :
+                        if self.outputs[key]['type'].lower() == "file" :
+                              # print("looking for " + self.outputs[key]['glob'] + " in " + os.getcwd() )
+                              self.outputs[key]['path'] = glob.glob(self.outputs[key]['glob']) 
+                              if len(self.outputs[key]['path']) < 1 :
+                                    passed = False
+                                    logger.error('Can not find output file(s) for pattern ' + self.outputs[key]['glob'])
+                              else :     
+                                    for p in self.outputs[key]['path']  :
+                                          print(p)
+                        else :
+                              logger.error("Type " + s['type'] + " not supported for outputs")
+                  else :
+                        logger.error("Missing type in outputs for step " + step.name )
+                        sys.exit(1)
+            
+            return passed
+            
     
 
 class Workflow(object):
