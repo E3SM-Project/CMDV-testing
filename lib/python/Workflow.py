@@ -400,13 +400,13 @@ class Step(object):
             if not self._check_dirs() :
                   logger.warning("Step directories missing - creating directories")
                   self._make_dirs
-            pprint(self.directories.__dict__)
+            logger.debug("Current dir: " + os.getcwd() )
             logger.debug("Step dir: " + self.directories.working)
             if self.inputs :
                   self._check_inputs()
             if self.run :
                   if isinstance(self.run, basestring) :
-                        logger.warning("Not implemenetd - run command is string")
+                        logger.warning("Not implemeneted - run command is string")
                   elif isinstance(self.run, Workflow) :
                         logger.warning("Not implemenetd - run command is workflow object")
                   elif isinstance(self.run, Tool) :
