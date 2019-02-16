@@ -13197,7 +13197,7 @@ r_{w,lo} = r_d\,, \quad r_{w,hi} = 10\,r_d \,
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The iteration stops when $F(r_{w,mid}) = 0$ or $\left| \frac{r_{w,lo} - r_{w,hi}}{r_{w,mid}} \right|$ is smaller than a "tol" level. This "tol" level equals to 10 times the machine epsilon returned by the Fortran intrinsic function "epsilon" and this machine epsilon depends on the working precision of the code, double or single.</p>
+<p>The iteration stops when $F(r_{w,mid}) = 0$ or $\left| \frac{r_{w,lo} - r_{w,hi}}{r_{w,mid}} \right|$ is smaller than a "tol" level. This "tol" level equals to <strong>10 times the machine epsilon</strong> returned by the Fortran intrinsic function "epsilon" and this machine epsilon depends on the working precision of the code, double or single.</p>
 
 </div>
 </div>
@@ -13205,7 +13205,7 @@ r_{w,lo} = r_d\,, \quad r_{w,hi} = 10\,r_d \,
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Verification-of-the-MAM-solutions-under-different-conditions-and-evaluation-criterion">Verification of the MAM solutions under different conditions and evaluation criterion<a class="anchor-link" href="#Verification-of-the-MAM-solutions-under-different-conditions-and-evaluation-criterion">&#182;</a></h2>
+<h2 id="Verification-of-the-MAM-solutions-under-different-conditions">Verification of the MAM solutions under different conditions<a class="anchor-link" href="#Verification-of-the-MAM-solutions-under-different-conditions">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13288,6 +13288,21 @@ The range covers the range of hygroscopicity of all chemical species in MAM.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="PASS/FAIL-Criterion">PASS/FAIL Criterion<a class="anchor-link" href="#PASS/FAIL-Criterion">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In each test, the driver program calls MAM's water uptake subroutines to calculate $r_w$ and also uses the iterative bisection method to calculate the reference solution. The individual test is passed if the relative difference between the pair of solutions falls within <strong>10 times the machine epsilon</strong>. The number of passed verification tests is first issued for each log-normal mode. Then an overall <strong>“PASS”</strong> is issued if all 576 tests are passed.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Verification-results">Verification results<a class="anchor-link" href="#Verification-results">&#182;</a></h2>
 </div>
 </div>
@@ -13295,7 +13310,7 @@ The range covers the range of hygroscopicity of all chemical species in MAM.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>An overall “pass” is issued for all the 576 verification tests, which suggests that the numerical implementation of water uptake parameterization in MAM is correct. The verification tests are also repeated by using GNU and Intel compilers separately. The overall “pass” is issued for both compilers.</p>
+<p>An overall <strong>“PASS”</strong> is issued for all the 576 verification tests, which suggests that the numerical implementation of water uptake parameterization in MAM is correct. The verification tests are also repeated by using GNU and Intel compilers separately. The overall <strong>“PASS”</strong> is issued for both compilers.</p>
 
 </div>
 </div>
