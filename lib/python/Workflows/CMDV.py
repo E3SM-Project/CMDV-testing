@@ -158,7 +158,7 @@ class Setup(Step):
             self._make_dirs()
 
         if self.run:
-            if isinstance(self.run, basestring):
+            if isinstance(self.run, str):
                 logger.warning("Not implemenetd - run command is string")
             elif isinstance(self.run, Workflow):
                 logger.warning(
