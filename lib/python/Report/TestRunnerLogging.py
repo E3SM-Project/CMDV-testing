@@ -17,8 +17,9 @@ def getLogger(name):
     fh = logging.FileHandler('error.log')
     fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
-    ch = logging.StreamHandler()
+    ch = logging.StreamHandler(sys.stderr)
     ch.setLevel(logging.INFO)
+    ch.addFilter(MyFilter(logging.INFO))
     # create formatter and add it to the handlers
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -66,3 +67,11 @@ class TestRunnerLogging():
             self.consol.setLevel(level)
         if fileLog:
             self.file.setLevel(level)
+
+
+class MyFilter(object):
+    def __init__(self, level):
+        self.__level = level
+
+    def filter(self, logRecord):
+        return logRecord.levelno <= self.__level

@@ -15,7 +15,7 @@ class Shock(Report):
                 "name": none,
                 "status": None,
                 "steps": {
-                    "deploy": {
+                    "setup": {
                         "status": None,
                         "run": {
                             "total": None,

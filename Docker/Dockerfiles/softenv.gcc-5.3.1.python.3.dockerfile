@@ -28,6 +28,7 @@ RUN yum -y update && yum -y upgrade &&  yum -y install \
   make \
   mpfr-devel.x86 \
   openssl-devel \
+  python-pip \
   readline-devel \
   sqlite-devel \
 	tcl \
@@ -224,91 +225,32 @@ RUN wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz && \
     rm -rf *
 
 
-# RUN wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
-# RUN tar -xzf Python-3.6.3.tgz
-# WORKDIR Python-3.6.3
-# RUN ./configure
-# RUN make
-# RUN make test
-# RUN make install
-#
-# RUN wget https://bootstrap.pypa.io/get-pip.py && \
-#     python get-pip.py && \
-#     rm get-pip.py && \
-#     pip install numpy && \
-# #     pip install netCDF4 && \
-#
-#
-# RUN yum install -y openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel
-
+# why here
 ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 
-  # Python 3.6.3:
-RUN   wget http://python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz  \
-  && tar -xf Python-3.6.3.tar.xz   \
-  && cd Python-3.6.3  \
-  && ./configure  --prefix=/usr/local \
-                  --enable-optimizations \
-                  --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"  \
-  && make -j "$(nproc)" \
-  && make altinstall \
-  && ldconfig \
-  && yum clean -y all \
-    \
-    && find /usr/local -depth \
-      \( \
-        \( -type d -a \( -name test -o -name tests \) \) \
-        -o \
-        \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-      \) -exec rm -rf '{}' +
-          # && rm -rf /usr/src/python
-
-# make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
-  && ln -s idle3.6 idle \
-  && ln -s pydoc3.6 pydoc \
-  && ln -s python3.6 python \
-  && ln -s python3.6m-config python-config
-
-  # && cd /usr/bin \
-  # && mv pydoc pydoc2.7 \
-  # && rm python \
-  # && ln -s /usr/local/bin/python python \
-  # && ln -s /usr/local/bin/pydoc pydoc
-
-
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 9.0.1
-RUN set -ex; \
-  \
-  wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py' ; \
-  \
-  python get-pip.py \
-    --disable-pip-version-check \
-    --no-cache-dir \
-    "pip==$PYTHON_PIP_VERSION" \
-  ; \
-  pip3.6 --version; \
-  \
-  find /usr/local -depth \
-    \( \
-      \( -type d -a \( -name test -o -name tests \) \) \
-      -o \
-      \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-    \) -exec rm -rf '{}' +; \
-  rm -f get-pip.py
-
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
-    python2 get-pip.py && \
-    rm get-pip.py 
+ 
+# python 2   
+RUN pip install numpy && \
+    pip install netCDF4 && \
+    pip install GitPython  
     
-RUN pip install numpy \
-        netCDF4 \
-        pyyaml  
-    
+# Python 3
+RUN yum -y update \
+    && yum -y install curl bzip2 \
+    && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -bfp /usr/local/ \
+    && rm -rf /tmp/miniconda.sh \
+    && conda install -y python=3 \
+    && conda update conda \
+    && conda clean --all --yes \
+    && rpm -e --nodeps curl bzip2 \
+    && yum clean all
 
+RUN RUN pip install numpy && \
+    pip install netCDF4 && \
+    pip install GitPython 
 
 # ACME
 WORKDIR /ACME

@@ -48,7 +48,7 @@ class Directories(object):
 
     def __init__(self, base_dir=None, session=None, test=None):
 
-        # base/session/test/[deploy,build,run,postprocess,archive]
+        # base/session/test/[setup,build,run,postprocess,archive]
 
         if not session:
             session = strftime("%Y-%m-%d-%H%M%S", gmtime())
@@ -63,13 +63,13 @@ class Directories(object):
             logger.debug("Setting base_dir to current working dir")
 
         self.repo = None     # source dir containing tests
-        self.base = base_dir  # base dir containig deploy,build,run and postprocess directories
+        self.base = base_dir  # base dir containig setup,build,run and postprocess directories
         self.session = "/".join([self.base, session])
         self.tmp = None
 
         if test:
             self.test = "/".join([self.session, test])
-            self.deploy = "/".join([self.test, "deploy"])
+            self.setup = "/".join([self.test, "setup"])
             self.build = "/".join([self.test, "build"])
             self.run = "/".join([self.test, "run"])
             self.postprocess = "/".join([self.test, "postprocess"])
@@ -77,7 +77,7 @@ class Directories(object):
             self.archive = "/".join([self.test, "archive"])
         else:
             self.test = None
-            self.deploy = None
+            self.setup = None
             self.build = None
             self.run = None
             self.postprocess = None
@@ -91,7 +91,7 @@ class Directories(object):
         obj.base = self.base
         obj.session = self.session
         obj.test = self.test
-        obj.deploy = self.deploy
+        obj.setup = self.setup
         obj.build = self.build
         obj.run = self.run
         obj.postprocess = self.postprocess
@@ -140,7 +140,8 @@ class Config(object):
 
         # load config
         for k in cfg:
-            print(k + "\t" + str(cfg[k]))
+            if os.environ.get('DEBUG' , False ) : 
+                print(k + "\t" + str(cfg[k]))
             setattr(self, k, cfg[k])
 
         if dir:
@@ -245,7 +246,7 @@ class Config(object):
         #   working: string           # parent directory for session directories
         #   session: null             # ${directories.working}/session.name/
         #   test: null                # ${directories.session}/test.name/
-        #   deploy: ./deploy          # ${directories.test}/./deploy/
+        #   setup: ./setup          # ${directories.test}/./setup/
         #   build: ./build            # ${directories.test}/./build/
         #   run: ./run                # ${directories.test}/./run/
         #   postprocessing: ./run     # ${directories.test}/./run/
@@ -297,7 +298,7 @@ class Config(object):
             self.workflow = cfg['workflow']
         else:
             self.workflow = {
-                "steps":  ["deploy", "build", "run" "postprocessing"],
+                "steps":  ["setup", "build", "run" "postprocessing"],
             }
 
     def _find_config(self, repo_dir=None,  config_name="cmdv-testing.config.yaml", repo_type=None):
@@ -593,8 +594,8 @@ class TestWorkflow(object):
     # def directories(self) :
     #   return self.defaults["directories"]
 
-    def deploy_dir(self):
-        return self.defaults.directories.deploy
+    def setup_dir(self):
+        return self.defaults.directories.setup
 
 
 if __name__ == "__main__":

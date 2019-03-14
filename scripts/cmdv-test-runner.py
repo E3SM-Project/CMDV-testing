@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import git
+# import git
 import glob
 import importlib
 import json
@@ -18,7 +18,7 @@ import yaml
 # Custom modules
 import Archive
 import Report
-from Deploy import Deploy
+from SetupStep import Setup
 from Config import Config as Config
 from Report.TestRunnerLogging import TestRunnerLogging as ll
 from Report.TestRunnerLogging import getLogger
@@ -40,6 +40,8 @@ logger.info("Setup")
 #############################
 
 # New config
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--cmdv", "--config",
@@ -51,6 +53,12 @@ parser.add_argument("--test",
 parser.add_argument("--format",
                     type=str,
                     help="yaml | json")
+parser.add_argument("--ignore-python-version",
+                    dest='ignore_python_version',
+                    action='store_true' ,
+                    help="ignore python version and don't exit" ,
+                    default=False )
+# parser.set_defaults( ignore_python_version=False)                     
 
 
 # OLD
@@ -76,7 +84,7 @@ parser.add_argument("--archive",
                     help="enable archiving")
 parser.add_argument("-s", "--step",
                     type=str,
-                    choices=['all', 'deploy', 'build', 'run', 'post'],
+                    choices=['all', 'setup', 'build', 'run', 'post'],
                     help="config file (json)",
 
                     default="all")
@@ -84,9 +92,9 @@ parser.add_argument("-d", "--dir",
                     type=str,
                     help="base directory for session and test directories, default is current working directoy",
                     default=os.getcwd())
-parser.add_argument("--deploy",
+parser.add_argument("--setup",
                     type=str,
-                    help="deploy directory , if -d is provided copies data from working dir into deploy dir. Overwrites deployment path in config",
+                    help="setup directory , if -d is provided copies data from working dir into setup dir. Overwrites setupment path in config",
                     default=None)
 parser.add_argument("--project", "--repo",
                     type=str, dest="repo",
@@ -107,6 +115,16 @@ args = parser.parse_args()
 
 
 if __name__ == "__main__":
+    
+    if (sys.version_info < (3, 0)):
+        # Python 2 code in this block
+        print('Not python 3, please switch to python3')
+        if args.ignore_python_version :
+            print('Ignoring version')
+        else :
+            sys.exit(-1)
+
+
 
     report = Tests.Report()
 
@@ -146,9 +164,15 @@ if __name__ == "__main__":
         else:
             workflow.relative_test_path = os.path.dirname(f)
 
+        # cloning repo into working directory for workflow    
+        workflow.clone_repo(config.repo.path , None)
+        
+        # execute workflow
         logger.info("Executing workflow")
         workflow.execute()
         logger.info("Workflow done")
+
+        # 4. set directory back to original director 
 
         # module_name="Archive.CDash"
         #

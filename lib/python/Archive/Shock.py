@@ -50,7 +50,7 @@ class Shock(Archive):
         else:
             logger.debug("No Report provided")
 
-        # Collect files for deploy - build - test - compare
+        # Collect files for setup - build - test - compare
         # Create CMAKE file
         # Create CTEST file
         # Execute ctest -D Experimental in test/run dir
@@ -72,7 +72,7 @@ class Report():
                 "status": None,
                 "type": "cmdv-tests",
                 "steps": {
-                    "deploy": {
+                    "setup": {
                         "status": None,
                         "run": {
                             "total": None,

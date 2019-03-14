@@ -14,10 +14,10 @@ import sys
 import xml.etree.ElementTree as xmlet
 
 
-def deploy(config, repo=None, branch=None, base_dir=None, command="git clone"):
+def setup(config, repo=None, branch=None, base_dir=None, command="git clone"):
     """docstring for fname"""
 
-    logger.info("Deploying source code from: " + repo)
+    logger.info("setuping source code from: " + repo)
 
     # repository = git.Repo(path=repo)
     # repository = repository.clone(path=repo)
@@ -40,8 +40,8 @@ def deploy(config, repo=None, branch=None, base_dir=None, command="git clone"):
         process = subprocess.Popen(
             ["git", "clone", repo], stdout=subprocess.PIPE)
         output = process.communicate()[0]
-    elif config.deployment.run is not None:
-        logger.info("Executing deployment config")
+    elif config.setupment.run is not None:
+        logger.info("Executing setupment config")
     else:
 
         path = None
@@ -178,8 +178,8 @@ def main(config=None):
     step = args.step
     logger.debug('Executing step:\t' + step)
 
-    if (step == 'all' or step == 'deploy'):
-        deploy(config, branch=args.branch,
+    if (step == 'all' or step == 'setup'):
+        setup(config, branch=args.branch,
                repo=args.clone, base_dir=current_dir)
     if (step == 'all' or step == 'build'):
         build(config)
@@ -197,7 +197,7 @@ def main(config=None):
 ###############################
 # Logging
 # create logger with 'spam_application'
-logger = logging.getLogger('DeployCode')
+logger = logging.getLogger('setupCode')
 logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
 fh = logging.FileHandler('error.log')
@@ -230,7 +230,7 @@ parser.add_argument("--config",
                     help="config file (json)")
 parser.add_argument("-s", "--step",
                     type=str,
-                    choices=['all', 'deploy', 'build', 'run', 'post'],
+                    choices=['all', 'setup', 'build', 'run', 'post'],
                     help="config file (json)",
 
                     default="all")

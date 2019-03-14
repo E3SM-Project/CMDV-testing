@@ -9,14 +9,14 @@ logger = None
 logger = getLogger(__name__)
 
 
-class Deploy(object):
-    """Deployment Class"""
+class Setup(object):
+    """setupment Class"""
 
     def __init__(self, config=None):
 
         #super(Step, self).__init__()
 
-        logger.debug('Initializing deployment object')
+        logger.debug('Initializing setupment object')
 
         self.source = None
         self.branch = None
@@ -54,7 +54,7 @@ class Deploy(object):
                 ["git", "clone", repo], stdout=subprocess.PIPE)
             output = process.communicate()[0]
 
-        # Checking steps in config - if deployment step build command line argument and execute
+        # Checking steps in config - if setupment step build command line argument and execute
         if config['path_to_config'] and os.path.isdir(config['path_to_config']):
             self.source = config['path_to_config']
         if config['path']:
