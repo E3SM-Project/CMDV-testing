@@ -217,7 +217,7 @@ class Tool(object):
             if output :
                   try:
                         out_msg = output.decode()
-                  except UnicodeDecodeError, e:
+                  except UnicodeDecodeError as e:
                         logger.warning("Unable to decode output " + str(e))
                         out_msg = output
                                        
@@ -229,7 +229,7 @@ class Tool(object):
             if errs :
                   try:
                         err_msg = errs.decode()
-                  except UnicodeDecodeError, e:
+                  except UnicodeDecodeError as e:
                         logger.warning("Unable to decode error message: " + str(e))
                         err_msg = errs
                   logger.error( err_msg )
@@ -385,7 +385,7 @@ class Step(object):
                         logger.debug("Creating directory: " + str(path) )
                         try:
                               os.makedirs(path)
-                        except os.error, e:
+                        except os.error as e:
                               if e.errno != errno.EEXIST:
                                     raise
                   else :
@@ -405,7 +405,7 @@ class Step(object):
             if self.inputs :
                   passed  = self._check_inputs()
             if self.run :
-                  if isinstance(self.run, basestring) :
+                  if isinstance(self.run, str) :
                         logger.warning("Not implemeneted - run command is string")
                   elif isinstance(self.run, Workflow) :
                         logger.warning("Not implemenetd - run command is workflow object")
