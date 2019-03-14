@@ -140,7 +140,8 @@ class Config(object):
 
         # load config
         for k in cfg:
-            print(k + "\t" + str(cfg[k]))
+            if os.environ.get('DEBUG' , False ) : 
+                print(k + "\t" + str(cfg[k]))
             setattr(self, k, cfg[k])
 
         if dir:
