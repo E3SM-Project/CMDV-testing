@@ -67,10 +67,10 @@ Steps for using the `jupyter_latex_envs` package
 
    and enter your password if required.  
 
-8. **Choose the test notebook** Click on the notebook named `LaTeX Env
-   Test.ipynb`.  You should see three new buttons in the toolbar, for
-   refreshing, reading the bibliography file, and toggling a
-   configuration toolbar.
+8. **Choose the test notebook** Click on the notebook named
+   `LaTeX_Env_Test.ipynb`.  You should see three new buttons in the
+   toolbar, for refreshing, reading the bibliography file, and
+   toggling a configuration toolbar.
 
 9. **Familiarize youself the package** Observe how the notebook
    behaves when it is first opened.  Double-click on the markdown
