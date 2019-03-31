@@ -11,9 +11,8 @@ package.
 Steps for installing the `jupyter_latex_envs` package
 -----------------------------------------------------
 
-The following steps work for Python 3, and have not been tested for
-Python 2.  Here, we assume `conda` is set up to create Python 3
-environments by default.
+The following steps have been verified to work for both Python 2 and
+Python 3.
 
 1. **Create a conda environment** If you already have a conda
    environment you would like to enhance, you can use that one and
@@ -21,10 +20,7 @@ environments by default.
 
      `$ conda create --name latex_env`
 
-   You can choose whatever name you like.  If your `conda` package is
-   set up to default to Python 2, use
-
-     `$ conda create --name latex_env python=3`
+   You can choose whatever name you like.
 
 2. **Activate the conda environment**  Wether you created a new
    environment or are using an existing one, make sure you are running
