@@ -1,0 +1,93 @@
+2018-12-12 16:16:34,574 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:16:34,582 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:16:34,584 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:16:34,585 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:26:53,483 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:26:53,489 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:26:53,489 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:26:53,492 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:28:56,086 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:28:56,091 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:28:56,093 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:28:56,094 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:32:02,882 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:32:02,884 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:32:02,884 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:32:02,885 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:34:35,024 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:34:35,026 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:34:35,026 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:34:35,028 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:37:40,388 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:37:40,390 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:37:40,390 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:37:40,391 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:57,173 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:38:57,175 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:38:57,176 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:57,177 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:58,037 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:38:58,039 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:38:58,040 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:58,040 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:59,005 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:38:59,006 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:38:59,007 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:38:59,008 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:45:56,845 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:45:56,847 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:45:56,848 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:45:56,849 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:45:57,777 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:45:57,780 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:45:57,781 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:45:57,782 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:45:58,687 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:45:58,689 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:45:58,690 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 16:45:59,062 - Config - ERROR - No global config file found
+2018-12-12 16:46:19,475 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:46:19,481 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:46:19,482 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 16:46:19,849 - Config - ERROR - No global config file found
+2018-12-12 16:47:31,842 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:47:31,844 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:47:31,845 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 16:47:32,161 - Config - ERROR - No global config file found
+2018-12-12 16:57:12,034 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:12,037 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:12,037 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:12,038 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:13,018 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:13,020 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:13,021 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:13,022 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:13,992 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:13,994 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:13,995 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 16:57:14,399 - Config - ERROR - No global config file found
+2018-12-12 16:57:24,247 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:24,249 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:24,250 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:24,250 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:25,205 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:25,207 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:25,208 - Config - DEBUG - Loading config /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:25,209 - Config - ERROR - Not a valid path to config: /CMDV/CMDV-testing/Config/test_config.json
+2018-12-12 16:57:26,194 - cmdv-test-runner - INFO - Setup
+2018-12-12 16:57:26,196 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 16:57:26,197 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 16:57:26,600 - Config - ERROR - No global config file found
+2018-12-12 17:01:26,461 - cmdv-test-runner - INFO - Setup
+2018-12-12 17:01:27,376 - cmdv-test-runner - INFO - Setup
+2018-12-12 17:01:27,379 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 17:01:27,379 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 17:01:27,678 - Config - ERROR - No global config file found
+2018-12-12 17:04:12,258 - cmdv-test-runner - INFO - Setup
+2018-12-12 17:04:12,263 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 17:04:12,266 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 17:04:12,603 - Config - ERROR - No global config file found
+2018-12-12 17:04:23,643 - cmdv-test-runner - INFO - Setup
+2018-12-12 17:04:23,649 - cmdv-test-runner - INFO - Initializing config
+2018-12-12 17:04:23,651 - Config - DEBUG - Searching for config - following directory structure down - starting at /CMDV/CMDV-testing/scripts
+2018-12-12 17:04:24,019 - Config - ERROR - No global config file found
