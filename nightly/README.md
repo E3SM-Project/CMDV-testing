@@ -1,4 +1,4 @@
-# NIGHTY:
+# NIGHTLY:
 
 Quick start:
 
