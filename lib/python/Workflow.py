@@ -404,17 +404,29 @@ class Step(object):
             logger.debug("Step dir: " + self.directories.working)
             if self.inputs :
                   passed  = self._check_inputs()
+                  if not passed :
+                        logger.info( "Missing input , aborting")
+                        sys.exit(1)
             if self.run :
                   if isinstance(self.run, str) :
                         logger.warning("Not implemeneted - run command is string")
                   elif isinstance(self.run, Workflow) :
                         logger.warning("Not implemenetd - run command is workflow object")
                   elif isinstance(self.run, Tool) :
-                        logger.warning("Run command is tool object - executing")   
+                        logger.warning("Run command is tool object - executing")  
                         # Init tool - check for input directory,output directory etc.
                         passed = self.run.execute(inputs)
                   if passed and self.outputs :
-                        passed = self._check_outputs()      
+                        passed = self._check_outputs()  
+                        if not passed :
+                              logger.info( "Missing output , aborting")
+                              sys.exit(1)
+                  elif not passed :
+                        logger.info("Step execution failed , aborting")
+                        sys.exit(1)   
+                  else :
+                        logger.info("Why here?")   
+                        pprint(self.outputs)                
             else :
                   logger.error("Can not execute step - missing run command or tool")
 
@@ -433,7 +445,7 @@ class Step(object):
 
             passed = True
             for key in self.outputs :
-                
+                  logger.info("Checking " + key )
                   if self.outputs[key]['type'] :
                         if self.outputs[key]['type'].lower() == "file" :
                               # print("looking for " + self.outputs[key]['glob'] + " in " + os.getcwd() )
@@ -499,10 +511,16 @@ class Workflow(object):
                         passed = step.execute()
                         if not passed :
                               logger.error('Step ' + step.name + ' failed')
+                              logger.info('Step ' + step.name + ' failed')
+                        else:
+                              logger.info("Step" + step.name + " passed")      
                   else:
                         logger.error('Skipping step ' + step.name ) 
 
-
+            if passed :
+                  logger.info("Test-workflow passed")
+            else:
+                  logger.info("Test-workflow failed")
             sys.exit(1)
   
       def clone_repo(self , source , subdir) :
