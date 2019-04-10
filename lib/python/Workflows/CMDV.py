@@ -562,12 +562,21 @@ class Workflow(Parent):
                         passed = step.execute()
                         if not passed :
                               logger.error('Step ' + step.name + ' failed')
+                              logger.info('Step ' + step.name + ' failed')
+                        else :
+                            logger.error('Step ' + step.name + ' passed')
+                            logger.info('Step ' + step.name + ' passed')
+
                 else:
                     logger.error('Skipping step ' + step.name ) 
                 # 4. return to current working dir
 
         # workflow done - return to current working dir
         os.chdir(current_working_dir)
+        if passed :
+                logger.info("Test-workflow passed")
+        else:
+                logger.info("Test-workflow failed")
         logger.debug("Workflow done - ending in " + os.getcwd())
 
 
