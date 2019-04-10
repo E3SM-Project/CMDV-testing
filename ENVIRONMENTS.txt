@@ -1,0 +1,50 @@
+ENVIRONMENTS
+============
+
+This file is intended to provide a little bit of documentation for the
+conda environment files:
+
+    cmdv-env-py2.yml
+    cmdv-env-py3.yml
+
+The py2 and py3 suffixes refer to Python 2 and Python 3, depending on
+which version you prefer to work with.  Python 2 will not be supported
+soon, and it is likely that certain capabilities will only be
+available in Python 3, so it is my recommendation that the CMDV
+project adopt Python 3 for the variety of problems Python is used to
+solve.  But until then, we can try to support both.
+
+Conda environment files are used to create conda environments:
+
+    $ conda create --file cmd-env-py3.yml
+
+These environment files are just intended to provide a conda
+environment that has all of the packages for successfully developing
+Jupyter notebooks that utilize much of LaTeX as a part of the Jupyter
+markdown language.  Other parts of CMDV may develop environments for
+supporting other tasks.  It would be optimal if these different
+environment files could be merged into a single master environment.
+
+These environments were originally developed on a Mac, and the
+resulting generated files were problematic on Linux.  Again, it would
+be nice to work towards a single fiel that supports both platforms.
+The first sticking point was that specified version numbers do not
+always exist for both platforms.  We are currently experimenting with
+removing most version specifications (except for the Python version
+specificatio, and then only major version), and letting conda work out
+the set of compatible versions on the given platform.  Consider this a
+work in progress.
+
+The second sticking point was with proxies used for those packages
+installed with pip.  We are looking at a potential solution whereby
+the user attempting to create an environment using an environment file
+should set the environment variable `https_proxy` to ensure that pip
+properly gets past the proxy.
+
+Finally, these environment files, or their replacements, might need to
+be altered from time to time, to add packages to the environment as
+new requirements are enabled.  This will necessitate the need for
+nightly testing, in which the environments would be used by automated
+testers and the resulting environments verified.  These tests could be
+run on different platforms to ensure that compaitibility is
+maintained.
