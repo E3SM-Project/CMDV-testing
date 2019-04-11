@@ -16,7 +16,7 @@ solve.  But until then, we can try to support both.
 
 Conda environment files are used to create conda environments:
 
-    $ conda create --file cmd-env-py3.yml
+    $ conda env create --file cmd-env-py3.yml
 
 These environment files are just intended to provide a conda
 environment that has all of the packages for successfully developing
@@ -31,9 +31,9 @@ be nice to work towards a single fiel that supports both platforms.
 The first sticking point was that specified version numbers do not
 always exist for both platforms.  We are currently experimenting with
 removing most version specifications (except for the Python version
-specificatio, and then only major version), and letting conda work out
-the set of compatible versions on the given platform.  Consider this a
-work in progress.
+specification, and then only the major version), and letting conda
+work out the set of compatible versions on the given platform.
+Consider this a work in progress.
 
 The second sticking point was with proxies used for those packages
 installed with pip.  We are looking at a potential solution whereby
