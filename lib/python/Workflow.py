@@ -530,6 +530,7 @@ class Workflow(object):
             self.steps            = None # [Step()]
             self.requirements     = None # [Requirement()]
             self.hints            = None # [Hint()]
+            self.results          = None # { "step-name" : { "out-name" : { type: File , name: "fname" , path: "full-path "} }  }
             self.self             =  {
             "name" : None ,
             "file" : None ,
@@ -574,6 +575,21 @@ class Workflow(object):
                   logger.info("Test-workflow failed")
             sys.exit(1)
   
+      def add_result(self, path=None , name=None , value=None ) :
+            ''' Add step outputs to global scope '''
+            if not ( path or name or value ) :
+                  logger.error("Missing value for path ,name or value")
+                  logger.debug( "\n".join( [ "path: " + str(path) , "name: " + str(name) , "value: " + type(value) ]) )
+                  sys.exit(1)
+            
+            store = {}
+            steps = path.split("/")
+            if length(steps) > 1 :
+                  logger.error("Nested structure, not implemented")
+                  sys.exit(1)
+
+            self.results[ step[0] ][name] = value
+
       def clone_repo(self , source , subdir) :
             
             # source is absolute path
