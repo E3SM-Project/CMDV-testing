@@ -29,3 +29,35 @@ steps:
       baseCommand: [
         'cat unittest.stderr'
       ]
+  publish:
+        label: Publisch results
+        # in: 
+        #   files: /steps/run/log 
+        run:
+          # inputs:
+          #   files:
+          #     type: File[]
+          #     inputBinding:
+          #       position: 1
+          baseCommand: [
+            'cp unittest.stderr unittest.txt ; add2gh-pages.sh unittest.txt'
+        ]      
+
+actions:
+  pre: []
+  post: 
+    - publish:
+        label: Publisch results
+        in: 
+          files: /steps/run/log 
+        run:
+          inputs:
+            files:
+              type: File[]
+              inputBinding:
+                position: 1
+          arguments:
+            - 
+          baseCommand: [
+            'cat unittest.stderr'
+        ]      
