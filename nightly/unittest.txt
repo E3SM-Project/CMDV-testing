@@ -1,0 +1,11 @@
+test_access_attributes_empty (test.config_test.TestSession) ... /private/tmp/testing/cmdv/2019-04-11-200714/unittest-discovery.test.yaml/lib/python/test/config_test.py:67: DeprecationWarning: Please use assertRegex instead.
+  self.assertRegexpMatches(session.id, '\d+\-\d+\-\d+\-\d+')
+ok
+test_access_attributes_filled (test.config_test.TestSession) ... ok
+test_create_session (test.config_test.TestSession) ... ok
+test_is_class (test.config_test.TestSession) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK
