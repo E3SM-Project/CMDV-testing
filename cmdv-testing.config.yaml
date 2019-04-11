@@ -32,6 +32,6 @@ archive:
   type: enum # e.g cdash| cmdv-testing |...  , default local
   
 workflow:
-  steps: ["deploy" , "build" , "run" , "postprocessing"]
+  steps: ["setup" , "build" , "run" , "postprocessing"]
   
 custom: {}       
