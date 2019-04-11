@@ -14,16 +14,18 @@ steps:
       baseCommand: [ 
         'python -m unittest discover -v -s ../lib/python/  -p "*_test.py"' 
         ]
-      out:
+      outputs:
         log:
           type: File
           glob: unittest.stderr   
   postprocessing:
     label: check test output
     in: 
-      type: File
-      path: unittest.stderr
+      log:
+        type: File
+        path: unittest.stderr
+      testing: run/log  
     run:
       baseCommand: [
-        'cat unittest.error'
+        'cat unittest.stderr'
       ]
