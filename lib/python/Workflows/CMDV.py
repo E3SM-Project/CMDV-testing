@@ -500,7 +500,7 @@ class Workflow(Parent):
 
                 # add this into loop later
                 # remove initialized steps from dict and then iterate over dict for custom steps
-            for s in ["setup", "build", "run", "postprocessing", "archive"] :
+            for s in ["setup", "build", "run", "postprocessing", "report" , "archive"] :
                 logger.info("Removing " + s)
                 spec = steps_dict.pop( s , None )
 
