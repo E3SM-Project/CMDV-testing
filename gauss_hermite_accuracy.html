@@ -13230,7 +13230,7 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this test, we aim at examining the correctness of Gauss-Hermite quadrature rule implemented in MAM.</p>
+<p>In this test, we first aim at examining the correctness of Gauss-Hermite quadrature rule implemented in MAM (e.g., no bug in the index of array or variable name). In addition, MAM uses less accurate Gauss-Hermite quadrature points (defined as double precision but only provided 8 decimal digits). This is expected to introduce a numerical error and we would like to quantify it.</p>
 
 </div>
 </div>
@@ -13290,7 +13290,7 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the original MAM subroutines to evaluate the Eq. \eqref{goveq} by setting f(x) to the polynomial formula in Section 3.1. MAM uses 2 Gauss-Hermite quadrature points, and the roots and associated weights of Hermite polynomials are listed below \cite{Gh-Root}:</p>
+<p>We use the original MAM subroutines to evaluate the Eq. \eqref{goveq} by setting f(x) to the polynomial formula in Section 3.1. MAM uses 2 Gauss-Hermite quadrature points (less accurate), and the roots and associated weights of Hermite polynomials are listed below \cite{zwillinger2002crc}:</p>
 \begin{align}
 x_{_{1}} &amp;= 0.70710678, &amp;\mathbb{W}_{_{1}} &amp;= 0.88622693; \nonumber \\
 x_{_{2}} &amp;= -0.70710678, &amp;\mathbb{W}_{_{2}} &amp;= 0.88622693. \nonumber
@@ -13381,14 +13381,29 @@ x_{_{2}} &amp;= -0.7071067811865475, &amp;\mathbb{W}_{_{2}} &amp;= 0.88622692545
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4-Verification-results">4 Verification results<a class="anchor-link" href="#4-Verification-results">&#182;</a></h2>
+<h2 id="4-Source-codes-and-configuration-files-of-verification-test">4 Source codes and configuration files of verification test<a class="anchor-link" href="#4-Source-codes-and-configuration-files-of-verification-test">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the verification test runs successfully, we could obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> under the <strong>"postprocess_input"</strong> folder with the MAM and reference solutions. We could calculate the $\phi$ according to the Sectoin 3.6 and compare with $\epsilon$ (also stored in the <strong>condensation_verification_test.nc</strong>) to see whether an overall <strong>PASS/FAIL</strong> should be issued.</p>
+<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/gauss\_hermite\_accuracy}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/gauss\_hermite\_accuracy.test.yaml}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5-Verification-results">5 Verification results<a class="anchor-link" href="#5-Verification-results">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the verification test runs successfully, we could obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> under the <strong>"postprocess_input"</strong> folder with the MAM, test and reference solutions. We could calculate the $\phi$ according to the Sectoin 3.6 and compare with $10^{-8}$ or $\epsilon$ (also stored in the <strong>condensation_verification_test.nc</strong>) to see whether an overall <strong>PASS/FAIL</strong> should be issued.</p>
 
 </div>
 </div>
@@ -13509,7 +13524,7 @@ relative error of test solution: 0.000000e+00
 <p>[<a id="cit-steen-1969-mc" href="#call-steen-1969-mc">2</a>] Steen NM, Byrne GD and Gelbard EM, ``<em>Gaussian Quadratures for the Integrals∫∞ 0 exp (-x 2) f (x) dx and∫ b 0 exp (-x 2) f (x) dx</em>'', Mathematics of Computation, vol. , number , pp. 661--671,  1969.</p>
 <p>[<a id="cit-GH-Ingr" href="#call-GH-Ingr">3</a>] , ``<em>Gauss Integral</em>'',  .  <a href="https://en.wikipedia.org/wiki/Gaussian_integral">online</a></p>
 <p>[<a id="cit-arfken-2005" href="#call-arfken-2005">4</a>] George B Arfken and Hans J Weber, ``<em>Mathematical methods for physicists, 6th ed.</em>'',  2005.</p>
-<p>[<a id="cit-Gh-Root" href="#call-Gh-Root">5</a>] , ``<em>Gauss-Hermite roots and weights</em>'',  .  <a href="https://people.sc.fsu.edu/~jburkardt/f_src/hermite_rule/hermite_rule.html">online</a></p>
+<p>[<a id="cit-zwillinger2002crc" href="#call-zwillinger2002crc">5</a>] Daniel Zwillinger, ``<em>CRC standard mathematical tables and formulae</em>'',  2002.</p>
 
 </div>
 </div>

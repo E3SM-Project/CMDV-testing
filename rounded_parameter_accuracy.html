@@ -13256,7 +13256,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this test, we aim at examining the impact of using rouned parameters on the accuracy of the calculation of $C_{_{l,i}}$ in MAM (see details in Section 3.1). Since MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$, we then focus on the verification of $C_{_{H_2SO_4,i}}$.</p>
+<p>During the the calculation of $C_{_{l,i}}$, MAM used rounded constants instead of the formulae for some parameters (see details in Section 3.1). Using limited decimal digits would introduce numerical inaccuracy but the magnitude of error remains unknown. Thus in this test, we aim at examining the impact of using rouned parameters on the accuracy of the calculation of $C_{_{l,i}}$ in MAM. Since MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$, we then focus on the verification of $C_{_{H_2SO_4,i}}$.</p>
 
 </div>
 </div>
@@ -13286,12 +13286,17 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We call the original condensation subroutines in MAM to calculate the $C_{_{H_2SO_4,i}}$. 2 Gauss-Hermite quadrature roots are used to evaluate the integral in Eq. \eqref{kmt}. Moreover, some parameters are calculated approximately by:</p>
+<p>We call the original condensation subroutines in MAM to calculate the $C_{_{H_2SO_4,i}}$. 2 Gauss-Hermite quadrature roots are used to evaluate the integral in Eq. \eqref{kmt}. In addition, the following three rounded constants are used:</p>
 \begin{align}
-\mathbb{D}_{_{g,l}} &amp;= \frac{10^{-7}T^{1.75} \sqrt{\frac{1}{M_{_{w,l}}}+0.035}}
+\frac{1}{M_{_{w,air}}} &amp;\approx 0.035 \\
+\text{standard pressure} &amp;\approx 101300~Pa \\
+\sqrt{\frac{8R}{\pi}} &amp;\approx 145.5
+\end{align}<p>Therefore, the following three parameters are calculated approximately as:</p>
+\begin{align}
+p &amp;\approx \frac{P}{101300} \,, \\
+\mathbb{D}_{_{g,l}} &amp;\approx \frac{10^{-7}T^{1.75} \sqrt{\frac{1}{M_{_{w,l}}}+0.035}}
                  {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+2.7189 \right)^2} \,, \label{round_dgas} \\
-p &amp;= \frac{P}{101300} \,, \\
-v_{_{l}} &amp;= 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
+v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
 \end{align}<p>where P is the pressure with unit Pa. This solution is denoted as $C_{_{MAM}}$.</p>
 
 </div>
@@ -13315,7 +13320,7 @@ v_{_{l}} &amp;= 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
                  \mathbb{V}_{_{D,air}}^\frac{1}{3} \right)^2} \,, \\
 p &amp;= \frac{P}{101325} \,, \\
 v_{_{l}} &amp;= \sqrt{\frac{8RT}{\pi M_{_{w,l}}}} \,.
-\end{align}<p>We then use 2 Gauss-Hermite quadrature points to evaluate the Eq. \eqref{kmt}. This solution is denoted as $C_{_{REF}}$.
+\end{align}<p>We then use 2 Gauss-Hermite quadrature points from the original MAM to evaluate the Eq. \eqref{kmt}. This solution is denoted as $C_{_{REF}}$.
 The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\int_{-\infty}^{\infty} f(x)e^{-x^2} dx$, where f(x) is a polynomial, has been verified in a separate verification test.</p>
 
 </div>
@@ -13343,7 +13348,7 @@ The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\i
 \item Molecular weight $M_{_{w,H_2SO_4}} = 98.0783997$ and $M_{_{w,air}} = 28.966$.
 \item Number concentration of particle population within each mode ($N_{_{t,i}}$, unit: $\# \cdot m^{-3}$). We set the values based on our previous experience and they are summarized in the table below.
 \item Geometric mean dry diameter ($D_{_{gn,d,i}}$, unit: $\mu m$) and geometric standard deviation ($\sigma_{_{g,i}}$) for each mode. The values of $D_{_{gn,d,i}}$ and $\sigma_{_{g,i}}$ are chosen to represent the midrange values for tropospheric aerosol observations, and are listed in the table below \cite{dick-2004-jgr}. The geometric mean wet diameter ($D_{_{gn,w,i}}$) is assumed to be 1.2 times the $D_{_{gn,d,i}}$ in this verification test for simplicity. $D_{gn,w,i}$ is the actual value used to evaluate the integral in Eq. \eqref{kmt}.
-\item 2 Gauss-Hermite quadrature points ($\mathbb{R_{_i}}$) and their associated weights ($\mathbb{W_{_i}}$), based on the \cite{zwillinger2002crc}.
+\item 2 Gauss-Hermite quadrature points ($\mathbb{R_{_i}}$) and their associated weights ($\mathbb{W_{_i}}$) used in the original MAM (less accurate), based on the \cite{zwillinger2002crc}.
 \end{enumerate}
 </div>
 </div>
@@ -13399,7 +13404,22 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Verification-Results">Verification Results<a class="anchor-link" href="#Verification-Results">&#182;</a></h2>
+<h2 id="4-Source-codes-and-configuration-files-of-verification-test">4 Source codes and configuration files of verification test<a class="anchor-link" href="#4-Source-codes-and-configuration-files-of-verification-test">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/rounded\_parameter\_accuracy}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/rounded\_parameter\_accuracy.test.yaml}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5-Verification-Results">5 Verification Results<a class="anchor-link" href="#5-Verification-Results">&#182;</a></h2>
 </div>
 </div>
 </div>
