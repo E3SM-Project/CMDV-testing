@@ -11775,7 +11775,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="CMDV-Testing">CMDV Testing<a class="anchor-link" href="#CMDV-Testing">&#182;</a></h1>
+<h1 id="CMDV-Testing">CMDV Verification Tests<a class="anchor-link" href="#CMDV-Testing">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -11783,82 +11783,78 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following verification tests are documented using Jupyter notebooks:</p>
+<p>The following is a list of the currently available tests. 
+Each test was initially documented in a Jupyter notebook and then converted to html. 
+Currently, these tests are static, but this provides a framework that can 
+ultimately post the results of regularly sceduled, automatically executed verification tests.
+</p>
 <ul>
-    <li><p><strong>Test of HOMME Dynamical Core</a></strong></p></li>
+    <li><p><strong>HOMME Dynamical Core</a></strong></p></li>
     <ol>
-         <li><p><strong><a href="SWTC1.html">Shallow Water Test Case 1</a></strong></p>
+         <li><p><a href="SWTC1.html">Shallow water test case 1</a></p>
          </li>
     </ol>
 </ul>
 <ul>
-    <li><p><strong>Test of Albany Land-Ice</a></strong> (ALI)</p></li>
+    <li><p><strong>Albany Land-Ice (ALI)</a></strong> </p></li>
     <ol>
-         <li><p><strong><a href="ALI_foStokesMMS.html">2D x-y first-order Stokes stress-velocity solver</a></strong></p>
+         <li><p><a href="ALI_foStokesMMS.html">2D x-y first-order Stokes stress-velocity solver</a></p>
          </li>
     </ol>
 </ul>
 <ul>
-    <li><p><strong>Test of Atmospheric Physics</a></strong></p></li>
-    <ul>
-        <li><p><strong>MAM</a></strong> (Modal Aerosol Module)</p></li>
-        <ul>
-             <li><p><strong>Water Uptake</a></strong></p></li>
+    <li><p><strong>Atmospheric Physics: Modal Aerosol Module (MAM)</a></strong></p></li>
+       <ol>
+          <li><p><strong>Water Uptake:</strong> <a href="./wateruptake/verification.html">Finding roots of a polynomial equation</a></p></li>
+          <li><p><strong>Condensation</strong></p></li>
+                 <ol>
+                      <li type="i"><p>(Verification) Gauss-Hermite Quadrature for the Mass Transfer Coefficient</a></p></li>
+                        <ul>
+                          <li><p><a href="./condensation/gauss_hermite_accuracy/verification.html">
+                                             Integration of 3<sup>rd</sup>-order Polynomial</a></p>
+                          </li>
+                          <li><p><a href="./condensation/gauss_hermite_convergence/verification.html">
+                                             Convergence w.r.t. number of quadrature points (draft)</a></p>
+                          </li>
+                        </ul>
+                      <li type="i"><p>(Verification) Time Stepping for the Condensation of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub></a></p></li>
+                        <ul>
+                          <li><p><a href="./condensation/h2so4_sol_correctness/verification.html">Semi-analytical solution (draft)</a></p>
+                          </li>
+                        </ul>
+                      <li type="i"><p>(Verification) Time Stepping for the Condensation of SOAG/SOA</p>
+                        <ul>
+                          <li><p><a href="./condensation/soag_convergence/verification.html">Self-convergence of semi-implicit scheme (draft)</a></p>
+                          </li>
+                        </ul>
+                      <li type="i"><p>(Error Quantification) <a href="./condensation/gauss_hermite_accuracy/verification.html">
+                          Rounded Gauss-Hermite quadrature points</a></p>
+                      </li>
+                      <li type="i"><p>(Error Quantification) <a href="./condensation/rounded_parameter_accuracy/verification.html">
+                          Rounded physical constants</a></p>
+                      </li>
+                      <li type="i"><p>(Error Quantification) <a href="./condensation/h2so4_taylor/verification.html">
+                          Use of Taylor expansion for the H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub> equation (draft)</a></p>
+                      </li>
+                 </ol>
+             <li><p><strong>Coagulation</strong></a></p></li>
              <ol>
-                 <li><p><strong><a href="./wateruptake/verification.html">Root-finding problem of a polynomial equation</a></strong></p>
+                 <li type="i"><p><a href="Coagulation.html">Time stepping test for coagulation</a></p>
                  </li>
              </ol>
         </ul>
-        <ul>
-             <li><p><strong>Condensation</a></strong></p></li>
-             <ol>
-                 <li type="A"><p><strong>Error Quantification</a></strong></p></li>
-                 <ol>
-                      <li type="1"><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Error of using rounded Gauss-Hermite quadrature points</a></strong></p>
-                      </li>
-                      <li type="1"><p><strong><a href="./condensation/rounded_parameter_accuracy/verification.html">Error of using rounded constants to calculate the mass transfer coefficient</a></strong></p>
-                      </li>
-                      <li type="1"><p><strong><a href="./condensation/h2so4_taylor/verification.html">Error of using Taylor expansion to the solutions of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub> (draft)</a></strong></p>
-                      </li>
-                 </ol>
-                 <li type="A"><p><strong>Verification</a></strong></p></li>
-                 <ol>
-                      <li type="i"><p><strong>Use Gauss-Hermite Quadrature Rule to Calculate the Mass Transfer Coefficient</a></strong></p></li>
-                      <ol>
-                          <li type="1"><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Integration of 3<sup>rd</sup>-order Polynomial</a></strong></p>
-                          </li>
-                          <li type="1"><p><strong><a href="./condensation/gauss_hermite_convergence/verification.html">Convergence of Solutions (draft)</a></strong></p>
-                          </li>
-                      </ol>
-                      <li type="i"><p><strong>Time Stepping for Condensation of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub></a></strong></p></li>
-                      <ol>
-                          <li type="1"><p><strong><a href="./condensation/h2so4_sol_correctness/verification.html">Correct Implementation of Semi-Analytical Solutions (draft)</a></strong></p>
-                          </li>
-                      </ol>
-                      <li type="i"><p><strong>Time Stepping for Condensation of SOAG/SOA</strong></p>
-                      <ol>
-                          <li type="1"><p><strong><a href="./condensation/soag_convergence/verification.html">Self-Convergence Rate of Semi-Implicit Solutions (draft)</a></strong></p>
-                          </li>
-                      </ol>
-                      </li>
-                 </ol>
-             </ol>
-        </ul>
-        <ul>
-             <li><p><strong>Coagulation</a></strong></p></li>
-             <ol>
-                 <li><p><strong><a href="Coagulation.html">Coagulation Time Stepping Test</a></strong></p>
-                 </li>
-             </ol>
-        </ul>
-        <li><p><strong>CLUBB</a></strong> (Cloud Layers Unified By Binormals)</p></li>
+</ul>
+<ul>
+        <li><p><strong>Atmospheric Physics: Cloud Layers Unified By Binormals (CLUBB)</a></strong> </p></li>
         <ol>
-            <li><p><strong><a href="CLUBB_clipping_test.html">Clipping Test</a></strong> for CLUBB's standalone model</p>
+            <li><p><a href="CLUBB_clipping_test.html">Clipping in CLUBB's standalone model</a></p>
             </li>
         </ol>
-        <li><p><strong>Unit Tests for a Statistics Utility Module</a></strong></p>
+</ul>
+<ul>
+        <li><p><strong>Miscellaneous Unit Tests</a></strong></p>
         <ol>
-            <li><p><strong><a href="global_verif_smry_test.html">Subroutines in global_summary.F90</a></strong></p>
+            <li><p><a href="global_verif_smry_test.html">Subroutines in global_verif_summary.F90</a></p>
             </li>
         </ol>
     </ul>
@@ -11870,7 +11866,6 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Currently, these tests are static, but this provides a framework that can ultimately post the results of regularly sceduled, automatically executed verification tests.</p>
 
 </div>
 </div>
