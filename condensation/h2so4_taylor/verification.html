@@ -13195,14 +13195,14 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">Aerosol condensation process and its verification test: error of rounded constants<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">&#182;</a></h1>
+<h1 id="Aerosol-condensation-process-and-its-verification-test:-error-of-using-Taylor-expansion-to-the-solutions-of-$\rm-H_2SO_4/SO_4$">Aerosol condensation process and its verification test: error of using Taylor expansion to the solutions of $\rm H_2SO_4/SO_4$<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test:-error-of-using-Taylor-expansion-to-the-solutions-of-$\rm-H_2SO_4/SO_4$">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="$\color{red}{\text{Last-update:-07-26-2019,-test-strategy-and-result-are-finalized.-Presentation-needs-revision.}}$">$\color{red}{\text{Last update: 07-26-2019, test strategy and result are finalized. Presentation needs revision.}}$<a class="anchor-link" href="#$\color{red}{\text{Last-update:-07-26-2019,-test-strategy-and-result-are-finalized.-Presentation-needs-revision.}}$">&#182;</a></h3>
+<h3 id="$\color{red}{\text{Last-update:-07-25-2019,-test-strategy,-result-and-presentation-need-revision.}}$">$\color{red}{\text{Last update: 07-25-2019, test strategy, result and presentation need revision.}}$<a class="anchor-link" href="#$\color{red}{\text{Last-update:-07-25-2019,-test-strategy,-result-and-presentation-need-revision.}}$">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13217,38 +13217,13 @@ $( document ).ready(function(){
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Condensation represents the process that the vapor of a compound condenses onto the surface of existing particle population. MAM currently considers two trace gases: sulfur acid gas ($\rm H_2SO_4$, and its condensed particles $\rm SO_4$) and a single lumped gas species of secondary organic aerosol (SOAG, and its condensed particles SOA \cite{liu-2012-gmd}).</p>
-<p>The key parameter of condensation process is the mass transfer coefficient of species $l$ ($l \in \{ {\rm SOAG, H_2SO_4} \}$) to/from particle population (unit: $\rm s^{-1}$). By assuming that the particles are spherical and the size distribution of the particle population is described by a few log-normal modes, MAM calculates the mass transfer coefficient of species $l$ in mode $i$ ($C_{_{l,i}}$) as \cite{fuchs-1971}:</p>
-\begin{equation} \label{kmt}
-C_{_{l,i}} = \int_{-\infty}^{\infty} 2 \pi D_{_p} \mathbb{D}_{_{g,l}} f(K_{_{n,l}},\alpha_{_{l}}) n_{_{i}}(\ln D_{_{p}}) d\ln D_{_{p}} \,,
-\end{equation}<p>where</p>
-\begin{itemize}
-\item $D_{_{p}}$ is the aerosol particle diameter (unit: m); 
-\item $n_{_{i}}(\ln D_{_{p}})$ is the log-normal size distribution of mode $i$; 
-\item $\mathbb{D}_{_{g,l}}$ is the gas diffusivity (unit: $\rm m^2 \cdot s^{-1}$). It is calculated by 
-\cite{fuller-1966-iec}:
-\begin{equation} \label{gasd}
-\mathbb{D}_{_{g,l}} = \frac{10^{-7}T^{1.75}
-                 \sqrt{\frac{1}{M_{_{w,l}}}+\frac{1}{M_{_{w,air}}}}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+
-                 \mathbb{V}_{_{D,air}}^\frac{1}{3} \right)^2} \,,
-\end{equation}
-Here $T$ is air temperature (unit: K); $p$ is air pressure (unit: $\rm atm$ (the standard temperature and pressure)); $\mathbb{V}_{_{D,l}}$ (unitless) is the molecular diffusion volume; $M_{_{w,l}}$ is the molecular weight (unit: $\rm g \cdot mol^{-1}$). Both $\mathbb{V}_{_{D,l}}$ and $M_{_{w,l}}$ are constants for a given species $l$;
-\item $K_{_{n,l}}$ is the Knudsen number (unitless). It is calculated by:
-\begin{equation} \label{knu}
-K_{_{n,l}} = \frac{2\lambda_{_{l}}}{D_{_{p}}} \,,
-\end{equation}
-where $\lambda_{_{l}}$ is the mean free path of vapor molecules in air (unit: m) and it is calculated by:
-\begin{equation} \label{mfp}
-\lambda_{_{l}} = \frac{3\mathbb{D}_{_{g,l}}}{v_{_{l}}} \,,
-\end{equation}
-where $v_{_{l}} = \sqrt{\frac{8RT}{\pi M_{_{w,l}}}}$ is the mean speed of vapor molecules (unit: $\rm m \cdot s^{-1}$);
-\item $\alpha_{_{l}}$ is the accommodation coefficient (unitless), which is a constant for a given species $l$;
-\item $f(K_{_{n,l}}, \alpha_{_{l}})$ is a correction factor for the transition regime where the mean free path of vapor molecules is close to the particle diameter. It takes the formula below:
-\begin{equation} \label{fka}
-f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \alpha_{_{l}} + K_{_{n,l}} 
-            (1+K_{_{n,l}}+0.283 \alpha_{_{l}})} \,.
-\end{equation}
-\end{itemize}<p>Currently MAM calculates the $C_{_{H_2SO_4,i}}$ through Eq. \eqref{kmt}. Due to the large uncertainty of speciation and physical properties of SOAG/SOA, MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$ for simplicity. More details about the model parameterization, assumption and numerical implementation can be found in a separate model documentation.</p>
+<p>By assuming that the particles are spherical and the size distribution of the particle population is described by a few log-normal modes, the governing equations for the condensation of $\rm H_2SO_4$ read:</p>
+\begin{align}
+C_{_{H_2SO_4,i}} &amp;= \int_{-\infty}^{\infty} 2 \pi D_{_p} \mathbb{D}_{_{g,H_2SO_4}} f(K_{_{n,H_2SO_4}},\alpha_{_{H_2SO_4}}) n_{_{i}}(\ln D_{_{p}}) d\ln D_{_{p}} \,, \label{kmt-h2so4} \\
+\frac{dq_{_{v,H_2SO_4}}}{dt} &amp;= P_{_{chem}} - q_{_{H_2SO_4}} \sum_{i=1}^{I} C_{_{H_2SO_4,i}} \,, \label{qgh2so4} \\
+\frac{dq_{_{m,SO_4,i}}}{dt} &amp;= C_{_{H_2SO_4,i}} \times q_{_{v,H_2SO_4}} \,, i = 1,2,...,I \,, \label{qaso4}
+\end{align}<p>where the definitions of variables in Eq. \eqref{kmt-h2so4} can be found in a separate model documentation; $q_{_{v,H_2SO_4}}$ is the mass mixing ratio of $\rm H_2SO_4$ (unit: kmol of $\rm H_2SO_4$ per kmol of dry air); $P_{_{chem}}$ is the net chemical production rate of $\rm H_2SO_4$ due to the gas- and aqueous-phase chemistry (unit: kmol of $\rm H_2SO_4$ per kmol of dry air per second); $q_{_{m,SO_4,i}}$ is the mass mixing ratio of $\rm SO_4$ in mode $i$.</p>
+<p>To solve for $q_{_{v,H_2SO_4}}$ and $q_{_{m,SO_4,i}}$, MAM assumes that $P_{_{chem}}$ and $C_{_{H_2SO_4,i}}$ are fixed within one time step $\Delta t_{_{cond}}$ ($\Delta t_{_{cond}} = t_{_1} - t_{_0}$). Therefore, semi-analytical solutions can be derived for $q_{_{v,H_2SO_4}}$ and $q_{_{m,SO_4,i}}$. More details about the basics notations, model parameterization, assumptions and numerical implementation can be found in a separate ''MAM_Basics'' and model documentation.</p>
 
 </div>
 </div>
@@ -13263,7 +13238,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>During the the calculation of $C_{_{l,i}}$, MAM used rounded constants instead of the formulae for some parameters (see details in Section 3.1). Using limited decimal digits would introduce numerical inaccuracy but the magnitude of error remains unknown. Thus in this test, we aim at examining the impact of using rouned parameters on the accuracy of the calculation of $C_{_{l,i}}$ in MAM. Since MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$, we then focus on the verification of $C_{_{H_2SO_4,i}}$.</p>
+<p>Though there are semi-analytical solutions for $q_{_{v,H_2SO_4}}$ and $q_{_{m,SO_4,i}}$, MAM applies the Taylor expansion to the semi-analytical solutions with respect to time and truncates at the second-order term, when $\Delta t_{_{cond}} \sum\limits_{i=1}^{I}C_{_{H_2SO_4,i}} \le 10^{-3}$. The main purpose to use Taylor expansion here is to avoid the division of a small number in the formula of semi-analytical solution (see Eq. \eqref{semi-ana-h2so4} and \eqref{semi-ana-so4} in Section 3.1). However, the magnitude of error introduced by the Taylor expansion remains unknown. Thus in this test, we aim at examing the difference between semi-analytical solution and Taylor expansion of semi-analytical solutions of $\rm H_2SO_4/SO_4$. Note that in this test, <strong>$P_{_{chem}}$ and $C_{_{H_2SO_4,i}}$ are fixed over the whole simulation time</strong> and we do not consider the existence of SOAG/SOA.</p>
 
 </div>
 </div>
@@ -13271,14 +13246,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3-Steps-to-establish-the-verification-test">3 Steps to establish the verification test<a class="anchor-link" href="#3-Steps-to-establish-the-verification-test">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This verification test uses a box model that inherits the data structure and condensation subroutines from MAM in E3SM. The box model serves as a driver program to specify the necessary parameters in order to calculate the MAM and reference solutions.</p>
+<h2 id="3-Steps-to-establish-the-verification-test">3 Steps to establish the verification test<a class="anchor-link" href="#3-Steps-to-establish-the-verification-test">&#182;</a></h2><p>This verification test uses a box model that inherits the data structure and condensation subroutines from MAM in E3SM. The box model serves as a driver program to specify the necessary parameters in order to calculate the MAM and reference solutions.</p>
 
 </div>
 </div>
@@ -13286,25 +13254,24 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1-MAM-solution">3.1 MAM solution<a class="anchor-link" href="#3.1-MAM-solution">&#182;</a></h3>
+<h3 id="3.1-Reference-solution">3.1 Reference solution<a class="anchor-link" href="#3.1-Reference-solution">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We call the original condensation subroutines in MAM to calculate the $C_{_{H_2SO_4,i}}$. 2 Gauss-Hermite quadrature roots are used to evaluate the integral in Eq. \eqref{kmt}. In addition, the following three rounded constants are used:</p>
+<p>The reference solutions of this verification test take the semi-analytical formulae for $\rm H_2SO_4/SO_4$, based on the assumptions mentioned in Section 1. The semi-analytical solutions of Eq. \eqref{qgh2so4} and \eqref{qaso4} at $t = t_{_1}$ read:</p>
 \begin{align}
-\frac{1}{M_{_{w,air}}} &amp;\approx 0.035 \\
-\text{standard pressure} &amp;\approx 101300~Pa \\
-\sqrt{\frac{8R}{\pi}} &amp;\approx 145.5
-\end{align}<p>Therefore, the following three parameters are calculated approximately as:</p>
-\begin{align}
-p &amp;\approx \frac{P}{101300} \,, \\
-\mathbb{D}_{_{g,l}} &amp;\approx \frac{10^{-7}T^{1.75} \sqrt{\frac{1}{M_{_{w,l}}}+0.035}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+2.7189 \right)^2} \,, \label{round_dgas} \\
-v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
-\end{align}<p>where P is the pressure with unit Pa. This solution is denoted as $C_{_{MAM}}$.</p>
+q_{_{v,H_2SO_4}}(t_{_1}) &amp;= \left( q_{_{v,H_2SO_4}}(t_{_0}) - 
+        \frac{P_{_{chem}} (t_{_0})} {C_{_{sum,H_2SO_4}} (t_{_0})} 
+        \right) \exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} + \frac{P_{_{chem}} (t_{_0})}
+        {C_{_{sum,H_2SO_4}} (t_{_0})} \,, \label{semi-ana-h2so4} \\
+q_{_{m,SO_4,i}}(t_{_1}) &amp;= q_{_{m,SO_4,i}}(t_{_0}) + \frac{C_{_{H_2SO_4,i}} (t_{_0})}
+    {C_{_{sum,H_2SO_4}} (t_{_0})} \left[ \left( q_{_{v,H_2SO_4}}(t_{_0}) - \frac{P_{_{chem}} (t_{_0})}
+    {C_{_{sum,H_2SO_4}} (t_{_0})} \right) \left( 1-\exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} \right) 
+    + P_{_{chem}} (t_{_0}) \Delta t_{_{cond}} \right] \,. \label{semi-ana-so4}
+\end{align}<p>where $C_{_{sum,H_2SO_4}} (t_{_0}) = \sum\limits_{i=1}^{I}C_{_{H_2SO_4,i}} (t_{_0})$.</p>
 
 </div>
 </div>
@@ -13312,50 +13279,82 @@ v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Reference-solution">3.2 Reference solution<a class="anchor-link" href="#3.2-Reference-solution">&#182;</a></h3>
+<h3 id="3.2-MAM-solution">3.2 MAM solution<a class="anchor-link" href="#3.2-MAM-solution">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To generate the reference solutions, we first calculate the following terms with their original formulae:</p>
+<p>When $10^{-20} \le C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \le 10^{-3}$, MAM applies the Taylor expansion to the semi-analytical solution of $q_{_{v,H_2SO_4}}(t)$ with respect to time and truncates at the second-order term. The approximated solution of $q_{_{v,H_2SO_4}}(t)$ at $t = t_{_1}$ reads:</p>
 \begin{align}
-\mathbb{D}_{_{g,l}} &amp;= \frac{10^{-7}T^{1.75}
-                 \sqrt{\frac{1}{M_{_{w,l}}}+\frac{1}{M_{_{w,air}}}}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+
-                 \mathbb{V}_{_{D,air}}^\frac{1}{3} \right)^2} \,, \\
-p &amp;= \frac{P}{101325} \,, \\
-v_{_{l}} &amp;= \sqrt{\frac{8RT}{\pi M_{_{w,l}}}} \,.
-\end{align}<p>We then use 2 Gauss-Hermite quadrature points from the original MAM to evaluate the Eq. \eqref{kmt}. This solution is denoted as $C_{_{REF}}$.
-The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\int_{-\infty}^{\infty} f(x)e^{-x^2} dx$, where f(x) is a polynomial, has been verified in a separate verification test.</p>
-
+q_{_{v,H_2SO_4}}(t_{_1}) &amp;= q_{_{v,H_2SO_4}}(t_{_0}) \left[ 1 - C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} + 
+    \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^2}{2} \right] \nonumber \\
+    &amp;+ P_{_{chem}} (t_{_0}) \Delta t_{_{cond}} \left[ 1 - \frac{C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}}
+    {2} + \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^2}{6} \right] \,. \label{mam-h2so4}
+\end{align}<p>The approximated solution of $q_{_{m,SO_4,i}}(t)$ at $t = t_{_1}$ reads:</p>
+\begin{equation} \label{mam-so4}
+q_{_{m,SO_4,i}}(t_{_1}) = q_{_{m,SO_4,i}}(t_{_0}) + \frac{C_{_{H_2SO_4,i}} (t_{_0})}{C_{_{sum,H_2SO_4}} (t_{_0})}
+    \left( q_{_{v,H_2SO_4}}(t_{_0}) + P_{_{chem}} (t_{_0}) \Delta t_{_{cond}} - q_{_{v,H_2SO_4}}(t_{_1}) 
+    \right) \,.
+\end{equation}
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3-Parameters-required-for-the-verification-test">3.3 Parameters required for the verification test<a class="anchor-link" href="#3.3-Parameters-required-for-the-verification-test">&#182;</a></h3>
+<h3 id="3.3-Parameters-required-for-this-verification-test">3.3 Parameters required for this verification test<a class="anchor-link" href="#3.3-Parameters-required-for-this-verification-test">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this verification test, the following quantities are specified:</p>
+<p>To perform this verification test, the following quantities are specified:
+%</p>
 \begin{enumerate}
-\item $\alpha_{_{H_2SO_4}} = 0.65$ \cite{poschl-1998-jpca}. 
-\item Temperature $T$ (unit: K) and pressure $P$ (unit: Pa), for which 5 pairs of values are used to represent the typical conditions from troposphere to stratosphere:
-\begin{align}
-\rm T&amp;: 310, 298, 273, 230, 200 \\
-\rm P&amp;: 10^5, 8.5 \times 10^4, 7 \times 10^4, 2 \times 10^4, 10^4
-\end{align}
-\item Molecular diffusion volume $\mathbb{V}_{_{D,H_2SO_4}} = 42.88$ and $\mathbb{V}_{_{D,air}} = 20.1$
+\item All the parameters used to calculate the $C_{_{H_2SO_4,i}}$. These include:
+%
+\begin{itemize}
+\item Accommodation coefficient $\alpha_{_{H_2SO_4}} = 0.65$ (unitless, \cite{poschl-1998-jpca}).
+\item Temperature $T$, for which we use 273 K as an example.
+\item Pressure $P$, for which we use 1000 hPa as an exmaple.
+\item Molecular diffusion volume (unitless) $\mathbb{V}_{_{D,H_2SO_4}} = 42.88$ and $\mathbb{V}_{_{D,air}} = 20.1$.
 \item Molecular weight $M_{_{w,H_2SO_4}} = 98.0783997$ and $M_{_{w,air}} = 28.966$.
-\item Number concentration of particle population within each mode ($N_{_{t,i}}$, unit: $\# \cdot m^{-3}$). We set the values based on our previous experience and they are summarized in the table below.
-\item Geometric mean dry diameter ($D_{_{gn,d,i}}$, unit: $\mu m$) and geometric standard deviation ($\sigma_{_{g,i}}$) for each mode. The values of $D_{_{gn,d,i}}$ and $\sigma_{_{g,i}}$ are chosen to represent the midrange values for tropospheric aerosol observations, and are listed in the table below \cite{dick-2004-jgr}. The geometric mean wet diameter ($D_{_{gn,w,i}}$) is assumed to be 1.2 times the $D_{_{gn,d,i}}$ in this verification test for simplicity. $D_{gn,w,i}$ is the actual value used to evaluate the integral in Eq. \eqref{kmt}.
-\item 2 Gauss-Hermite quadrature points ($\mathbb{R_{_i}}$) and their associated weights ($\mathbb{W_{_i}}$) used in the original MAM (less accurate), based on the \cite{zwillinger2002crc}.
+\item Number concentration of particle population in mode $i$ ($N_{_{t,i}}$, unit: $\# \cdot m^{-3}$). We set two groups of $N_{_{t,i}}$ so that $10^{-20} \le C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \le 10^{-3}$ ($\Delta t_{_{cond}}$ is set correspondingly below):
+\begin{align}
+\rm Group1&amp;: N_{_{t,1}} = 10^8,&amp; N_{_{t,2}} = 10^9,&amp; &amp;N_{_{t,3}} &amp;= 10^5,&amp; &amp;N_{_{t,4}} = 2 \times 10^8 \,, \nonumber \\
+\rm Group2&amp;: N_{_{t,1}} = 10^4,&amp; N_{_{t,2}} = 10^5,&amp; &amp;N_{_{t,3}} &amp;= 10,&amp; &amp;N_{_{t,4}} = 2 \times 10^4 \,. \nonumber
+\end{align}
+Group1 is referred to as a situation with typical aerosol number concentrations in reality while Group2 is referred to as a situation with low aerosol number concentrations.
+\item Geometric mean dry diameter ($D_{_{gn,d,i}}$) and geometric standard deviation ($\sigma_{_{g,i}}$) for each mode. The values of $D_{_{gn,d,i}}$ and $\sigma_{_{g,i}}$ are chosen to represent the midrange values for tropospheric aerosol observations \cite{dick-2004-jgr, liu-2012-gmd}, and are listed in the ''MAM_Basics'' documentation. The geometric mean wet diameter ($D_{_{gn,w,i}}$) is the actual value used to calculate the $C_{_{l,i}}$ and is assumed to be 1.2 times $D_{_{gn,d,i}}$ for simplicity.
+\item Gauss-Hermite quadrature points and their associated weights. For this test, both MAM and reference solutions use 2 Gauss-Hermite quadrature points originally in MAM (less accurate \cite{zwillinger2002crc}).
+\end{itemize}
+%
+\item Simulation length $\Delta t_{_{tot}}$, which is set to 1800 seconds.
+\item Time step $\Delta t_{_{cond}}$ (unit: second). We set two groups of $\Delta t_{_{cond}}$ corresponding to the values of $N_{_{t,i}}$ above so that $10^{-20} \le C_{_{H_2SO_4,i}} (t_{_0}) \Delta t_{_{cond}} \le 10^{-3}$:
+\begin{align}
+\rm Group1&amp;: \Delta t_{_{cond}} = 1  \,, \nonumber \\
+\rm Group2&amp;: \Delta t_{_{cond}} = 1800 \,. \nonumber
+\end{align}
+\item Density (unit: $\rm kg \cdot m^{-3}$) and molecular weight (unit: $\rm g \cdot mol^{-1}$) of aerosol species ($\rho_{_{l}}$ and $M_{_{w,l}}$), for which the following values are used:
+$$[\rho_{_{SO_4}}:1770 \ ; \rho_{_{POA}}:1000 \ ; \rho_{_{SOA}}:1000 \ ; \rho_{_{BC}}:1700 \ ; \rho_{_{SS}}:1900 \ ; \rho_{_{DST}}:2600 \ ; \rho_{_{MOA}}:1601] \,, \nonumber$$
+$$[M_{_{w,SO_4}}:115 \ ; M_{_{w,POA}}:12 \ ; M_{_{w,SOA}}:12 \ ; M_{_{w,BC}}:12 \ ; M_{_{w,SS}}:58.5 \ ; M_{_{w,DST}}:135 \ ; M_{_{w,MOA}}:250092] \,. \nonumber$$
+\item Initial mass fractions of aerosol species in mode $i$ ($f_{_{m,l,i}}$), whose values are shown below (numbers in the parentheses) as the example setting.
+\begin{align}
+\text{  Accumulation}:&amp; &amp;\text{SS(50%)},&amp; &amp;\text{$\rm SO_4$(50%)}, \nonumber \\
+\text{        Aitken}:&amp; &amp;\text{SS(50%)},&amp; &amp;\text{$\rm SO_4$(50%)}, \nonumber \\
+\text{        Coarse}:&amp; &amp;\text{DST(50%)},&amp; &amp;\text{$\rm SO_4$(50%)}, \nonumber \\
+\text{Primary carbon}:&amp; &amp;\text{POA(50%)},&amp; &amp;\text{BC(50%)}. \nonumber
+\end{align}
+No initial SOA and $\rm SO_4$ are specified for the primary carbon mode because that mode only contains BC, POA and MOA. By specifying the $T$, $p$, $R$, $N_{_{t,i}}$, $D_{_{gn,d,i}}$, $\sigma_{_{g,i,}}$, $\rho_{_{l}}$, $M_{_{w,l}}$ and $f_{_{m,l,i}}$, we could then calculate the initial $q_{_{m,l,i}}$ as:
+\begin{equation}
+q_{_{m,l,i}} = \frac{\frac{\pi}{6} N_{_{t,i}} D_{_{gn,d,i}}^3 \exp \left( \frac{9}{2} \ln^2 \sigma_{_{g,i}} \right)}
+{\sum\limits_{l}\frac{f_{_{m,l,i}}}{\rho_{_{l}}}} \cdot f_{_{m,l,i}} \cdot \frac{\rho_{_{l}}RT}{1000 M_{_{w,l}} p} \,.
+\end{equation}
+\item Initial mass mixing ratio of $q_{_{v,H_2SO_4}}$, which is set to $10^{-13}$, close to the global mean value at the surface layer.
+\item The net chemical production rate $P_{_{chem}}$ for $\rm H_2SO_4$, which is set to zero for simplicity.
 \end{enumerate}
 </div>
 </div>
@@ -13363,29 +13362,7 @@ The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\i
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-$$
-\text{Table 1. List of typical geometric mean dry diameter ($D_{_{gn,d,i}}$), 
-geometric standard deviation ($\sigma_{_{g,i}}$) and number concentration of } \\
-\text{particle population ($N_{_{t,i}}$) for each log-normal mode.}\\
-
-\begin{array}{c|c|c|c}
-\hline
-\text{Mode} &amp; D_{_{gn,d,i}}, \, (\mu m) &amp; \sigma_{_{g,i}} &amp; N_{_{t,i}}, \, (\# \cdot m^{-3}) \\
-\hline
-    \text{Aitken}         &amp; 0.026 &amp; 1.6 &amp; 10^9 \\
-    \text{Accumulation}   &amp; 0.11  &amp; 1.8 &amp; 10^8 \\
-    \text{Coarse}         &amp; 2.0   &amp; 1.8 &amp; 10^5 \\
-    \text{Primary Carbon} &amp; 0.05  &amp; 1.6 &amp; 2 \times 10^8\\
-\hline
-\end{array}
-$$
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>With these parameters known, totally 20 (= 5×4) verification tests are performed.</p>
+<p>With these parameters given, totally 10 (= 5 (4 modes for aerosols + 1 gas species) $\times$ 2 (groups)) verification tests are performed.</p>
 
 </div>
 </div>
@@ -13400,11 +13377,35 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In each test, the driver program calls MAM's condensation subroutines to calculate the $C_{_{MAM}}$ and $C_{_{REF}}$, respectively. The relative error between MAM solution and reference solution is then calculated as:</p>
-\begin{equation}
-\phi = \frac{\left| C_{_{MAM}} - C_{_{REF}} \right|}{C_{_{REF}}} \,. \label{relerr}
-\end{equation}<p>Because the least accurate parameter is rounded to two digits (0.035 in Eq. \eqref{round_dgas}), an overall <strong>PASS</strong> is issued if $\phi \lt 10^{-2}$ for all the 20 tests.</p>
-
+<p>The PASS/FAIL criterion is determined based on two situations:</p>
+\begin{itemize}
+\item If $\Delta t_{_{cond}} = \Delta t_{_{tot}}$, we calculate the MAM solutions at $t = t_{_1}$ based on Eq. \eqref{mam-h2so4} and \eqref{mam-so4} (denoted as $q_{_{v,MAM}}$ and $q_{_{m,MAM,i}}$), and the reference solutions at $t = t_{_1}$ based on Eq. \eqref{semi-ana-h2so4} and \eqref{semi-ana-so4} (denoted as $q_{_{v,REF}}$ and $q_{_{m,REF,i}}$). Then we calculate the relative error $\phi$ as (note $P_{_{chem}}$ is assumed as zero):
+\begin{align}
+\phi_{_v} &amp;= \frac{\left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{v,REF}}} =
+\frac{\left| \left[ 1 - C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} + \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^2}{2} \right] - \exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} \right|}
+{\exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}}} \nonumber \\
+&amp;\lt \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^3}{6} \exp^{C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} \,, \label{phi_gas} \\
+\phi_{_{m,i}} &amp;= \frac{\left| q_{_{m,MAM,i}} - q_{_{m,REF,i}} \right|}{q_{_{m,REF,i}}} =
+\frac{\frac{C_{_{H_2SO_4,i}} (t_{_0})}{C_{_{sum,H_2SO_4}} (t_{_0})} \left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{m,SO_4,i}}(t_{_0}) + \frac{C_{_{H_2SO_4,i}} (t_{_0})}{C_{_{sum,H_2SO_4}} (t_{_0})} \left( q_{_{v,H_2SO_4}}(t_{_0}) - q_{_{v,REF}} \right)} \lt 
+\frac{\left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{v,H_2SO_4}}(t_{_0}) - q_{_{v,REF}}} = 
+\frac{\phi_{_v}}{\exp^{C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} - 1} \,. \label{phi_aer}
+\end{align}
+\item If $\Delta t_{_{cond}} &lt; \Delta t_{_{tot}}$, the $\phi$ estimated for one $\Delta t_{_{cond}}$ is the same as those in Eq. \eqref{phi_gas} and \eqref{phi_aer}. The $\phi$ estimated for one $\Delta t$ is then bounded as:
+\begin{align}
+\phi_{_v} &amp;= \frac{\left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{v,REF}}} = 
+\frac{\left| \left[ 1 - C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} + \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^2}{2} \right]^\frac{\Delta t_{_{tot}}}{\Delta t_{_{cond}}} - \exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{tot}}} \right|}{\exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{tot}}}} \nonumber \\
+&amp;\lt
+\frac{\left| \left[ \exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}}} + \frac{\left( C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{cond}} \right)^3}{6} \right]^\frac{\Delta t_{_{tot}}}{\Delta t_{_{cond}}} - \exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{tot}}} \right|}{\exp^{-C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{tot}}}} \,, \label{phi_gas2} \\
+\phi_{_{m,i}} &amp;= \frac{\left| q_{_{m,MAM,i}} - q_{_{m,REF,i}} \right|}{q_{_{m,REF,i}}} = 
+\frac{\frac{C_{_{H_2SO_4,i}} (t_{_0})}{C_{_{sum,H_2SO_4}} (t_{_0})} \left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{m,SO_4,i}}(t_{_0}) + \frac{C_{_{H_2SO_4,i}} (t_{_0})}{C_{_{sum,H_2SO_4}} (t_{_0})} \left( q_{_{v,H_2SO_4}}(t_{_0}) - q_{_{v,REF}} \right)} \nonumber \\
+&amp;\lt \frac{\left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{v,H_2SO_4}}(t_{_0}) - q_{_{v,REF}}} 
+= \frac{\phi_{_v}}{\exp^{C_{_{sum,H_2SO_4}} (t_{_0}) \Delta t_{_{tot}}}-1} \,. \label{phi_aer2}
+\end{align}
+\end{itemize}<p>Therefore, an overall <strong>PASS</strong> is issued if the following criteria are met for all the verification tests:</p>
+\begin{itemize}
+\item $\phi_{_v}$ satisfies the Eq. \eqref{phi_gas} and $\phi_{_{m,i}}$ satisfies the Eq. \eqref{phi_aer} when $\Delta t_{_{cond}} = \Delta t_{_{tot}}$;
+\item $\phi_{_v}$ satisfies the Eq. \eqref{phi_gas2} and $\phi_{_{m,i}}$ satisfies the Eq. \eqref{phi_aer2} when $\Delta t_{_{cond}} &lt; \Delta t_{_{tot}}$;
+\end{itemize}
 </div>
 </div>
 </div>
@@ -13418,7 +13419,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/rounded\_parameter\_accuracy}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/rounded\_parameter\_accuracy.test.yaml}$.</p>
+<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/h2so4\_taylor}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/h2so4\_taylor.test.yaml}$.</p>
 
 </div>
 </div>
@@ -13433,7 +13434,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the verification test runs successfully, we should obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> with MAM and reference solutions. Assume that the netcdf file is put under the <strong>"postprocess_input"</strong> folder, we could calculate the $\phi$ based on Eq. \eqref{relerr}. Then we could issue an overall <strong>PASS/FAIL</strong> based on the criterion in Section 3.4.</p>
+<p>If the verification test runs successfully, we should obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> with the MAM and reference solutions for $q_{_{v,H_2SO_4}}$ and $q_{_{m,SO_4,i}}$. Assuming that the netcdf file is put under the <strong>"postprocess_input"</strong> folder, the following cells would calculate the relative errors and check whether a <strong>PASS/FAIL</strong> should be issued.</p>
 
 </div>
 </div>
@@ -13443,7 +13444,7 @@ $$
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load library and modules</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load the library</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 </pre></div>
@@ -13459,14 +13460,18 @@ $$
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># define the file path and name</span>
-<span class="n">nc_file</span> <span class="o">=</span> <span class="s2">&quot;./postprocess_input/condensation_verification_test.nc&quot;</span>
+<span class="n">nc_file</span>   <span class="o">=</span> <span class="s2">&quot;./postprocess_input/condensation_verification_test.nc&quot;</span>
 
-<span class="c1"># open the netcdf file and read in the MAM and reference solutions</span>
-<span class="n">ds</span>    <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">nc_file</span><span class="p">)</span>
-<span class="n">mam</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;rounded_para_sol&#39;</span><span class="p">])</span>
-<span class="n">ref</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;exact_para_sol&#39;</span><span class="p">])</span>
-<span class="n">pver</span>  <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pver&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
-<span class="n">mode</span>  <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+<span class="c1"># read in the MAM and reference solutions</span>
+<span class="n">ds</span>        <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">nc_file</span><span class="p">)</span>
+<span class="n">pver</span>      <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pver&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+<span class="n">mode</span>      <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+<span class="n">mam_so4</span>   <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mam_so4&#39;</span><span class="p">]</span>
+<span class="n">ref_so4</span>   <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ref_so4&#39;</span><span class="p">]</span>
+<span class="n">mam_h2so4</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mam_h2so4&#39;</span><span class="p">]</span>
+<span class="n">ref_h2so4</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ref_h2so4&#39;</span><span class="p">]</span>
+<span class="n">uptkrate</span>  <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;uptkrate&#39;</span><span class="p">]</span>
+<span class="n">dt</span>        <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13479,15 +13484,33 @@ $$
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate the relative errors</span>
-<span class="n">phi</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">pver</span><span class="p">,</span><span class="n">mode</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate the relative errors of H2SO4/SO4</span>
+<span class="n">phi_gas</span>                  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">pver</span><span class="p">)</span>
+<span class="n">phi_aer</span>                  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">mode</span><span class="p">,</span><span class="n">pver</span><span class="p">])</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pver</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
-        <span class="n">phi</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span>
-
-<span class="c1"># check maximum/minimum relative error</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;maximum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;minimum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
+    <span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1800.</span><span class="p">)</span><span class="o">/</span><span class="mf">1800.</span> <span class="o">&lt;</span> <span class="mf">1.e-6</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dt = %.f&quot;</span> <span class="o">%</span> <span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">csum</span>             <span class="o">=</span> <span class="n">uptkrate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+            <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relative error of &quot;</span><span class="o">+</span><span class="sa">u</span><span class="s1">&#39;SO</span><span class="se">\u2084</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot;:   </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">csum</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relative error of &quot;</span><span class="o">+</span><span class="sa">u</span><span class="s1">&#39;H</span><span class="se">\u2082</span><span class="s1">SO</span><span class="se">\u2084</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot;: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>       <span class="o">=</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">csum</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="mf">6.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">csum</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;csum*dt = </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">csum</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dt = %.f&quot;</span> <span class="o">%</span> <span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">csum</span>             <span class="o">=</span> <span class="n">uptkrate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">csumt</span>            <span class="o">=</span> <span class="n">uptkrate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="mf">1800.</span>
+        <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref_h2so4</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+            <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref_so4</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relative error of &quot;</span><span class="o">+</span><span class="sa">u</span><span class="s1">&#39;SO</span><span class="se">\u2084</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot;:   </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_aer</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">csumt</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Relative error of &quot;</span><span class="o">+</span><span class="sa">u</span><span class="s1">&#39;H</span><span class="se">\u2082</span><span class="s1">SO</span><span class="se">\u2084</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot;: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>       <span class="o">=</span> <span class="n">phi_gas</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">csum</span><span class="p">)</span> <span class="o">+</span> <span class="n">csum</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="mf">6.</span><span class="p">),</span><span class="mf">1800.</span><span class="o">/</span><span class="n">dt</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">csumt</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;csum*dt = </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">csum</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13504,8 +13527,20 @@ $$
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>maximum relative error: 4.4187e-03
-minimum relative error: 2.7074e-06
+<pre>dt = 1
+Relative error of SO₄:   1.9820e-11
+Relative error of SO₄:   1.5113e-10
+Relative error of SO₄:   1.4852e-13
+Relative error of SO₄:   3.5504e-08
+Relative error of H₂SO₄: 7.4587e-08
+csum*dt = 6.2870e-04
+dt = 1800
+Relative error of SO₄:   1.9885e-12
+Relative error of SO₄:   1.5128e-11
+Relative error of SO₄:   1.5159e-14
+Relative error of SO₄:   2.1337e-09
+Relative error of H₂SO₄: 2.4148e-13
+csum*dt = 1.1317e-04
 </pre>
 </div>
 </div>
@@ -13519,10 +13554,14 @@ minimum relative error: 2.7074e-06
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># issue PASS/FAIL</span>
-<span class="n">test</span>  <span class="o">=</span> <span class="n">phi</span> <span class="o">&lt;</span> <span class="mf">1.e-2</span>
-<span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PASS&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># run this cell to issue PASS/FAIL</span>
+<span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">phi_gas</span><span class="p">)</span>
+<span class="k">if</span>  <span class="n">num</span> <span class="o">==</span> <span class="n">pver</span><span class="p">:</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">phi_aer</span><span class="p">)</span>
+    <span class="k">if</span>  <span class="n">num</span> <span class="o">==</span> <span class="n">pver</span> <span class="o">*</span> <span class="n">mode</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PASS&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FAIL&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FAIL&quot;</span><span class="p">)</span>
 </pre></div>
@@ -13554,11 +13593,9 @@ minimum relative error: 2.7074e-06
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="References">References<a class="anchor-link" href="#References">&#182;</a></h1><p>[<a id="cit-liu-2012-gmd" href="#call-liu-2012-gmd">1</a>] Liu X., Easter R. C., Ghan S. J. <em>et al.</em>, ``<em>Toward a minimal representation of aerosols in climate models: description and evaluation in the Community Atmosphere Model CAM5</em>'', Geoscientific Model Development, vol. 5, number 3, pp. 709--739,  2012.  <a href="https://www.geosci-model-dev.net/5/709/2012/">online</a></p>
-<p>[<a id="cit-fuchs-1971" href="#call-fuchs-1971">2</a>] NA Fuchs and AG Sutugin, ``<em>High dispersed aerosols: in: Topics in current aerosol research, edited by: Hidy, GM and Brock, JR, vol. 2</em>'',  1971.</p>
-<p>[<a id="cit-fuller-1966-iec" href="#call-fuller-1966-iec">3</a>] Fuller Edward N, Schettler Paul D and Giddings J Calvin, ``<em>New method for prediction of binary gas-phase diffusion coefficients</em>'', Industrial \&amp; Engineering Chemistry, vol. 58, number 5, pp. 18--27,  1966.</p>
-<p>[<a id="cit-poschl-1998-jpca" href="#call-poschl-1998-jpca">4</a>] P{\"o}schl Ulrich, Canagaratna Manjula, Jayne John T <em>et al.</em>, ``<em>Mass accommodation coefficient of H2SO4 vapor on aqueous sulfuric acid surfaces and gaseous diffusion coefficient of H2SO4 in N2/H2O</em>'', The Journal of Physical Chemistry A, vol. 102, number 49, pp. 10082--10089,  1998.</p>
-<p>[<a id="cit-dick-2004-jgr" href="#call-dick-2004-jgr">5</a>] Easter Richard C., Ghan Steven J., Zhang Yang <em>et al.</em>, ``<em>MIRAGE: Model description and evaluation of aerosols and trace gases</em>'', Journal of Geophysical Research: Atmospheres, vol. 109, number D20, pp. ,  2004.</p>
-<p>[<a id="cit-zwillinger2002crc" href="#call-zwillinger2002crc">6</a>] Daniel Zwillinger, ``<em>CRC standard mathematical tables and formulae</em>'',  2002.</p>
+<p>[<a id="cit-poschl-1998-jpca" href="#call-poschl-1998-jpca">2</a>] P{\"o}schl Ulrich, Canagaratna Manjula, Jayne John T <em>et al.</em>, ``<em>Mass accommodation coefficient of H2SO4 vapor on aqueous sulfuric acid surfaces and gaseous diffusion coefficient of H2SO4 in N2/H2O</em>'', The Journal of Physical Chemistry A, vol. 102, number 49, pp. 10082--10089,  1998.</p>
+<p>[<a id="cit-dick-2004-jgr" href="#call-dick-2004-jgr">3</a>] Easter Richard C., Ghan Steven J., Zhang Yang <em>et al.</em>, ``<em>MIRAGE: Model description and evaluation of aerosols and trace gases</em>'', Journal of Geophysical Research: Atmospheres, vol. 109, number D20, pp. ,  2004.</p>
+<p>[<a id="cit-zwillinger2002crc" href="#call-zwillinger2002crc">4</a>] Daniel Zwillinger, ``<em>CRC standard mathematical tables and formulae</em>'',  2002.</p>
 
 </div>
 </div>

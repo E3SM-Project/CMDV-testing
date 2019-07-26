@@ -13195,7 +13195,7 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">Aerosol condensation process and its verification test: error of rounded constants<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">&#182;</a></h1>
+<h1 id="Aerosol-condensation-process-and-its-verification-test:-error-of-using-rounded-Gauss-Hermite-quadrature-points">Aerosol condensation process and its verification test: error of using rounded Gauss-Hermite quadrature points<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test:-error-of-using-rounded-Gauss-Hermite-quadrature-points">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13216,39 +13216,13 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Condensation represents the process that the vapor of a compound condenses onto the surface of existing particle population. MAM currently considers two trace gases: sulfur acid gas ($\rm H_2SO_4$, and its condensed particles $\rm SO_4$) and a single lumped gas species of secondary organic aerosol (SOAG, and its condensed particles SOA \cite{liu-2012-gmd}).</p>
-<p>The key parameter of condensation process is the mass transfer coefficient of species $l$ ($l \in \{ {\rm SOAG, H_2SO_4} \}$) to/from particle population (unit: $\rm s^{-1}$). By assuming that the particles are spherical and the size distribution of the particle population is described by a few log-normal modes, MAM calculates the mass transfer coefficient of species $l$ in mode $i$ ($C_{_{l,i}}$) as \cite{fuchs-1971}:</p>
-\begin{equation} \label{kmt}
-C_{_{l,i}} = \int_{-\infty}^{\infty} 2 \pi D_{_p} \mathbb{D}_{_{g,l}} f(K_{_{n,l}},\alpha_{_{l}}) n_{_{i}}(\ln D_{_{p}}) d\ln D_{_{p}} \,,
-\end{equation}<p>where</p>
-\begin{itemize}
-\item $D_{_{p}}$ is the aerosol particle diameter (unit: m); 
-\item $n_{_{i}}(\ln D_{_{p}})$ is the log-normal size distribution of mode $i$; 
-\item $\mathbb{D}_{_{g,l}}$ is the gas diffusivity (unit: $\rm m^2 \cdot s^{-1}$). It is calculated by 
-\cite{fuller-1966-iec}:
-\begin{equation} \label{gasd}
-\mathbb{D}_{_{g,l}} = \frac{10^{-7}T^{1.75}
-                 \sqrt{\frac{1}{M_{_{w,l}}}+\frac{1}{M_{_{w,air}}}}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+
-                 \mathbb{V}_{_{D,air}}^\frac{1}{3} \right)^2} \,,
-\end{equation}
-Here $T$ is air temperature (unit: K); $p$ is air pressure (unit: $\rm atm$ (the standard temperature and pressure)); $\mathbb{V}_{_{D,l}}$ (unitless) is the molecular diffusion volume; $M_{_{w,l}}$ is the molecular weight (unit: $\rm g \cdot mol^{-1}$). Both $\mathbb{V}_{_{D,l}}$ and $M_{_{w,l}}$ are constants for a given species $l$;
-\item $K_{_{n,l}}$ is the Knudsen number (unitless). It is calculated by:
-\begin{equation} \label{knu}
-K_{_{n,l}} = \frac{2\lambda_{_{l}}}{D_{_{p}}} \,,
-\end{equation}
-where $\lambda_{_{l}}$ is the mean free path of vapor molecules in air (unit: m) and it is calculated by:
-\begin{equation} \label{mfp}
-\lambda_{_{l}} = \frac{3\mathbb{D}_{_{g,l}}}{v_{_{l}}} \,,
-\end{equation}
-where $v_{_{l}} = \sqrt{\frac{8RT}{\pi M_{_{w,l}}}}$ is the mean speed of vapor molecules (unit: $\rm m \cdot s^{-1}$);
-\item $\alpha_{_{l}}$ is the accommodation coefficient (unitless), which is a constant for a given species $l$;
-\item $f(K_{_{n,l}}, \alpha_{_{l}})$ is a correction factor for the transition regime where the mean free path of vapor molecules is close to the particle diameter. It takes the formula below:
-\begin{equation} \label{fka}
-f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \alpha_{_{l}} + K_{_{n,l}} 
-            (1+K_{_{n,l}}+0.283 \alpha_{_{l}})} \,.
-\end{equation}
-\end{itemize}<p>Currently MAM calculates the $C_{_{H_2SO_4,i}}$ through Eq. \eqref{kmt}. Due to the large uncertainty of speciation and physical properties of SOAG/SOA, MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$ for simplicity. More details about the model parameterization, assumption and numerical implementation can be found in a separate model documentation.</p>
+<p>In the aerosol condensation process, MAM needs to perform an evaluation of integral with the following formula:</p>
+\begin{equation} \label{goveq}
+\int_{-\infty}^{\infty} f(x) e^{-x^2} dx \,,
+\end{equation}<p>where f(x) is a function of x. The value of Eq. \eqref{goveq} can be approximated by the Gauss-Hermite quadrature rule \cite{GH-WIKI}, which takes the following formula:</p>
+\begin{equation} \label{ghqeq}
+\int_{-\infty}^{\infty} f(x) e^{-x^2} dx \approx \sum_{k=1}^{K} \mathbb{W}_{_{k}} f(\mathbb{R}_{_{k}}) \,,
+\end{equation}<p>where $\mathbb{R}_{_{k}}$ is the k-th root of Hermite polynomials (k = 1,2,...,K) and the $\mathbb{W}_{_{k}}$ is the associated weight. Using K quadrature points, Gauss-Hermite quadrature rule can evaluate the Eq. \eqref{goveq} exactly if f(x) is a polynomial of degree up to 2K-1 \cite{steen-1969-mc}.</p>
 
 </div>
 </div>
@@ -13263,7 +13237,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>During the the calculation of $C_{_{l,i}}$, MAM used rounded constants instead of the formulae for some parameters (see details in Section 3.1). Using limited decimal digits would introduce numerical inaccuracy but the magnitude of error remains unknown. Thus in this test, we aim at examining the impact of using rouned parameters on the accuracy of the calculation of $C_{_{l,i}}$ in MAM. Since MAM assumes $C_{_{SOAG,i}} \approx 0.81 C_{_{H_2SO_4,i}}$, we then focus on the verification of $C_{_{H_2SO_4,i}}$.</p>
+<p>Currently MAM uses less accurate Gauss-Hermite quadrature points (defined as double precision but only provided 8 decimal digits). This is expected to introduce a numerical error and thus we will quantify it in this test.</p>
 
 </div>
 </div>
@@ -13271,7 +13245,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3-Steps-to-establish-the-verification-test">3 Steps to establish the verification test<a class="anchor-link" href="#3-Steps-to-establish-the-verification-test">&#182;</a></h2>
+<h2 id="3-Steps-to-establish-a-verification-test">3 Steps to establish a verification test<a class="anchor-link" href="#3-Steps-to-establish-a-verification-test">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13286,25 +13260,29 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1-MAM-solution">3.1 MAM solution<a class="anchor-link" href="#3.1-MAM-solution">&#182;</a></h3>
+<h3 id="3.1-Determination-of-formula-of-f(x)">3.1 Determination of formula of f(x)<a class="anchor-link" href="#3.1-Determination-of-formula-of-f(x)">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We call the original condensation subroutines in MAM to calculate the $C_{_{H_2SO_4,i}}$. 2 Gauss-Hermite quadrature roots are used to evaluate the integral in Eq. \eqref{kmt}. In addition, the following three rounded constants are used:</p>
+<p>According to Eq. \eqref{goveq}, it is trival to find out that:</p>
+\begin{itemize}
+\item If f(x) is an odd function (i.e., f(x) = -f(-x)),
 \begin{align}
-\frac{1}{M_{_{w,air}}} &amp;\approx 0.035 \\
-\text{standard pressure} &amp;\approx 101300~Pa \\
-\sqrt{\frac{8R}{\pi}} &amp;\approx 145.5
-\end{align}<p>Therefore, the following three parameters are calculated approximately as:</p>
+\int_{-\infty}^{\infty} f(x) e^{-x^2} dx &amp;= 0 \,. \\
+\end{align}
+\item If f(x) is an even function (i.e., f(x) = f(-x)),
+\begin{equation}
+\int_{-\infty}^{\infty} f(x) e^{-x^2} dx = 2 \int_{0}^{\infty} f(x) e^{-x^2} dx \,.
+\end{equation}
+\end{itemize}<p>Moreover, the integral of $\int_{0}^{\infty} f(x) e^{-x^2} dx$ can be evaluated analytically if f(x) has a polynomial formula such as \cite{GH-Ingr}:</p>
 \begin{align}
-p &amp;\approx \frac{P}{101300} \,, \\
-\mathbb{D}_{_{g,l}} &amp;\approx \frac{10^{-7}T^{1.75} \sqrt{\frac{1}{M_{_{w,l}}}+0.035}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+2.7189 \right)^2} \,, \label{round_dgas} \\
-v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
-\end{align}<p>where P is the pressure with unit Pa. This solution is denoted as $C_{_{MAM}}$.</p>
+\int_{0}^{\infty} x^{2N} \exp^{-x^2} dx &amp;= \sqrt{\pi} \frac{(2N-1)!!}{2^{N+1}} \,, \\
+\int_{0}^{\infty} x^{2N+1} \exp^{-x^2} dx &amp;= \frac{N!}{2} \,,
+\end{align}<p>where N! is the factorial of a positive integer N (i.e., $N! = N \times (N-1) \times ... \times 2 \times 1$); (2N-1)!! is the double factorial that calculates the product of all the odd positive integers up to 2N-1 (i.e., $(2N-1)!! = (2N-1) \times (2N-3) \times ... \times 2 \times 1$). By definition, 0! = 1, 0!! = (-1)!! = 1 \cite{arfken-2005}.</p>
+<p>Therefore, in this verification test, a polynomial $f(x) = 4x^3 + 3x^2 + 2x + 1$ is used to evaluate the integral in Eq. \eqref{goveq}.</p>
 
 </div>
 </div>
@@ -13312,23 +13290,18 @@ v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Reference-solution">3.2 Reference solution<a class="anchor-link" href="#3.2-Reference-solution">&#182;</a></h3>
+<h3 id="3.2-MAM-solution">3.2 MAM solution<a class="anchor-link" href="#3.2-MAM-solution">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To generate the reference solutions, we first calculate the following terms with their original formulae:</p>
+<p>We use the original MAM subroutines to evaluate the Eq. \eqref{goveq} by setting f(x) to the polynomial formula in Section 3.1. MAM uses 2 Gauss-Hermite quadrature points (less accurate), and the roots and associated weights of Hermite polynomials are listed below \cite{zwillinger2002crc}:</p>
 \begin{align}
-\mathbb{D}_{_{g,l}} &amp;= \frac{10^{-7}T^{1.75}
-                 \sqrt{\frac{1}{M_{_{w,l}}}+\frac{1}{M_{_{w,air}}}}}
-                 {p \left( \mathbb{V}_{_{D,l}}^\frac{1}{3}+
-                 \mathbb{V}_{_{D,air}}^\frac{1}{3} \right)^2} \,, \\
-p &amp;= \frac{P}{101325} \,, \\
-v_{_{l}} &amp;= \sqrt{\frac{8RT}{\pi M_{_{w,l}}}} \,.
-\end{align}<p>We then use 2 Gauss-Hermite quadrature points from the original MAM to evaluate the Eq. \eqref{kmt}. This solution is denoted as $C_{_{REF}}$.
-The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\int_{-\infty}^{\infty} f(x)e^{-x^2} dx$, where f(x) is a polynomial, has been verified in a separate verification test.</p>
+x_{_{1}} &amp;= 0.70710678, &amp;\mathbb{W}_{_{1}} &amp;= 0.88622693; \nonumber \\
+x_{_{2}} &amp;= -0.70710678, &amp;\mathbb{W}_{_{2}} &amp;= 0.88622693. \nonumber
+\end{align}<p>This solution is denoted as $C_{_{MAM}}$.</p>
 
 </div>
 </div>
@@ -13336,7 +13309,25 @@ The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\i
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3-Parameters-required-for-the-verification-test">3.3 Parameters required for the verification test<a class="anchor-link" href="#3.3-Parameters-required-for-the-verification-test">&#182;</a></h3>
+<h3 id="3.3-Reference-solution">3.3 Reference solution<a class="anchor-link" href="#3.3-Reference-solution">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Given the formula of f(x) in Section 3.1, the exact value of Eq. \eqref{goveq} is calculated by:</p>
+\begin{align}
+\int_{-\infty}^{\infty} f(x) e^{-x^2} dx = 2 \left( 3 \int_0^{\infty} x^2 e^{-x^2} dx + \int_0^{\infty} e^{-x^2} dx \right) = \frac{3}{2}\sqrt{\pi} + \sqrt{\pi} = \frac{5}{2}\sqrt{\pi} \label{refsol} \,.
+\end{align}<p>This exact value then serves as the reference solution and is denoted as $C_{_{REF}}$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.4-Parameters-required-for-the-verification-test">3.4 Parameters required for the verification test<a class="anchor-link" href="#3.4-Parameters-required-for-the-verification-test">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13345,17 +13336,9 @@ The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\i
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In this verification test, the following quantities are specified:</p>
 \begin{enumerate}
-\item $\alpha_{_{H_2SO_4}} = 0.65$ \cite{poschl-1998-jpca}. 
-\item Temperature $T$ (unit: K) and pressure $P$ (unit: Pa), for which 5 pairs of values are used to represent the typical conditions from troposphere to stratosphere:
-\begin{align}
-\rm T&amp;: 310, 298, 273, 230, 200 \\
-\rm P&amp;: 10^5, 8.5 \times 10^4, 7 \times 10^4, 2 \times 10^4, 10^4
-\end{align}
-\item Molecular diffusion volume $\mathbb{V}_{_{D,H_2SO_4}} = 42.88$ and $\mathbb{V}_{_{D,air}} = 20.1$
-\item Molecular weight $M_{_{w,H_2SO_4}} = 98.0783997$ and $M_{_{w,air}} = 28.966$.
-\item Number concentration of particle population within each mode ($N_{_{t,i}}$, unit: $\# \cdot m^{-3}$). We set the values based on our previous experience and they are summarized in the table below.
-\item Geometric mean dry diameter ($D_{_{gn,d,i}}$, unit: $\mu m$) and geometric standard deviation ($\sigma_{_{g,i}}$) for each mode. The values of $D_{_{gn,d,i}}$ and $\sigma_{_{g,i}}$ are chosen to represent the midrange values for tropospheric aerosol observations, and are listed in the table below \cite{dick-2004-jgr}. The geometric mean wet diameter ($D_{_{gn,w,i}}$) is assumed to be 1.2 times the $D_{_{gn,d,i}}$ in this verification test for simplicity. $D_{gn,w,i}$ is the actual value used to evaluate the integral in Eq. \eqref{kmt}.
-\item 2 Gauss-Hermite quadrature points ($\mathbb{R_{_i}}$) and their associated weights ($\mathbb{W_{_i}}$) used in the original MAM (less accurate), based on the \cite{zwillinger2002crc}.
+\item The formula of f(x), which is shown in Section 3.1.
+\item Number of quadrature points to be used for the test solution, which is 2 throughout this verification test.
+\item Gauss-Hermite quadrature roots and their associated weights, which are already listed in Section 3.2.
 \end{enumerate}
 </div>
 </div>
@@ -13363,47 +13346,17 @@ The accuracy of using Gauss-Hermite quadrature rule to evaluate the integral $\i
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-$$
-\text{Table 1. List of typical geometric mean dry diameter ($D_{_{gn,d,i}}$), 
-geometric standard deviation ($\sigma_{_{g,i}}$) and number concentration of } \\
-\text{particle population ($N_{_{t,i}}$) for each log-normal mode.}\\
-
-\begin{array}{c|c|c|c}
-\hline
-\text{Mode} &amp; D_{_{gn,d,i}}, \, (\mu m) &amp; \sigma_{_{g,i}} &amp; N_{_{t,i}}, \, (\# \cdot m^{-3}) \\
-\hline
-    \text{Aitken}         &amp; 0.026 &amp; 1.6 &amp; 10^9 \\
-    \text{Accumulation}   &amp; 0.11  &amp; 1.8 &amp; 10^8 \\
-    \text{Coarse}         &amp; 2.0   &amp; 1.8 &amp; 10^5 \\
-    \text{Primary Carbon} &amp; 0.05  &amp; 1.6 &amp; 2 \times 10^8\\
-\hline
-\end{array}
-$$
+<h3 id="3.5-PASS/FAIL-criterion">3.5 PASS/FAIL criterion<a class="anchor-link" href="#3.5-PASS/FAIL-criterion">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With these parameters known, totally 20 (= 5×4) verification tests are performed.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.4-PASS/FAIL-criterion">3.4 PASS/FAIL criterion<a class="anchor-link" href="#3.4-PASS/FAIL-criterion">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In each test, the driver program calls MAM's condensation subroutines to calculate the $C_{_{MAM}}$ and $C_{_{REF}}$, respectively. The relative error between MAM solution and reference solution is then calculated as:</p>
+<p>The relative errors between $C_{_{MAM}}$ and $C_{_{REF}}$ (denoted as $\phi_{_{MAM}}$) is first calculated by:</p>
 \begin{equation}
-\phi = \frac{\left| C_{_{MAM}} - C_{_{REF}} \right|}{C_{_{REF}}} \,. \label{relerr}
-\end{equation}<p>Because the least accurate parameter is rounded to two digits (0.035 in Eq. \eqref{round_dgas}), an overall <strong>PASS</strong> is issued if $\phi \lt 10^{-2}$ for all the 20 tests.</p>
+\phi_{_{MAM}} = \frac{ \left| C_{_{MAM}} - C_{_{REF}} \right| }{C_{_{REF}}} \,.
+\end{equation}<p>Because MAM uses 2 Gauss-Hermite quadrature points with 8 decimal digits only, an overall <strong>PASS</strong> is issued if $\phi_{_{MAM}} \lt 10^{-8}$.</p>
 
 </div>
 </div>
@@ -13418,7 +13371,7 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/rounded\_parameter\_accuracy}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/rounded\_parameter\_accuracy.test.yaml}$.</p>
+<p>The verification test requires a test driver to perform the verification test and the configuration files for compilation and execution of <strong>cmdv-test-runner</strong> (e.g., the yaml file). If we go the root directory of <strong>CMDV-Verification</strong> folder that is cloned from GitHub Repo, the test driver code (<strong>driver.F90</strong>) is under $\rm \color{blue}{tests/mam/restructed\_tests/F90\_SRC/test\_drivers/condensation/gauss\_hermite\_rounded\_points}$ and the yaml file is under $\rm \color{blue}{tests/mam/restructed\_tests/yaml\_files\_for\_test\_runner/condensation/gauss\_hermite\_rounded\_points.test.yaml}$.</p>
 
 </div>
 </div>
@@ -13426,14 +13379,14 @@ $$
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5-Verification-Results">5 Verification Results<a class="anchor-link" href="#5-Verification-Results">&#182;</a></h2>
+<h2 id="5-Verification-results">5 Verification results<a class="anchor-link" href="#5-Verification-results">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the verification test runs successfully, we should obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> with MAM and reference solutions. Assume that the netcdf file is put under the <strong>"postprocess_input"</strong> folder, we could calculate the $\phi$ based on Eq. \eqref{relerr}. Then we could issue an overall <strong>PASS/FAIL</strong> based on the criterion in Section 3.4.</p>
+<p>If the verification test runs successfully, we could obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> under the <strong>"postprocess_input"</strong> folder with MAM and reference solutions. We could calculate the $\phi$ according to the Sectoin 3.5 and compare with $10^{-8}$ to see whether an overall <strong>PASS/FAIL</strong> should be issued.</p>
 
 </div>
 </div>
@@ -13443,7 +13396,7 @@ $$
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load library and modules</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#load library and modules</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 </pre></div>
@@ -13458,15 +13411,15 @@ $$
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># define the file path and name</span>
-<span class="n">nc_file</span> <span class="o">=</span> <span class="s2">&quot;./postprocess_input/condensation_verification_test.nc&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#this cell is used to read in the input_data</span>
 
-<span class="c1"># open the netcdf file and read in the MAM and reference solutions</span>
-<span class="n">ds</span>    <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">nc_file</span><span class="p">)</span>
-<span class="n">mam</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;rounded_para_sol&#39;</span><span class="p">])</span>
-<span class="n">ref</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;exact_para_sol&#39;</span><span class="p">])</span>
-<span class="n">pver</span>  <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;pver&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
-<span class="n">mode</span>  <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+<span class="c1">#define the file path and name</span>
+<span class="n">nc_file</span> <span class="o">=</span> <span class="s1">&#39;./postprocess_input/condensation_verification_test.nc&#39;</span>
+
+<span class="c1">#read in the MAM and reference solutions, tolerance, number of polynomials and polynomial coefficients</span>
+<span class="n">ds</span>      <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">nc_file</span><span class="p">)</span>
+<span class="n">mam</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;mam_sol&#39;</span><span class="p">])</span>
+<span class="n">ref</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;ref_sol&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13479,15 +13432,9 @@ $$
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate the relative errors</span>
-<span class="n">phi</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">pver</span><span class="p">,</span><span class="n">mode</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pver</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
-        <span class="n">phi</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">]</span>
-
-<span class="c1"># check maximum/minimum relative error</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;maximum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;minimum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#check the relative error</span>
+<span class="n">mam_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mam</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">ref</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;relative error of mam solution:  </span><span class="si">%.6e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mam_err</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13504,8 +13451,7 @@ $$
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>maximum relative error: 4.4187e-03
-minimum relative error: 2.7074e-06
+<pre>relative error of mam solution:  3.117375e-09
 </pre>
 </div>
 </div>
@@ -13519,9 +13465,8 @@ minimum relative error: 2.7074e-06
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># issue PASS/FAIL</span>
-<span class="n">test</span>  <span class="o">=</span> <span class="n">phi</span> <span class="o">&lt;</span> <span class="mf">1.e-2</span>
-<span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#run this cell to issue the PASS/FAIL</span>
+<span class="k">if</span>  <span class="n">mam_err</span> <span class="o">&lt;</span> <span class="mf">1.e-8</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PASS&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FAIL&quot;</span><span class="p">)</span>
@@ -13553,12 +13498,11 @@ minimum relative error: 2.7074e-06
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="References">References<a class="anchor-link" href="#References">&#182;</a></h1><p>[<a id="cit-liu-2012-gmd" href="#call-liu-2012-gmd">1</a>] Liu X., Easter R. C., Ghan S. J. <em>et al.</em>, ``<em>Toward a minimal representation of aerosols in climate models: description and evaluation in the Community Atmosphere Model CAM5</em>'', Geoscientific Model Development, vol. 5, number 3, pp. 709--739,  2012.  <a href="https://www.geosci-model-dev.net/5/709/2012/">online</a></p>
-<p>[<a id="cit-fuchs-1971" href="#call-fuchs-1971">2</a>] NA Fuchs and AG Sutugin, ``<em>High dispersed aerosols: in: Topics in current aerosol research, edited by: Hidy, GM and Brock, JR, vol. 2</em>'',  1971.</p>
-<p>[<a id="cit-fuller-1966-iec" href="#call-fuller-1966-iec">3</a>] Fuller Edward N, Schettler Paul D and Giddings J Calvin, ``<em>New method for prediction of binary gas-phase diffusion coefficients</em>'', Industrial \&amp; Engineering Chemistry, vol. 58, number 5, pp. 18--27,  1966.</p>
-<p>[<a id="cit-poschl-1998-jpca" href="#call-poschl-1998-jpca">4</a>] P{\"o}schl Ulrich, Canagaratna Manjula, Jayne John T <em>et al.</em>, ``<em>Mass accommodation coefficient of H2SO4 vapor on aqueous sulfuric acid surfaces and gaseous diffusion coefficient of H2SO4 in N2/H2O</em>'', The Journal of Physical Chemistry A, vol. 102, number 49, pp. 10082--10089,  1998.</p>
-<p>[<a id="cit-dick-2004-jgr" href="#call-dick-2004-jgr">5</a>] Easter Richard C., Ghan Steven J., Zhang Yang <em>et al.</em>, ``<em>MIRAGE: Model description and evaluation of aerosols and trace gases</em>'', Journal of Geophysical Research: Atmospheres, vol. 109, number D20, pp. ,  2004.</p>
-<p>[<a id="cit-zwillinger2002crc" href="#call-zwillinger2002crc">6</a>] Daniel Zwillinger, ``<em>CRC standard mathematical tables and formulae</em>'',  2002.</p>
+<h1 id="References">References<a class="anchor-link" href="#References">&#182;</a></h1><p>[<a id="cit-GH-WIKI" href="#call-GH-WIKI">1</a>] , ``<em>Gauss–Hermite quadrature</em>'',  .  <a href="https://en.wikipedia.org/wiki/Gauss–Hermite_quadrature">online</a></p>
+<p>[<a id="cit-steen-1969-mc" href="#call-steen-1969-mc">2</a>] Steen NM, Byrne GD and Gelbard EM, ``<em>Gaussian Quadratures for the Integrals∫∞ 0 exp (-x 2) f (x) dx and∫ b 0 exp (-x 2) f (x) dx</em>'', Mathematics of Computation, vol. , number , pp. 661--671,  1969.</p>
+<p>[<a id="cit-GH-Ingr" href="#call-GH-Ingr">3</a>] , ``<em>Gauss Integral</em>'',  .  <a href="https://en.wikipedia.org/wiki/Gaussian_integral">online</a></p>
+<p>[<a id="cit-arfken-2005" href="#call-arfken-2005">4</a>] George B Arfken and Hans J Weber, ``<em>Mathematical methods for physicists, 6th ed.</em>'',  2005.</p>
+<p>[<a id="cit-zwillinger2002crc" href="#call-zwillinger2002crc">5</a>] Daniel Zwillinger, ``<em>CRC standard mathematical tables and formulae</em>'',  2002.</p>
 
 </div>
 </div>
