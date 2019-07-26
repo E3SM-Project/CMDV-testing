@@ -13202,7 +13202,7 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="$\color{red}{\text{Last-update:-07-25-2019,-test-strategy,-result-and-presentation-need-revision.}}$">$\color{red}{\text{Last update: 07-25-2019, test strategy, result and presentation need revision.}}$<a class="anchor-link" href="#$\color{red}{\text{Last-update:-07-25-2019,-test-strategy,-result-and-presentation-need-revision.}}$">&#182;</a></h3>
+<h3 id="$\color{red}{\text{Last-update:-07-26-2019,-test-strategy,-result-and-presentation-need-revision.}}$">$\color{red}{\text{Last update: 07-26-2019, test strategy, result and presentation need revision.}}$<a class="anchor-link" href="#$\color{red}{\text{Last-update:-07-26-2019,-test-strategy,-result-and-presentation-need-revision.}}$">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13239,7 +13239,7 @@ C_{_{SOAG,i}} &amp;\approx 0.81C_{_{H_2SO_4,i}} \,, \label{kmt-soag} \\
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>MAM implemented a dynamical substepping approach within one $\Delta t_{_{cond}}$ to solve for the semi-implicit solutions of SOAG/SOA. The varying-length substep $\Delta t_{_{SOAG}}$ is controlled by a user-specified error-control parameter $\alpha_{_{astem}}$ with smaller $\alpha_{_{astem}}$ leading to smaller $\Delta t_{_{SOAG}}$. In this test, we aim at  examining whether the relative errors of solutions decrease linearly with the decrease of $\alpha_{_{astem}}$ (e.g., $1^{st}$-order convergence rate). We would perform a self-convergence test of semi-implicit solutions of SOAG/SOA against different $\alpha_{_{astem}}$ to facilitate this purpose. Note that for this test, <strong>$C_{_{SOAG,i}}$ are fixed over the whole simulation time</strong> and we do not consider the existence of $\rm H_2SO_4/SO_4$ at this moment.</p>
+<p>MAM implemented a dynamical substepping approach within one $\Delta t_{_{cond}}$ to solve for the semi-implicit solutions of SOAG/SOA. The varying-length substep $\Delta t_{_{SOAG}}$ is controlled by a user-specified error-control parameter $\alpha_{_{astem}}$ with smaller $\alpha_{_{astem}}$ leading to smaller $\Delta t_{_{SOAG}}$. In this test, we aim at examining whether the relative errors of solutions decrease linearly with the decrease of $\alpha_{_{astem}}$ in a log-log scale plot (e.g., $1^{st}$-order convergence rate). We would perform a self-convergence test of semi-implicit solutions of SOAG/SOA against different $\alpha_{_{astem}}$ to facilitate this purpose. Note that for this test, <strong>$C_{_{SOAG,i}}$ are fixed over the whole simulation time</strong> and we do not consider the existence of $\rm H_2SO_4/SO_4$ at this moment.</p>
 
 </div>
 </div>
@@ -13404,7 +13404,7 @@ q_{_{m,l,i}} = \frac{\frac{\pi}{6} N_{_{t,i}} D_{_{gn,d,i}}^3 \exp \left( \frac{
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the verification test runs successfully, we should obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> with the MAM and reference solutions for $q_{_{v,SOAG}}$ and $q_{_{m,SOA,i}}$. Assuming that the netcdf file is put under the <strong>"postprocess_input"</strong> folder, the following cells would calculate the relative errors $\phi$, perform a self-convergence test of MAM solutions and check whether a <strong>PASS/FAIL</strong> should be issued.</p>
+<p>If the verification test runs successfully, we should obtain the netcdf file named <strong>"condensation_verification_test.nc"</strong> with the MAM and reference solutions for $q_{_{v,SOAG}}$ and $q_{_{m,SOA,i}}$. Assuming that the netcdf file is put under the <strong>"postprocess_input"</strong> folder, the following cells would calculate the relative errors $\phi$, perform a self-convergence test of MAM solutions and check whether a <strong>PASS/FAIL</strong> should be issued. Note that the asterisk symbol in the figures below means the relative error using the default $\alpha_{_{astem}} = 0.05$ in MAM.</p>
 
 </div>
 </div>
