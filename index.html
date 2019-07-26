@@ -11786,17 +11786,17 @@ div#notebook {
 <p>The following verification tests are documented using Jupyter notebooks:</p>
 <ul>
     <li><p><strong>Test of HOMME Dynamical Core</a></strong></p></li>
-    <ul>
+    <ol>
          <li><p><strong><a href="SWTC1.html">Shallow Water Test Case 1</a></strong></p>
          </li>
-    </ul>
+    </ol>
 </ul>
 <ul>
     <li><p><strong>Test of Albany Land-Ice</a></strong> (ALI)</p></li>
-    <ul>
+    <ol>
          <li><p><strong><a href="ALI_foStokesMMS.html">2D x-y first-order Stokes stress-velocity solver</a></strong></p>
          </li>
-    </ul>
+    </ol>
 </ul>
 <ul>
     <li><p><strong>Test of Atmospheric Physics</a></strong></p></li>
@@ -11804,63 +11804,63 @@ div#notebook {
         <li><p><strong>MAM</a></strong> (Modal Aerosol Module)</p></li>
         <ul>
              <li><p><strong>Water Uptake</a></strong></p></li>
-             <ul>
+             <ol>
                  <li><p><strong><a href="./wateruptake/verification.html">Root-finding problem of a polynomial equation</a></strong></p>
                  </li>
-             </ul>
+             </ol>
         </ul>
         <ul>
              <li><p><strong>Condensation</a></strong></p></li>
-             <ul>
-                 <li><p><strong>Error Quantification</a></strong></p></li>
-                 <ul>
-                      <li><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Error of using rounded Gauss-Hermite quadrature points</a></strong></p>
+             <ol>
+                 <li type="A"><p><strong>Error Quantification</a></strong></p></li>
+                 <ol>
+                      <li type="1"><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Error of using rounded Gauss-Hermite quadrature points</a></strong></p>
                       </li>
-                      <li><p><strong><a href="./condensation/rounded_parameter_accuracy/verification.html">Error of using rounded constants to calculate the mass transfer coefficient</a></strong></p>
+                      <li type="1"><p><strong><a href="./condensation/rounded_parameter_accuracy/verification.html">Error of using rounded constants to calculate the mass transfer coefficient</a></strong></p>
                       </li>
-                      <li><p><strong><a href="./condensation/h2so4_taylor/verification.html">Error of using Taylor expansion to the solutions of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub></a></strong></p>
+                      <li type="1"><p><strong><a href="./condensation/h2so4_taylor/verification.html">Error of using Taylor expansion to the solutions of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub> (draft)</a></strong></p>
                       </li>
-                 </ul>
-                 <li><p><strong>Verification</a></strong></p></li>
-                 <ul>
-                      <li><p><strong>Use Gauss-Hermite Quadrature Rule to Calculate the Mass Transfer Coefficient</a></strong></p></li>
-                      <ul>
-                          <li><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Integration of 3<sup>rd</sup>-order Polynomial</a></strong></p>
+                 </ol>
+                 <li type="A"><p><strong>Verification</a></strong></p></li>
+                 <ol>
+                      <li type="i"><p><strong>Use Gauss-Hermite Quadrature Rule to Calculate the Mass Transfer Coefficient</a></strong></p></li>
+                      <ol>
+                          <li type="1"><p><strong><a href="./condensation/gauss_hermite_accuracy/verification.html">Integration of 3<sup>rd</sup>-order Polynomial</a></strong></p>
                           </li>
-                          <li><p><strong><a href="./condensation/gauss_hermite_convergence/verification.html">Convergence of Solutions</a></strong></p>
+                          <li type="1"><p><strong><a href="./condensation/gauss_hermite_convergence/verification.html">Convergence of Solutions (draft)</a></strong></p>
                           </li>
-                      </ul>
-                      <li><p><strong>Time Stepping for Condensation of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub></a></strong></p></li>
-                      <ul>
-                          <li><p><strong><a href="./condensation/h2so4_sol_correctness/verification.html">Correct Implementation of Semi-Analytical Solutions</a></strong></p>
+                      </ol>
+                      <li type="i"><p><strong>Time Stepping for Condensation of H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub></a></strong></p></li>
+                      <ol>
+                          <li type="1"><p><strong><a href="./condensation/h2so4_sol_correctness/verification.html">Correct Implementation of Semi-Analytical Solutions (draft)</a></strong></p>
                           </li>
-                      </ul>
-                      <li><p><strong>Time Stepping for Condensation of SOAG/SOA</strong></p>
-                      <ul>
-                          <li><p><strong><a href="./condensation/soag_convergence/verification.html">Self-Convergence Rate of Semi-Implicit Solutions</a></strong></p>
+                      </ol>
+                      <li type="i"><p><strong>Time Stepping for Condensation of SOAG/SOA</strong></p>
+                      <ol>
+                          <li type="1"><p><strong><a href="./condensation/soag_convergence/verification.html">Self-Convergence Rate of Semi-Implicit Solutions (draft)</a></strong></p>
                           </li>
-                      </ul>
+                      </ol>
                       </li>
-                 </ul>
-             </ul>
+                 </ol>
+             </ol>
         </ul>
         <ul>
              <li><p><strong>Coagulation</a></strong></p></li>
-             <ul>
+             <ol>
                  <li><p><strong><a href="Coagulation.html">Coagulation Time Stepping Test</a></strong></p>
                  </li>
-             </ul>
+             </ol>
         </ul>
-        <li><p><strong>CLUBB</a></strong></p> (Cloud Layers Unified By Binormals)</li>
-        <ul>
+        <li><p><strong>CLUBB</a></strong> (Cloud Layers Unified By Binormals)</p></li>
+        <ol>
             <li><p><strong><a href="CLUBB_clipping_test.html">Clipping Test</a></strong> for CLUBB's standalone model</p>
             </li>
-        </ul>
+        </ol>
         <li><p><strong>Unit Tests for a Statistics Utility Module</a></strong></p>
-        <ul>
+        <ol>
             <li><p><strong><a href="global_verif_smry_test.html">Subroutines in global_summary.F90</a></strong></p>
             </li>
-        </ul>
+        </ol>
     </ul>
 </ul>
 </div>
