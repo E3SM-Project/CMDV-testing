@@ -358,7 +358,7 @@ class Workflow(Parent):
 
                 try:
                     if format == "yaml":
-                        cfg = yaml.load(f)
+                        cfg = yaml.load(f , Loader=yaml.FullLoader)
                     elif format == "json":
                         cfg = json.load(f)
                 except:
