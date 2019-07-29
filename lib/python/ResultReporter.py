@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+
 import unittest
 import os
 """
@@ -31,7 +33,6 @@ ResultReporter module:
 
 ################################################################################
 
-from __future__ import print_function
 import sys
 
 ################################################################################

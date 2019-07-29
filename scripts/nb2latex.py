@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Convert a Jupyter notebook to HTML, using the latex_envs environment
+Convert a Jupyter notebook to LaTeX, using the latex_envs environment
 """
 
 ################################################################################
@@ -38,18 +38,36 @@ if __name__ == "__main__":
                         type=str,
                         default='References',
                         help='provide the title of the bibliography section')
-    parser.add_argument('-s',
-                        '--slides',
-                        dest='slides',
+    parser.add_argument('--includeHeaders',
+                        dest='removeHeaders',
+                        action='store_false',
+                        default=False,
+                        help='include the headers')
+    parser.add_argument('--removeHeaders',
+                        dest='removeHeaders',
                         action='store_true',
                         default=False,
-                        help='generate slides')
-    parser.add_argument('-t',
-                        '--toc',
-                        dest='toc',
+                        help='remove the headers')
+    parser.add_argument('--includeTocRef',
+                        dest='removeTocRef',
+                        action='store_false',
+                        default=False,
+                        help='include the table of contents and references')
+    parser.add_argument('--removeTocRef',
+                        dest='removeTocRef',
                         action='store_true',
                         default=False,
-                        help='include a table of contents')
+                        help='remove the table of contents and references')
+    parser.add_argument('--includeFigCaptionProcess',
+                        dest='removeFigCaptionProcess',
+                        action='store_false',
+                        default=False,
+                        help='include the figure caption process')
+    parser.add_argument('--removeFigCaptionProcess',
+                        dest='removeFigCaptionProcess',
+                        action='store_true',
+                        default=False,
+                        help='remove the figure caption process')
     parser.add_argument('-v',
                         '--verbose',
                         dest='verbose',
@@ -78,17 +96,21 @@ if __name__ == "__main__":
     # Process the files
     result = 0
     for filename in options.files:
-        format = "html_with_lenvs"
-        if options.toc:
-            format = "html_with_toclenvs"
-        if options.slides:
-            format = "slides_with_lenvs"
-
         cmd = ["jupyter",
                "nbconvert",
                "--to",
-               format,
-               filename]
+               "latex_with_lenvs"]
+
+        clo = []
+        if options.removeHeaders:
+            clo.append('--LenvsLatexExporter.removeHeaders=True')
+        if options.removeTocRef:
+            clo.append('--LenvsLatexExporter.tocrefRemove=True')
+        if options.removeFigCaptionProcess:
+            clo.append('--LenvsLatexExporter.figcaptionProcess=False')
+        cmd.extend(clo)
+
+        cmd.append(filename)
 
         process = subprocess.Popen(cmd,
                                    stdout=subprocess.PIPE,
