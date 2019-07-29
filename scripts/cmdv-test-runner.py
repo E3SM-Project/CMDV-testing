@@ -33,7 +33,7 @@ from Workflows.CMDV import Workflow
 # Logging
 logger = getLogger("cmdv-test-runner")
 logger.info("Setup")
-
+ch.setLevel(logging.INFO)
 
 ##############################
 # Command line input
