@@ -9,7 +9,7 @@ inputs: {}
   # repo:
   #   location: none
   # directories : 
-  #   deploy : null
+  #   setup : null
   #   build  : null
   #   run    : null
   #   postprocessing : null  
@@ -19,12 +19,12 @@ inputs: {}
 outputs:
   reports:
     type: File[]
-    outputSource: [deploy/report , build/report , run/report , postprocessing/report]
+    outputSource: [setup/report , build/report , run/report , postprocessing/report]
 
         
 steps: 
-  deploy:
-    label: Default deploy step
+  setup:
+    label: Default setup step
     run: 
       baseCommand: [ 'git' , 'clone' , 'https://github.com/E3SM-Project/CMDV-testing.git']
     in: {}

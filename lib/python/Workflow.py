@@ -214,6 +214,10 @@ class Tool(object):
             logger.debug("Current dir: " + current_dir)
             process = subprocess.Popen([self.command],  stdout=subprocess.PIPE , stderr=subprocess.PIPE , shell=True)
             output , errs = process.communicate()
+            rc = process.returncode
+            if rc :
+                  logger.info("Tool returned with non-zero exit code")
+                  success = False
             if output :
                   try:
                         out_msg = output.decode()
@@ -221,7 +225,7 @@ class Tool(object):
                         logger.warning("Unable to decode output " + str(e))
                         out_msg = output
                                        
-                  logger.info("Tool Output: " + out_msg)
+                  logger.info("Tool Output:\n" + out_msg)
                   if self.stdout :
                         file = open(self.stdout , "a")
                         file.write(out_msg)
@@ -234,14 +238,50 @@ class Tool(object):
                         err_msg = errs
                   logger.error( err_msg )
                   if self.stderr :
+                        logger.info("Writing to log " + self.stderr )
                         file = open(self.stderr , "a")
                         file.write(err_msg)
                         file.close()
+            ##### COLLECT OUTPUTS HERE
+            if self.outputs and isinstance(self.outputs , dict) :
+                  success = self._check_outputs()
+            else:
+                  logger.info("No outputs for " + ( self.name or 'no name' ) )      
 
             return success
 
 
+      def _check_outputs(self) :
+            success = True
 
+            for key in self.outputs :
+                  if 'type' in self.outputs[key] :
+                        if self.outputs[key]['type'].lower() == "file" :
+                              if 'glob' in self.outputs[key] :
+                                    logger.debug("Checking for files " + self.outputs[key]['glob'] )
+                                    files = glob.glob(self.outputs[key]['glob'])
+                                    if len(files) == 0 :
+                                          logger.info('Can not find output for pattern ' + self.outputs[key]['glob'] + " in " + os.getcwd() )
+                                          success = False
+                                    else:
+                                          logger.debug( "Found files " + " ".join(files) )
+                                          if 'path' not in self.outputs[key] :
+                                                self.outputs[key]['path'] = []
+                                          for f in files :
+                                                self.outputs[key]['path'].append(os.path.abspath(f))
+                                          logger.debug( "Tool has file outputs: " + " ".join(self.outputs[key]['path']))      
+                                                 
+                                    
+                              else: 
+                                    logger.error("No glob for file, can't search for output")
+                                    sys.exit(1)
+                        else:
+                              logger.debug("Non file type for " + key + " - not implemented")
+                  else :
+                        logger.debug('Missing type field for ' + key )
+                        success = False
+
+            return success
 
 class Step(object):
       """Workflow step"""
@@ -302,11 +342,12 @@ class Step(object):
                         }
                   }
             if cfg :
-                  tool = self.run 
                   if not "run" in cfg :
                         logger.error("Can't initialize step " + self.name + ", missing run command")
                         sys.exit(1)
                   if 'baseCommand' in cfg['run'] :
+                        tool = Tool(cfg['run']) 
+                        self.run = tool 
                         if isinstance(cfg['run']['baseCommand'] , list ) :
                               tool.baseCommand = cfg['run']['baseCommand']
                               tool.type = 'Script'
@@ -404,36 +445,58 @@ class Step(object):
             logger.debug("Step dir: " + self.directories.working)
             if self.inputs :
                   passed  = self._check_inputs()
+                  if not passed :
+                        logger.info( "Missing input , aborting")
+                        sys.exit(1)
             if self.run :
                   if isinstance(self.run, str) :
                         logger.warning("Not implemeneted - run command is string")
                   elif isinstance(self.run, Workflow) :
                         logger.warning("Not implemenetd - run command is workflow object")
                   elif isinstance(self.run, Tool) :
-                        logger.warning("Run command is tool object - executing")   
+                        logger.warning("Run command is tool object - executing")  
                         # Init tool - check for input directory,output directory etc.
                         passed = self.run.execute(inputs)
                   if passed and self.outputs :
-                        passed = self._check_outputs()      
+                        passed = self._check_outputs()  
+                        if not passed :
+                              logger.info( "Missing output , aborting")
+                              sys.exit(1)
+                  elif not passed :
+                        logger.info("Step execution failed , aborting")
+                        logger.info("Test-workflow failed")
+                        sys.exit(1)   
+                  else :
+                        logger.info("Passed and no outputs for step: " + self.name)             
             else :
                   logger.error("Can not execute step - missing run command or tool")
 
             return passed                           
                               
       def _check_inputs(self) :
-            for name , s in self.inputs :
-                  if s['type'] :
+            success = True
+            for key in self.inputs :
+                  if isinstance(self.inputs[key] , dict) :
+                        if 'type' in self.inputs[key] and self.inputs[key]['type'] :
+                              pass
+                        else :
+                              logger.error("Missing type in input " + key + " for step " + self.name )
+                              sys.exit(1)
+                  elif isinstance(self.inputs[key] , str ) :
+                        logger.error("string as input not implemented - reference/path to step outputs")
                         pass
-                  else :
-                        logger.error("Missing type in inputs for step " + step.name )
-                        sys.exit(1)
+                  else:
+                        logger.error("Unknow input type, expected string or dictionary for " + key + "type is " + type(inputs[key]) )
+                        success = False
+
+            return success                              
             
 
       def _check_outputs(self) :
 
             passed = True
             for key in self.outputs :
-                
+                  logger.info("Checking " + key )
                   if self.outputs[key]['type'] :
                         if self.outputs[key]['type'].lower() == "file" :
                               # print("looking for " + self.outputs[key]['glob'] + " in " + os.getcwd() )
@@ -467,6 +530,7 @@ class Workflow(object):
             self.steps            = None # [Step()]
             self.requirements     = None # [Requirement()]
             self.hints            = None # [Hint()]
+            self.results          = None # { "step-name" : { "out-name" : { type: File , name: "fname" , path: "full-path "} }  }
             self.self             =  {
             "name" : None ,
             "file" : None ,
@@ -499,12 +563,33 @@ class Workflow(object):
                         passed = step.execute()
                         if not passed :
                               logger.error('Step ' + step.name + ' failed')
+                              logger.info('Step ' + step.name + ' failed')
+                        else:
+                              logger.info("Step" + step.name + " passed")      
                   else:
                         logger.error('Skipping step ' + step.name ) 
 
-
+            if passed :
+                  logger.info("Test-workflow passed")
+            else:
+                  logger.info("Test-workflow failed")
             sys.exit(1)
   
+      def add_result(self, path=None , name=None , value=None ) :
+            ''' Add step outputs to global scope '''
+            if not ( path or name or value ) :
+                  logger.error("Missing value for path ,name or value")
+                  logger.debug( "\n".join( [ "path: " + str(path) , "name: " + str(name) , "value: " + type(value) ]) )
+                  sys.exit(1)
+            
+            store = {}
+            steps = path.split("/")
+            if length(steps) > 1 :
+                  logger.error("Nested structure, not implemented")
+                  sys.exit(1)
+
+            self.results[ step[0] ][name] = value
+
       def clone_repo(self , source , subdir) :
             
             # source is absolute path

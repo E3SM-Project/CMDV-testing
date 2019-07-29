@@ -358,7 +358,7 @@ class Workflow(Parent):
 
                 try:
                     if format == "yaml":
-                        cfg = yaml.load(f)
+                        cfg = yaml.load(f , Loader=yaml.FullLoader)
                     elif format == "json":
                         cfg = json.load(f)
                 except:
@@ -498,6 +498,22 @@ class Workflow(Parent):
                         logger.warning('Custom steps not implemented yet')
                         sys.exit(1)
 
+                # add this into loop later
+                # remove initialized steps from dict and then iterate over dict for custom steps
+            for s in ["setup", "build", "run", "postprocessing", "report" , "archive"] :
+                logger.info("Removing " + s)
+                spec = steps_dict.pop( s , None )
+
+            for s in steps_dict :
+                logger.debug("Custom step name " + s)
+                step = self.init_step()
+                step.name = s
+                step._set_dirs(working=os.path.join(
+                    self.directories['working'], '' )) # pp.name))
+                step._make_dirs()
+                step.init(steps_dict[s])
+                steps.append(step)
+
         self.steps = steps
 
     def clone(self, source=None, destination=None):
@@ -562,12 +578,21 @@ class Workflow(Parent):
                         passed = step.execute()
                         if not passed :
                               logger.error('Step ' + step.name + ' failed')
+                              logger.info('Step ' + step.name + ' failed')
+                        else :
+                            logger.error('Step ' + step.name + ' passed')
+                            logger.info('Step ' + step.name + ' passed')
+
                 else:
                     logger.error('Skipping step ' + step.name ) 
                 # 4. return to current working dir
 
         # workflow done - return to current working dir
         os.chdir(current_working_dir)
+        if passed :
+                logger.info("Test-workflow passed")
+        else:
+                logger.info("Test-workflow failed")
         logger.debug("Workflow done - ending in " + os.getcwd())
 
 

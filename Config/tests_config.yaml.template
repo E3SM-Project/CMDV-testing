@@ -13,7 +13,7 @@ inputs:
   repo:
     location: none
   directories : 
-    deploy : null
+    setup : null
     build  : null
     run    : null
     postprocessing : null  
@@ -23,12 +23,12 @@ inputs:
 outputs:
   reports:
     type: File[]
-    outputSource: [deploy/report , build/report , run/report , postprocessing/report]
+    outputSource: [setup/report , build/report , run/report , postprocessing/report]
 
         
 steps: 
-  deploy:
-    label: Default deploy step
+  setup:
+    label: Default setup step
     run: 
       baseCommand: []
     in: 
@@ -36,12 +36,12 @@ steps:
         type: Directory
         location: URI #
       destination: 
-        valueFrom: ${inputs.directories.deploy}
+        valueFrom: ${inputs.directories.setup}
         default: ${config.base}   
     out:
       - report:
           type: File
-          glob: deploy.log
+          glob: setup.log
       - dir: 
           type: Directory
           glob: none

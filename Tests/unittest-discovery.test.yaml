@@ -2,10 +2,10 @@ cmdvVersion: v1.0
 class: TestWorkflow 
 label: Discover and execute all python unittests 
 steps:
-  deploy: none
-  build: 
-    run: 
-      baseCommand: [ 'echo Noy working without build step - bug' ]
+  # deploy: none
+  # build: 
+  #   run: 
+  #     baseCommand: [ 'echo Not working without build step - bug' ]
   run: 
     label: auto discover
     run: 
@@ -14,7 +14,50 @@ steps:
       baseCommand: [ 
         'python -m unittest discover -v -s ../lib/python/  -p "*_test.py"' 
         ]
-      out:
+      outputs:
         log:
           type: File
           glob: unittest.stderr   
+  postprocessing:
+    label: check test output
+    in: 
+      log:
+        type: File
+        path: unittest.stderr
+      testing: run/log  
+    run:
+      baseCommand: [
+        'cat unittest.stderr'
+      ]
+  publish:
+        label: Publisch results
+        # in: 
+        #   files: /steps/run/log 
+        run:
+          # inputs:
+          #   files:
+          #     type: File[]
+          #     inputBinding:
+          #       position: 1
+          baseCommand: [
+            'cp unittest.stderr unittest.txt ; add2gh-pages.sh unittest.txt'
+        ]      
+
+actions:
+  pre: []
+  post: 
+    - publish:
+        label: Publisch results
+        in: 
+          files: /steps/run/log 
+        run:
+          inputs:
+            files:
+              type: File[]
+              inputBinding:
+                position: 1
+          arguments:
+            - 
+          baseCommand: [
+            'cat unittest.stderr'
+        ]      

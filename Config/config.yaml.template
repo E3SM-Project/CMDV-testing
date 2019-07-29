@@ -19,7 +19,7 @@ directories:
   working: string           # parent directory for session directories 
   session: null             # ${directories.working}/session.name/
   test: null                # ${directories.session}/test.name/ 
-  deploy: ./deploy          # ${directories.test}/./deploy/ 
+  setup: ./setup          # ${directories.test}/./setup/ 
   build: ./build            # ${directories.test}/./build/ 
   run: ./run                # ${directories.test}/./run/ 
   postprocessing: ./run     # ${directories.test}/./run/ 
@@ -41,6 +41,6 @@ archive:
   type: enum # e.g cdash| cmdv-testing |...  , default local
   
 workflow:
-  steps: ["deploy" , "build" , "run" "postprocessing"]
+  steps: ["setup" , "build" , "run" "postprocessing"]
   
 custom: {}       
