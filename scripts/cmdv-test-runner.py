@@ -33,7 +33,7 @@ from Workflows.CMDV import Workflow
 # Logging
 logger = getLogger("cmdv-test-runner")
 logger.info("Setup")
-ch.setLevel(logging.INFO)
+# ch.setLevel(logging.INFO)
 
 ##############################
 # Command line input
@@ -159,6 +159,8 @@ if __name__ == "__main__":
 
         # remember path to test config relative to repo dir
         if os.path.isabs(f):
+            logger.debug("Repo path: " + config.repo.path )
+            logger.debug("File: " + f)
             m = re.search(config.repo.path + '\/*(.+)', f)
             workflow.relative_test_path = os.path.dirname(m.group(1))
         else:
