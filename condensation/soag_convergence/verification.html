@@ -13366,7 +13366,7 @@ q_{_{m,l,i}} = \frac{\frac{\pi}{6} N_{_{t,i}} D_{_{gn,d,i}}^3 \exp \left( \frac{
 \begin{align}
 \phi_{_v} &amp;= \frac{\left| q_{_{v,MAM}} - q_{_{v,REF}} \right|}{q_{_{v,REF}}} \,, \\
 \phi_{_{m,i}} &amp;= \frac{\left| q_{_{m,MAM,i}} - q_{_{m,REF,i}} \right|}{q_{_{m,REF,i}}} \,.
-\end{align}<p>A self-convergence test is performed by plotting $\phi$ against $\Delta t_{_{cond}}$ on a log-log scale figure. Denoting $\tau = \frac{1}{C_{_{SOAG,i}}(t_{_0})}$ as the characteristic time scale of SOAG/SOA condensation, we further fit a line to the pairs of ($\Delta t_{_{cond}}$, $\phi$) when $\Delta t_{_{cond}} \le f_{_{\tau}}\tau$. $f_{_{\tau}}$ is user-specified number and it is determined based on the criterion that the solution starts to convege when $\Delta t_{_{cond}} \le f_{_{\tau}}\tau$.</p>
+\end{align}<p>A self-convergence test is performed by plotting $\phi$ against $\Delta t_{_{cond}}$ on a log-log scale figure. Denoting $\tau = \frac{1}{\sum\limits_{i=1}^I C_{_{SOAG,i}}(t_{_0})}$ as the characteristic time scale of SOAG/SOA condensation, we further fit a line to the pairs of ($\Delta t_{_{cond}}$, $\phi$) when $\Delta t_{_{cond}} \le f_{_{\tau}}\tau$. $f_{_{\tau}}$ is user-specified number and it is determined based on the criterion that the solution starts to convege when $\Delta t_{_{cond}} \le f_{_{\tau}}\tau$.</p>
 <p>An overall <strong>PASS</strong> is issued if the slope of fitted line is 1.0$\pm \delta$ for both $\phi_{_v}$ and $\phi_{_{m,i}}$ (Here $\delta$ is a user-specified parameter so that 1.0$\pm \delta$ is thought close enough to 1.0).</p>
 
 </div>
