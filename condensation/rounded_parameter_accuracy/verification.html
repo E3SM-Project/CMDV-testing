@@ -13195,7 +13195,14 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Aerosol-condensation-process-and-its-verification-test-of-mass-transfer-coefficient:-impact-of-rounded-parameters">Aerosol condensation process and its verification test of mass transfer coefficient: impact of rounded parameters<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test-of-mass-transfer-coefficient:-impact-of-rounded-parameters">&#182;</a></h1>
+<h1 id="Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">Aerosol condensation process and its verification test: error of rounded constants<a class="anchor-link" href="#Aerosol-condensation-process-and-its-verification-test:-error-of-rounded-constants">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="$\color{red}{\text{Last-update:-07-26-2019,-test-strategy-and-result-are-finalized.-Presentation-needs-revision.}}$">$\color{red}{\text{Last update: 07-26-2019, test strategy and result are finalized. Presentation needs revision.}}$<a class="anchor-link" href="#$\color{red}{\text{Last-update:-07-26-2019,-test-strategy-and-result-are-finalized.-Presentation-needs-revision.}}$">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13279,7 +13286,7 @@ f(K_{_{n,l}}, \alpha_{_{l}}) = \frac{0.75 \alpha_{_{l}} (1+K_{_{n,l}})}{0.75 \al
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1-Establishment-of-MAM-solution">3.1 Establishment of MAM solution<a class="anchor-link" href="#3.1-Establishment-of-MAM-solution">&#182;</a></h3>
+<h3 id="3.1-MAM-solution">3.1 MAM solution<a class="anchor-link" href="#3.1-MAM-solution">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13305,7 +13312,7 @@ v_{_{l}} &amp;\approx 145.5\sqrt{\frac{T}{M_{_{w,l}}}} \,,
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Establishment-of-reference-solution">3.2 Establishment of reference solution<a class="anchor-link" href="#3.2-Establishment-of-reference-solution">&#182;</a></h3>
+<h3 id="3.2-Reference-solution">3.2 Reference solution<a class="anchor-link" href="#3.2-Reference-solution">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13368,7 +13375,7 @@ geometric standard deviation ($\sigma_{_{g,i}}$) and number concentration of } \
     \text{Aitken}         &amp; 0.026 &amp; 1.6 &amp; 10^9 \\
     \text{Accumulation}   &amp; 0.11  &amp; 1.8 &amp; 10^8 \\
     \text{Coarse}         &amp; 2.0   &amp; 1.8 &amp; 10^5 \\
-    \text{Primary Carbon} &amp; 0.05  &amp; 1.6 &amp; 2 \times 10^5\\
+    \text{Primary Carbon} &amp; 0.05  &amp; 1.6 &amp; 2 \times 10^8\\
 \hline
 \end{array}
 $$
@@ -13394,9 +13401,9 @@ $$
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In each test, the driver program calls MAM's condensation subroutines to calculate the $C_{_{MAM}}$ and $C_{_{REF}}$, respectively. The relative error between MAM solution and reference solution is then calculated as:</p>
-\begin{align}
-\phi = \frac{\left| C_{_{MAM}} - C_{_{REF}} \right|}{C_{_{REF}}} \,, \label{relerr} \\
-\end{align}<p>Because the least accurate parameter is rounded to two digits (0.035 in Eq. \eqref{round_dgas}), an overall <strong>PASS</strong> is issued if $\phi \lt 10^{-2}$ for all the 20 tests.</p>
+\begin{equation}
+\phi = \frac{\left| C_{_{MAM}} - C_{_{REF}} \right|}{C_{_{REF}}} \,. \label{relerr}
+\end{equation}<p>Because the least accurate parameter is rounded to two digits (0.035 in Eq. \eqref{round_dgas}), an overall <strong>PASS</strong> is issued if $\phi \lt 10^{-2}$ for all the 20 tests.</p>
 
 </div>
 </div>
@@ -13480,7 +13487,7 @@ $$
 
 <span class="c1"># check maximum/minimum relative error</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;maximum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;maximum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;minimum relative error: </span><span class="si">%.4e</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13498,7 +13505,7 @@ $$
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>maximum relative error: 4.4187e-03
-maximum relative error: 2.7074e-06
+minimum relative error: 2.7074e-06
 </pre>
 </div>
 </div>
