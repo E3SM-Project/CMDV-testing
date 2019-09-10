@@ -13383,7 +13383,7 @@ q_{_{m,l,i}} = \frac{\frac{\pi}{6} N_{_{t,i}} D_{_{gn,d,i}}^3 \exp \left( \frac{
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use the MAM solution at $\Delta t = 1800$s as the reference solution and check the convergence of RK4 solutions (for both $\rm H_2SO_4$ and $\rm SO_4$) from $\Delta t = 1$s to $\Delta t = 1800$s. An overall <strong>PASS</strong> is issued if (i) a $4^{th}$-order convergence is observed in a log-scale plot of $\Delta t$ against relative error within a certain range of $\Delta t$ (say [$\rm dt_{lo}$, $\rm dt_{hi}$]) and (ii) the relative error does not reduce or even increases when $\Delta t$ becomes small enough. In this test, a $4^{th}$-order convergence is reached when the slopes of fitted lines over [$\rm dt_{lo}$, $\rm dt_{hi}$] are within $4\pm\delta$, where $\delta$ is a user-specified constant.</p>
+<p>We use the MAM solution at $\Delta t = 1800$s as the reference solution and check the convergence of RK4 solutions (for both $\rm H_2SO_4$ and $\rm SO_4$) from $\Delta t = 0.1$s to $\Delta t = 1800$s. An overall <strong>PASS</strong> is issued if (i) a $4^{th}$-order convergence is observed in a log-scale plot of $\Delta t$ against relative error within a certain range of $\Delta t$ (say [$\rm dt_{lo}$, $\rm dt_{hi}$]) and (ii) the relative error does not reduce or even increases when $\Delta t$ becomes small enough. In this test, a $4^{th}$-order convergence is reached when the slopes of fitted lines over [$\rm dt_{lo}$, $\rm dt_{hi}$] are within $4\pm\delta$, where $\delta$ is a user-specified constant.</p>
 
 </div>
 </div>
@@ -13557,7 +13557,7 @@ q_{_{m,l,i}} = \frac{\frac{\pi}{6} N_{_{t,i}} D_{_{gn,d,i}}^3 \exp \left( \frac{
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After we verify the correct implementation of RK4 method, we use the MAM solution as the reference solution and re-check the convergence of RK4 solutions. Here we include the RK4 solutions from $\Delta t = 0.01$s to $\Delta t = 1800$s. If the implementation of MAM solution is correct, we should again observe a $4^{th}$-order convergence rate as shown in Section 5.1.</p>
+<p>After we verify the correct implementation of RK4 method, we use the MAM solution as the reference solution and re-check the convergence of RK4 solutions. Here we include the RK4 solutions from $\Delta t = 0.1$s to $\Delta t = 1800$s. If the implementation of MAM solution is correct, we should again observe a $4^{th}$-order convergence rate as shown in Section 5.1.</p>
 
 </div>
 </div>
