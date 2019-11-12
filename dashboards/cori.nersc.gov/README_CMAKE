@@ -8,7 +8,7 @@ git clone git@github.com:E3SM-Project/CMDV-testing.git CMDV-Testing
 cd CMDV-Testing
 mkdir build
 cd build
-cp ../dashboards/edison.nersc.gov/do-cmake .
+cp ../dashboards/cori.nersc.gov/do-cmake .
 ./do-cmake
 make -j 8
 ctest -V
