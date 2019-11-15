@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>index</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>palm_cvmix_compare_v3</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11740,7 +11740,6 @@ div#notebook {
     page-break-inside: avoid; 
   }
 }
-
 </style>
 
 <!-- Custom stylesheet, it must be in the same directory as the html file -->
@@ -11776,111 +11775,347 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="CMDV-Testing">CMDV Verification Tests<a class="anchor-link" href="#CMDV-Testing">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The following is a list of the currently available tests. 
-Each test was initially documented in a Jupyter notebook and then converted to html. 
-Currently, these tests are static, but this provides a framework that can 
-ultimately post the results of regularly sceduled, automatically executed verification tests.
-</p>
-<ul>
-    <li><p><strong>HOMME Dynamical Core</a></strong></p></li>
-    <ol>
-         <li><p style="margin-top: -0px;"><a href="SWTC1.html">Shallow water test case 1</a></p>
-         </li>
-    </ol>
-</ul>
-<ul>
-    <li><p style="margin-top: -0px;"><strong>Albany Land-Ice (ALI)</a></strong> </p></li>
-    <ol>
-         <li><p style="margin-top: -0px;"><a href="ALI_foStokesMMS.html">2D x-y first-order Stokes stress-velocity solver</a></p>
-         </li>
-    </ol>
-</ul>
-<ul>
-    <li><p style="margin-top: -0px;"><strong>MPAS Ocean</a></strong></p></li>
-    <ol>
-        <li><p style="margin-top: -0px;"><a href="mpas_test_compare.html">Test for comparison between new and old MPAS run with model skill score</a></p>
-        </li>
-        <li><p style="margin-top: -0px;"><a href="palm_cvmix_compare_v3.html">Test for comparison between cvmix run and PALM LES with model skill score and entrainment depth calculations</a></p>
-        </li>
-    </ol>
-</ul>
-<ul>
-    <li><p style="margin-top: -0px;"><strong>Atmospheric Physics: Modal Aerosol Module (MAM)</a></strong></p></li>
-       <ol>
-          <li><p style="margin-top: -0px;"><strong>Water Uptake:</strong> <a href="./wateruptake/verification.html">Finding roots of a polynomial equation</a></p></li>
-          <li><p><strong>Condensation</strong></p></li>
-                 <ol>
-                      <li type="i"><p>(Verification) Gauss-Hermite Quadrature for Mass Transfer Coefficients</a></p></li>
-                        <ul>
-                          <li><p><a href="./condensation/gauss_hermite_accuracy/verification.html">
-                                             Integration of 3<sup>rd</sup>-order Polynomial</a></p>
-                          </li>
-                          <li><p><a href="./condensation/gauss_hermite_convergence/verification.html">
-                                             Convergence w.r.t. number of quadrature points (draft)</a></p>
-                          </li>
-                        </ul>
-                      <li type="i"><p>(Verification) Time Stepping for the Condensation of H<sub>2</sub>SO<sub>4</sub></a></p></li>
-                        <ul>
-                          <li><p><a href="./condensation/h2so4_sol_correctness/verification.html">Semi-analytical solution (draft)</a></p>
-                          </li>
-                        </ul>
-                      <li type="i"><p>(Verification) Time Stepping for the Condensation of SOAG</p>
-                        <ul>
-                            <li><p><a href="./condensation/soag_convergence/verification.html">Solution convergence under fixed stepsize control parameter (draft)</a></p>
-                            </li>
-                            <li><p><a href="./condensation/soag_substep_convergence/verification.html">Solution convergence w.r.t. substepping control parameter (draft)</a></p>
-                            </li>
-                        </ul>
-                      <li type="i"><p>(Error Quantification) <a href="./condensation/gauss_hermite_rounded_points/verification.html">
-                          Rounded Gauss-Hermite quadrature points</a></p>
-                      </li>
-                      <li type="i"><p>(Error Quantification) <a href="./condensation/rounded_parameter_accuracy/verification.html">
-                          Rounded physical constants</a></p>
-                      </li>
-                      <li type="i"><p>(Error Quantification) <a href="./condensation/h2so4_taylor/verification.html">
-                          Use of Taylor expansion for the H<sub>2</sub>SO<sub>4</sub>/SO<sub>4</sub> equation (draft)</a></p>
-                      </li>
-                 </ol>
-             <li><p><strong>Coagulation</strong></a></p></li>
-             <ol>
-                 <li type="i"><p><a href="Coagulation.html">Time stepping test for coagulation</a></p>
-                 </li>
-             </ol>
-        </ul>
-</ul>
-<ul>
-        <li><p style="margin-top: -0px;"><strong>Atmospheric Physics: Cloud Layers Unified By Binormals (CLUBB)</a></strong> </p></li>
-        <ol>
-            <li><p style="margin-top: -0px;"><a href="CLUBB_clipping_test.html">Clipping in CLUBB's standalone model</a></p>
-            </li>
-        </ol>
-</ul>
-<ul>
-        <li><p style="margin-top: -0px;"><strong>Miscellaneous Unit Tests</a></strong></p>
-        <ol>
-            <li><p style="margin-top: -0px;"><a href="global_verif_smry_test.html">Subroutines in global_verif_summary.F90</a></p>
-            </li>
-        </ol>
-    </ul>
-</ul>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+<p>KPP/Large Eddy simulation Comparison</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The physics: The K-Profile Parameterization (KPP) represents small scale (below the grid scale) vertical turbulent fluxes of heat, salt, and momentum in the ocean.</p>
+<p>The code: KPP does not contain any prognostic equations, but utilizes diagnostic equations and scaling relationships to parameterize turbulent fluxes.
+KPP is known to not exhibit convergence with vertical resolution, but is robust to time step variation.
+In most cases there are no known analytic solutions for comparison.</p>
+<p>The verification: Utilize a large eddy simulation as a baseline to verify the temperature tendency and entrainment depth (figure) returned by KPP, critical quantities for the ocean simulation.</p>
+<p>Unit Isolation:CVMix module and MPAS-Ocean vertical mixing interface</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+
+<span class="o">%</span><span class="k">cd</span> /lustre/scratch3/turquoise/lconlon/coastal_test_cases/RUN_ifort.grizzly_hdf5_mpirun_cvmix_compare_ocean/ 
+
+<span class="c1">#import data from Palm</span>
+<span class="n">my_nc_file</span> <span class="o">=</span> <span class="s1">&#39;DATA_3D_NETCDF&#39;</span>
+<span class="n">fh</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">my_nc_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">][:]</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">][:]</span>
+<span class="n">w1</span><span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">][:]</span>
+<span class="n">time1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;pt&#39;</span><span class="p">][:]</span><span class="o">-</span><span class="mf">273.15</span>
+<span class="n">s1</span><span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;sa&#39;</span><span class="p">][:]</span>
+<span class="n">zu1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;zu_3d&#39;</span><span class="p">][:]</span>
+<span class="n">rho1</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;rho_ocean&#39;</span><span class="p">][:]</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="o">%</span><span class="k">cd</span> /lustre/scratch3/turquoise/lconlon/ 
+
+<span class="c1">#import data from cvmix</span>
+<span class="n">u2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;u_velocity.dat&#39;</span><span class="p">)</span>
+<span class="n">v2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;v_velocity.dat&#39;</span><span class="p">)</span>
+<span class="n">t2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;temperature.dat&#39;</span><span class="p">)</span>
+<span class="n">d2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;diff2.dat&#39;</span><span class="p">)</span>
+<span class="n">s2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;salinity.dat&#39;</span><span class="p">)</span>
+<span class="n">time2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;time.dat&#39;</span><span class="p">)</span>
+<span class="n">rho2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;rho.dat&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/lustre/scratch3/turquoise/lconlon/coastal_test_cases/RUN_ifort.grizzly_hdf5_mpirun_cvmix_compare_ocean
+/lustre/scratch3/turquoise/lconlon
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#Calculate model skill score between the two models</span>
+<span class="c1"># </span>
+<span class="c1"># Here, it compares temp, but could switch to another variable</span>
+<span class="n">t_palm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#horizontal average</span>
+<span class="n">palm</span><span class="o">=</span><span class="n">t_palm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="c1">#get palm output after 1 day</span>
+<span class="n">cvmix</span><span class="o">=</span><span class="n">t2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="c1">#get cvmix output after 1 day</span>
+
+
+<span class="n">x1</span><span class="o">=</span><span class="n">palm</span> 
+<span class="n">x2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">cvmix</span><span class="p">)</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mean_standard</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+
+<span class="n">denom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">mean_standard</span><span class="p">)</span><span class="o">+</span><span class="nb">abs</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">mean_standard</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">fraction</span><span class="o">=</span><span class="n">mse</span><span class="o">/</span><span class="n">denom</span>
+<span class="n">WS</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fraction</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&lt;</span> <span class="mf">0.90</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&gt;</span> <span class="mf">0.90</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;model skill for temperature profile is:&#39;</span><span class="p">)</span>
+<span class="n">WS</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>fail
+model skill for temperature profile is:
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.14229683510646618</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Here,-the-model-fails-because-the-cvmix-run-wasn't-set-up-correctly.-The-notebook-then-goes-on-to-calculate-some-stats-for-more-information">Here, the model fails because the cvmix run wasn't set up correctly. The notebook then goes on to calculate some stats for more information<a class="anchor-link" href="#Here,-the-model-fails-because-the-cvmix-run-wasn't-set-up-correctly.-The-notebook-then-goes-on-to-calculate-some-stats-for-more-information">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">zu1</span><span class="p">),</span> <span class="n">x1</span><span class="p">)</span> <span class="c1">#plot palm profile </span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">zu1</span><span class="p">),</span> <span class="n">x2</span><span class="p">)</span> <span class="c1">#plot CVMIX profile</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Palm&#39;</span><span class="p">,</span><span class="s1">&#39;CVMIX&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">([</span><span class="s1">&#39;Model skill=&#39;</span><span class="p">,</span><span class="n">WS</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&lt;</span> <span class="mf">0.95</span><span class="p">:</span>
+    <span class="n">pf</span><span class="o">=</span><span class="s2">&quot;fail&quot;</span>
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">:</span>
+    <span class="n">pf</span><span class="o">=</span><span class="s2">&quot;pass&quot;</span>
+    
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">([</span><span class="n">pf</span><span class="p">,</span> <span class="s1">&#39;Model skill=&#39;</span><span class="p">,</span> <span class="n">WS</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Text(0.5,1,u&#34;[&#39;fail&#39;, &#39;Model skill=&#39;, 0.14229683510646618]&#34;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[221]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#Calculate entrainment depth between the two models (depth of minimum vertical heat flux)</span>
+
+
+<span class="c1">#First, do palm</span>
+<span class="n">t_palm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#horizontal average</span>
+<span class="n">w_palm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#horizontal average</span>
+<span class="n">palm</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t_palm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">w_palm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">zu1</span><span class="p">)))</span> <span class="c1">#get palm output after 1 day</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">palm</span><span class="p">)</span>
+<span class="n">test</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">palm</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">m</span><span class="p">]</span>
+<span class="n">palm_depth</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">zu1</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+
+<span class="c1"># next, do cvmix</span>
+<span class="n">t_cvmix</span><span class="o">=</span><span class="n">t2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+<span class="n">cvmix</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">d2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">zu1</span><span class="p">)))</span> <span class="c1">#get palm output after 1 day</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cvmix</span><span class="p">)</span>
+<span class="n">test</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cvmix</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">m</span><span class="p">]</span>
+<span class="n">cvmix_depth</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">zu1</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+
+
+<span class="c1">#calc % difference</span>
+<span class="n">percent_diff</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">palm_depth</span><span class="o">-</span><span class="n">cvmix_depth</span><span class="p">)</span><span class="o">/</span><span class="p">((</span><span class="n">palm_depth</span><span class="o">+</span><span class="n">cvmix_depth</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39; Entrainment depth percent difference=&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">percent_diff</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> Entrainment depth percent difference=
+[23.58078603]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[226]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># calculate gravitational potential energy model skill</span>
+<span class="c1"># PE=rho_g_h</span>
+
+<span class="n">rho_palm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rho1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#horizontal average</span>
+<span class="n">palm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">rho_palm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span> <span class="c1">#get palm output after 1 day</span>
+<span class="n">cvmix</span><span class="o">=</span><span class="n">rho2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="c1">#get cvmix output after 1 day</span>
+
+
+
+<span class="n">x1</span><span class="o">=</span><span class="p">(</span><span class="n">palm</span><span class="p">)</span>
+<span class="n">x2</span><span class="o">=</span><span class="n">cvmix</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mean_standard</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+
+<span class="n">denom</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">mean_standard</span><span class="p">)</span><span class="o">+</span><span class="nb">abs</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">mean_standard</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">fraction</span><span class="o">=</span><span class="n">mse</span><span class="o">/</span><span class="n">denom</span>
+<span class="n">WS</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">fraction</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&lt;</span> <span class="mf">0.90</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WS</span> <span class="o">&gt;</span> <span class="mf">0.90</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;pass&quot;</span><span class="p">)</span>
+    
+<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;model skill for entrainment depth is:&#39;</span><span class="p">)</span>
+<span class="n">WS</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>fail
+model skill for entrainment depth is:
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[226]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.4118265192298509</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     </div>
   </div>
